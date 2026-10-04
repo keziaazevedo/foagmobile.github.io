@@ -1437,3 +1437,3360 @@ body.dark-mode .item-loja-perfil.ativo {
     background: #10251a !important;
 }
 
+
+
+
+/* =====================================================
+   PERFIL — PERSONALIZAÇÕES ORGANIZADAS
+   ===================================================== */
+
+.personalizacoes-card {
+    overflow: hidden;
+}
+
+.personalizacoes-bloco + .personalizacoes-bloco {
+    margin-top: 24px;
+    padding-top: 22px;
+    border-top: 1px solid var(--borda);
+}
+
+.personalizacoes-bloco-titulo {
+    margin-bottom: 14px;
+}
+
+.personalizacoes-bloco-titulo > div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.personalizacoes-bloco-titulo h4 {
+    margin: 0;
+    color: var(--texto);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.personalizacoes-bloco-titulo p {
+    margin: 2px 0 0;
+    color: var(--texto-suave);
+    font-size: 11px;
+}
+
+.titulo-selo {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: #ebfff3;
+    color: #23a55a;
+    font-size: 13px;
+}
+
+.titulo-selo-colecao {
+    background: var(--azul-claro);
+    color: var(--azul-foag);
+}
+
+/* ------------------------------
+   EM USO
+------------------------------ */
+
+.personalizacoes-em-uso {
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(185px, 1fr)
+    );
+    gap: 10px;
+}
+
+.personalizacao-ativa-card {
+    min-width: 0;
+    min-height: 68px;
+    padding: 10px 12px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    border: 1px solid #bceccb;
+    border-radius: 12px;
+    background: #f5fff8;
+}
+
+.personalizacao-ativa-visual {
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: #ffffff;
+    color: var(--azul-foag);
+    font-size: 23px;
+    overflow: hidden;
+}
+
+.personalizacao-ativa-visual img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+}
+
+.personalizacao-ativa-info {
+    min-width: 0;
+    padding-right: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.personalizacao-ativa-tipo {
+    color: #4f8c67;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+}
+
+.personalizacao-ativa-info strong {
+    overflow: hidden;
+    color: var(--texto);
+    font-size: 11px;
+    font-weight: 650;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.personalizacao-ativa-check {
+    width: 19px;
+    height: 19px;
+    position: absolute;
+    top: 9px;
+    right: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #36c66f;
+    color: #ffffff;
+    font-size: 9px;
+}
+
+/* ------------------------------
+   ABAS DA COLEÇÃO
+------------------------------ */
+
+.colecao-abas {
+    margin-bottom: 15px;
+    padding: 4px;
+    display: flex;
+    gap: 5px;
+    overflow-x: auto;
+    border-radius: 12px;
+    background: #f4f7fa;
+    scrollbar-width: thin;
+}
+
+.colecao-aba {
+    min-height: 38px;
+    padding: 7px 12px;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    border: 0;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--texto-suave);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.colecao-aba:hover:not(:disabled) {
+    color: var(--azul-foag);
+    background: #ffffff;
+}
+
+.colecao-aba.ativa {
+    background: #ffffff;
+    color: var(--azul-foag);
+    box-shadow: 0 2px 8px rgba(34, 84, 125, .09);
+}
+
+.colecao-aba b {
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: #e8edf2;
+    color: #6d7d8e;
+    font-size: 9px;
+}
+
+.colecao-aba.ativa b {
+    background: var(--azul-claro);
+    color: var(--azul-foag);
+}
+
+.colecao-aba:disabled {
+    opacity: .38;
+    cursor: default;
+}
+
+.colecao-painel {
+    display: none;
+}
+
+.colecao-painel.ativo {
+    display: block;
+}
+
+.colecao-grid {
+    grid-template-columns: repeat(
+        auto-fill,
+        minmax(118px, 1fr)
+    );
+}
+
+.colecao-item-extra {
+    display: none;
+}
+
+.colecao-item-extra.visivel {
+    display: flex;
+}
+
+/* Cards um pouco mais compactos na coleção */
+.colecao-grid .item-loja-perfil {
+    min-height: 112px;
+    justify-content: center;
+}
+
+.colecao-grid
+.item-loja-perfil
+.categoria-item {
+    font-size: 8px;
+    letter-spacing: .25px;
+}
+
+/* ------------------------------
+   VER TODOS
+------------------------------ */
+
+.btn-ver-colecao {
+    min-height: 36px;
+    margin: 14px auto 0;
+    padding: 7px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border: 1px solid var(--borda);
+    border-radius: 9px;
+    background: #ffffff;
+    color: var(--azul-foag);
+    font-size: 11px;
+    font-weight: 650;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.btn-ver-colecao:hover {
+    border-color: var(--azul-foag);
+    background: var(--azul-claro);
+}
+
+/* ------------------------------
+   VAZIO
+------------------------------ */
+
+.colecao-vazia {
+    width: 100%;
+    padding: 28px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    text-align: center;
+    color: var(--texto-suave);
+    border: 1px dashed var(--borda);
+    border-radius: 12px;
+    background: #fbfcfd;
+}
+
+.colecao-vazia > i {
+    color: #a8b5c2;
+    font-size: 24px;
+}
+
+.colecao-vazia h5 {
+    margin: 3px 0 0;
+    color: var(--texto);
+    font-size: 12px;
+}
+
+.colecao-vazia p,
+.colecao-vazia span {
+    margin: 0;
+    font-size: 10px;
+}
+
+.colecao-vazia a {
+    margin-top: 4px;
+    color: var(--azul-foag);
+    font-size: 11px;
+    font-weight: 650;
+    text-decoration: none;
+}
+
+.colecao-vazia-compacta {
+    min-height: 64px;
+    padding: 13px;
+    flex-direction: row;
+}
+
+.colecao-vazia-compacta > i {
+    font-size: 16px;
+}
+
+.colecao-vazia-painel {
+    min-height: 100px;
+}
+
+/* ------------------------------
+   DARK MODE
+------------------------------ */
+
+body.dark-mode
+.personalizacoes-bloco +
+.personalizacoes-bloco {
+    border-top-color: #334155;
+}
+
+body.dark-mode
+.personalizacoes-bloco-titulo h4,
+body.dark-mode
+.personalizacao-ativa-info strong,
+body.dark-mode
+.colecao-vazia h5 {
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode
+.personalizacoes-bloco-titulo p {
+    color: #94a3b8 !important;
+}
+
+body.dark-mode
+.titulo-selo {
+    background: #123423;
+    color: #5ade8a;
+}
+
+body.dark-mode
+.titulo-selo-colecao {
+    background: #0f172a;
+    color: #669ada;
+}
+
+body.dark-mode
+.personalizacao-ativa-card {
+    border-color: #285c3c;
+    background: #10251a;
+}
+
+body.dark-mode
+.personalizacao-ativa-visual {
+    background: #0f172a;
+}
+
+body.dark-mode
+.personalizacao-ativa-tipo {
+    color: #74c992;
+}
+
+body.dark-mode
+.colecao-abas {
+    background: #0f172a;
+}
+
+body.dark-mode
+.colecao-aba {
+    color: #94a3b8;
+}
+
+body.dark-mode
+.colecao-aba:hover:not(:disabled),
+body.dark-mode
+.colecao-aba.ativa {
+    background: #1e293b;
+    color: #7bb7f0;
+}
+
+body.dark-mode
+.colecao-aba b {
+    background: #273449;
+    color: #a8b5c4;
+}
+
+body.dark-mode
+.colecao-aba.ativa b {
+    background: #173251;
+    color: #7bb7f0;
+}
+
+body.dark-mode
+.btn-ver-colecao {
+    border-color: #334155;
+    background: #0f172a;
+    color: #7bb7f0;
+}
+
+body.dark-mode
+.btn-ver-colecao:hover {
+    border-color: #669ada;
+    background: #172033;
+}
+
+body.dark-mode
+.colecao-vazia {
+    border-color: #334155;
+    background: #0f172a;
+    color: #94a3b8;
+}
+
+/* ------------------------------
+   RESPONSIVO
+------------------------------ */
+
+@media (max-width: 768px) {
+    .personalizacoes-em-uso {
+        grid-template-columns: repeat(
+            2,
+            minmax(0, 1fr)
+        );
+    }
+
+    .colecao-grid {
+        grid-template-columns: repeat(
+            auto-fill,
+            minmax(100px, 1fr)
+        );
+    }
+}
+
+@media (max-width: 520px) {
+    .personalizacoes-em-uso {
+        grid-template-columns: 1fr;
+    }
+
+    .colecao-abas {
+        margin-left: -3px;
+        margin-right: -3px;
+    }
+
+    .colecao-aba {
+        min-height: 36px;
+        padding: 6px 10px;
+        font-size: 10px;
+    }
+
+    .colecao-grid {
+        grid-template-columns: repeat(
+            2,
+            minmax(0, 1fr)
+        );
+        gap: 8px;
+    }
+
+    .colecao-grid .item-loja-perfil {
+        min-height: 104px;
+    }
+
+    .personalizacao-ativa-card {
+        min-height: 62px;
+    }
+}
+
+
+
+/* =====================================================
+   PERFIL — EQUIPAR ITEM PELA COLEÇÃO
+   ===================================================== */
+
+.item-loja-perfil {
+    position: relative;
+}
+
+.btn-equipar-item {
+    min-height: 28px;
+    margin-top: 2px;
+    padding: 5px 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--azul-foag);
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    transition:
+        transform .18s ease,
+        background .18s ease,
+        box-shadow .18s ease,
+        opacity .18s ease;
+}
+
+button.btn-equipar-item:hover:not(:disabled) {
+    background: var(--azul-escuro);
+    transform: translateY(-1px);
+    box-shadow:
+        0 4px 10px
+        rgba(56, 165, 255, .20);
+}
+
+button.btn-equipar-item:disabled {
+    opacity: .65;
+    cursor: wait;
+}
+
+.btn-equipar-item.em-uso {
+    background: #e7f9ed;
+    color: #249654;
+    cursor: default;
+}
+
+.item-loja-perfil.ativo
+.btn-equipar-item.em-uso {
+    background: #fff5bf;
+    color: #9b7b00;
+}
+
+.mensagem-equipar-perfil {
+    display: none;
+    width: 100%;
+    min-height: 38px;
+    margin: 0 0 16px;
+    padding: 8px 12px;
+    align-items: center;
+    border-radius: 9px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.mensagem-equipar-perfil.sucesso {
+    display: flex;
+    border: 1px solid #bdecca;
+    background: #f1fff5;
+    color: #23834b;
+}
+
+.mensagem-equipar-perfil.erro {
+    display: flex;
+    border: 1px solid #ffd0d0;
+    background: #fff4f4;
+    color: #c43d3d;
+}
+
+body.dark-mode
+.btn-equipar-item {
+    background: #318bd3;
+    color: #ffffff;
+}
+
+body.dark-mode
+button.btn-equipar-item:hover:not(:disabled) {
+    background: #2478bd;
+}
+
+body.dark-mode
+.btn-equipar-item.em-uso {
+    background: #123423;
+    color: #6ad88e;
+}
+
+body.dark-mode
+.item-loja-perfil.ativo
+.btn-equipar-item.em-uso {
+    background: #3d3510;
+    color: #f1d65b;
+}
+
+body.dark-mode
+.mensagem-equipar-perfil.sucesso {
+    border-color: #285c3c;
+    background: #10251a;
+    color: #74d894;
+}
+
+body.dark-mode
+.mensagem-equipar-perfil.erro {
+    border-color: #6b3030;
+    background: #2c1717;
+    color: #ff9d9d;
+}
+
+
+
+/* =====================================================
+   PERFIL — INSÍGNIAS EM PRÉVIA + MODAL EXPANDIDO
+   ===================================================== */
+
+/* ------------------------------
+   Cabeçalho compacto
+------------------------------ */
+
+.insignias-cabecalho {
+    justify-content: space-between;
+}
+
+.insignias-cabecalho-principal,
+.insignias-cabecalho-acoes {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.insignias-cabecalho-principal {
+    min-width: 0;
+}
+
+.insignias-cabecalho-acoes {
+    margin-left: auto;
+}
+
+.btn-ver-todas-insignias {
+    min-height: 34px;
+    padding: 7px 11px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border: 1px solid var(--borda);
+    border-radius: 9px;
+    background: #ffffff;
+    color: var(--azul-foag);
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+        border-color .2s ease,
+        background .2s ease,
+        transform .2s ease;
+}
+
+.btn-ver-todas-insignias:hover {
+    border-color: var(--azul-foag);
+    background: var(--azul-claro);
+    transform: translateY(-1px);
+}
+
+/* ------------------------------
+   Resumo de progresso
+------------------------------ */
+
+.insignias-progresso-resumo {
+    margin-bottom: 15px;
+    padding: 11px 13px;
+    border: 1px solid var(--borda);
+    border-radius: 11px;
+    background: #fbfcfd;
+}
+
+.insignias-progresso-texto {
+    margin-bottom: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.insignias-progresso-texto span {
+    color: var(--texto-suave);
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.insignias-progresso-texto strong {
+    color: var(--azul-escuro);
+    font-size: 11px;
+}
+
+.insignias-progresso-barra {
+    width: 100%;
+    height: 7px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #e9eef3;
+}
+
+.insignias-progresso-barra > span {
+    height: 100%;
+    display: block;
+    border-radius: inherit;
+    background: linear-gradient(
+        90deg,
+        var(--azul-foag),
+        #73c1ff
+    );
+}
+
+/* ------------------------------
+   Preview no Perfil
+------------------------------ */
+
+.insignias-preview {
+    display: grid;
+    grid-template-columns:
+        repeat(5, minmax(0, 1fr));
+    gap: 9px;
+}
+
+.insignia-preview-item,
+.insignia-preview-mais {
+    min-width: 0;
+    min-height: 91px;
+    padding: 9px 7px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: 1px solid var(--borda);
+    border-radius: 11px;
+    background: #fbfcfd;
+    text-align: center;
+}
+
+.insignia-preview-item {
+    transition:
+        border-color .2s ease,
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+.insignia-preview-item:hover {
+    border-color: #b9ddfa;
+    transform: translateY(-2px);
+    box-shadow:
+        0 5px 13px
+        rgba(27, 76, 115, .07);
+}
+
+.insignia-preview-imagem {
+    width: 47px;
+    height: 47px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 11px;
+    background: var(--azul-claro);
+    font-size: 22px;
+}
+
+.insignia-preview-imagem img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+}
+
+.insignia-preview-item > span {
+    width: 100%;
+    overflow: hidden;
+    color: var(--texto);
+    font-size: 9px;
+    font-weight: 650;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.insignia-preview-mais {
+    border-style: dashed;
+    color: var(--azul-foag);
+    cursor: pointer;
+    transition:
+        background .2s ease,
+        border-color .2s ease;
+}
+
+.insignia-preview-mais:hover {
+    border-color: var(--azul-foag);
+    background: var(--azul-claro);
+}
+
+.insignia-preview-mais strong {
+    font-size: 18px;
+}
+
+.insignia-preview-mais span {
+    font-size: 9px;
+    font-weight: 650;
+}
+
+.sem-insignias-preview {
+    min-height: 84px;
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    text-align: left;
+    border: 1px dashed var(--borda);
+    border-radius: 11px;
+    background: #fbfcfd;
+}
+
+.sem-insignias-preview > i {
+    margin: 0;
+    font-size: 25px;
+}
+
+.sem-insignias-preview p {
+    margin: 0;
+    font-size: 11px;
+}
+
+.sem-insignias-preview small {
+    display: block;
+    margin-top: 2px;
+    font-size: 9px;
+}
+
+/* =====================================================
+   MODAL EXPANDIDO
+   ===================================================== */
+
+body.modal-insignias-aberto {
+    overflow: hidden;
+}
+
+.insignias-modal-overlay {
+    visibility: hidden;
+    opacity: 0;
+
+    position: fixed;
+    inset: 0;
+    z-index: 5000;
+
+    padding: 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        rgba(17, 31, 45, .58);
+
+    backdrop-filter: blur(5px);
+
+    transition:
+        opacity .2s ease,
+        visibility .2s ease;
+}
+
+.insignias-modal-overlay.aberto {
+    visibility: visible;
+    opacity: 1;
+}
+
+.insignias-modal {
+    width: min(1020px, 100%);
+    max-height: min(86vh, 820px);
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+
+    border: 1px solid #dce6ee;
+    border-radius: 20px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 24px 70px
+        rgba(10, 34, 54, .28);
+
+    transform:
+        translateY(16px)
+        scale(.985);
+
+    transition:
+        transform .22s ease;
+}
+
+.insignias-modal-overlay.aberto
+.insignias-modal {
+    transform:
+        translateY(0)
+        scale(1);
+}
+
+/* ------------------------------
+   Topo
+------------------------------ */
+
+.insignias-modal-topo {
+    padding: 20px 22px;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+
+    border-bottom: 1px solid var(--borda);
+
+    background:
+        linear-gradient(
+            135deg,
+            #f7fbff,
+            #ffffff
+        );
+}
+
+.insignias-modal-titulo-area {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.insignias-modal-icone {
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    background: var(--azul-claro);
+    color: var(--azul-foag);
+
+    font-size: 20px;
+}
+
+.insignias-modal-titulo-area > div:last-child > span {
+    color: var(--azul-foag);
+    font-size: 9px;
+    font-weight: 750;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+}
+
+.insignias-modal-titulo-area h2 {
+    margin: 2px 0 2px;
+
+    color: var(--texto);
+
+    font-size: 21px;
+    line-height: 1.2;
+}
+
+.insignias-modal-titulo-area p {
+    margin: 0;
+
+    color: var(--texto-suave);
+
+    font-size: 10px;
+    line-height: 1.45;
+}
+
+.insignias-modal-fechar {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 0;
+    border-radius: 10px;
+
+    background: #eef3f7;
+    color: #697989;
+
+    font-size: 15px;
+
+    cursor: pointer;
+
+    transition:
+        background .2s ease,
+        color .2s ease,
+        transform .2s ease;
+}
+
+.insignias-modal-fechar:hover {
+    background: #e2eaf1;
+    color: #263442;
+    transform: rotate(4deg);
+}
+
+/* ------------------------------
+   Resumo do modal
+------------------------------ */
+
+.insignias-modal-resumo {
+    padding: 13px 22px;
+
+    display: grid;
+    grid-template-columns:
+        145px
+        145px
+        minmax(240px, 1fr);
+    gap: 10px;
+
+    border-bottom: 1px solid var(--borda);
+
+    background: #fbfcfd;
+}
+
+.insignias-modal-stat {
+    min-height: 56px;
+    padding: 9px 11px;
+
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    border: 1px solid var(--borda);
+    border-radius: 11px;
+
+    background: #ffffff;
+}
+
+.stat-icone {
+    width: 31px;
+    height: 31px;
+    flex: 0 0 31px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    font-size: 11px;
+}
+
+.stat-conquistadas {
+    background: #e9faef;
+    color: #23a55a;
+}
+
+.stat-restantes {
+    background: #f1f3f5;
+    color: #7d8994;
+}
+
+.insignias-modal-stat small {
+    display: block;
+
+    color: var(--texto-suave);
+
+    font-size: 8px;
+}
+
+.insignias-modal-stat strong {
+    color: var(--texto);
+
+    font-size: 15px;
+}
+
+.insignias-modal-progresso {
+    min-width: 0;
+    min-height: 56px;
+    padding: 9px 12px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    border: 1px solid var(--borda);
+    border-radius: 11px;
+
+    background: #ffffff;
+}
+
+.insignias-modal-progresso > div:first-child {
+    margin-bottom: 7px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    color: var(--texto-suave);
+
+    font-size: 8px;
+}
+
+.insignias-modal-progresso > div:first-child strong {
+    color: var(--azul-escuro);
+
+    font-size: 10px;
+}
+
+.insignias-modal-progresso-barra {
+    height: 7px;
+
+    overflow: hidden;
+
+    border-radius: 999px;
+
+    background: #e7edf2;
+}
+
+.insignias-modal-progresso-barra span {
+    height: 100%;
+
+    display: block;
+
+    border-radius: inherit;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--azul-foag),
+            #72c3ff
+        );
+}
+
+/* ------------------------------
+   Conteúdo com scroll
+------------------------------ */
+
+.insignias-modal-conteudo {
+    padding: 19px 22px 24px;
+
+    overflow-y: auto;
+    overscroll-behavior: contain;
+
+    scrollbar-width: thin;
+}
+
+.insignias-modal-categoria + .insignias-modal-categoria {
+    margin-top: 24px;
+}
+
+.insignias-modal-categoria-topo {
+    margin-bottom: 11px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.insignias-modal-categoria-topo > div:first-child {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.categoria-modal-icone {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background: var(--azul-claro);
+    color: var(--azul-foag);
+
+    font-size: 12px;
+}
+
+.insignias-modal-categoria-topo h3 {
+    margin: 0;
+
+    color: var(--texto);
+
+    font-size: 13px;
+}
+
+.insignias-modal-categoria-topo p {
+    margin: 1px 0 0;
+
+    color: var(--texto-suave);
+
+    font-size: 8px;
+}
+
+.categoria-modal-contador {
+    padding: 4px 9px;
+
+    border-radius: 999px;
+
+    background: var(--azul-claro);
+    color: var(--azul-escuro);
+
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.insignias-modal-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(175px, 1fr)
+        );
+    gap: 10px;
+}
+
+/* ------------------------------
+   Card no modal
+------------------------------ */
+
+.insignia-modal-card {
+    min-width: 0;
+    min-height: 170px;
+
+    padding: 13px;
+
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    border: 1px solid var(--borda);
+    border-radius: 13px;
+
+    background: #ffffff;
+
+    text-align: center;
+
+    transition:
+        transform .2s ease,
+        border-color .2s ease,
+        box-shadow .2s ease;
+}
+
+.insignia-modal-card.conquistada:hover {
+    border-color: #b7dcf9;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 7px 18px
+        rgba(35, 78, 111, .08);
+}
+
+.insignia-modal-card-visual {
+    width: 66px;
+    height: 66px;
+
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 15px;
+
+    background: var(--azul-claro);
+
+    font-size: 29px;
+}
+
+.insignia-modal-card-visual img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: contain;
+
+    border-radius: 15px;
+}
+
+.insignia-modal-status {
+    width: 21px;
+    height: 21px;
+
+    position: absolute;
+    right: -5px;
+    bottom: -4px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 3px solid #ffffff;
+    border-radius: 50%;
+
+    font-size: 7px;
+}
+
+.insignia-modal-card.conquistada
+.insignia-modal-status {
+    background: #36c66f;
+    color: #ffffff;
+}
+
+.insignia-modal-card.bloqueada
+.insignia-modal-status {
+    background: #8b98a4;
+    color: #ffffff;
+}
+
+.insignia-modal-card-info {
+    width: 100%;
+
+    margin-top: 10px;
+}
+
+.insignia-modal-estado {
+    display: inline-block;
+
+    margin-bottom: 3px;
+
+    color: #2ca960;
+
+    font-size: 7px;
+    font-weight: 750;
+
+    text-transform: uppercase;
+    letter-spacing: .55px;
+}
+
+.insignia-modal-card-info h4 {
+    margin: 0;
+
+    color: var(--texto);
+
+    font-size: 10px;
+    line-height: 1.3;
+}
+
+.insignia-modal-card-info p {
+    margin: 5px 0 0;
+
+    color: var(--texto-suave);
+
+    font-size: 8px;
+    line-height: 1.4;
+}
+
+/* Bloqueadas */
+.insignia-modal-card.bloqueada {
+    background: #f8f9fa;
+}
+
+.insignia-modal-card.bloqueada
+.insignia-modal-card-visual {
+    background: #edf0f2;
+
+    filter: grayscale(1);
+
+    opacity: .58;
+}
+
+.insignia-modal-card.bloqueada
+.insignia-modal-estado {
+    color: #8b98a4;
+}
+
+.insignia-modal-card.bloqueada
+.insignia-modal-card-info h4 {
+    color: #75818c;
+}
+
+.insignia-modal-card.bloqueada
+.insignia-modal-card-info p {
+    color: #9aa5af;
+}
+
+.insignias-modal-vazio {
+    min-height: 260px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    color: var(--texto-suave);
+}
+
+.insignias-modal-vazio > i {
+    margin-bottom: 10px;
+
+    color: var(--azul-foag);
+
+    font-size: 38px;
+}
+
+.insignias-modal-vazio h3 {
+    color: var(--texto);
+
+    font-size: 14px;
+}
+
+.insignias-modal-vazio p {
+    margin-top: 4px;
+
+    font-size: 10px;
+}
+
+/* =====================================================
+   DARK MODE — MODAL
+   ===================================================== */
+
+body.dark-mode
+.btn-ver-todas-insignias {
+    border-color: #334155;
+    background: #0f172a;
+    color: #7bb7f0;
+}
+
+body.dark-mode
+.btn-ver-todas-insignias:hover {
+    border-color: #669ada;
+    background: #172033;
+}
+
+body.dark-mode
+.insignias-progresso-resumo,
+body.dark-mode
+.insignia-preview-item,
+body.dark-mode
+.insignia-preview-mais,
+body.dark-mode
+.sem-insignias-preview {
+    border-color: #334155;
+    background: #0f172a;
+}
+
+body.dark-mode
+.insignia-preview-item > span {
+    color: #e2e8f0;
+}
+
+body.dark-mode
+.insignias-progresso-barra {
+    background: #253246;
+}
+
+body.dark-mode
+.insignias-modal-overlay {
+    background: rgba(2, 8, 18, .74);
+}
+
+body.dark-mode
+.insignias-modal {
+    border-color: #334155;
+    background: #111827;
+}
+
+body.dark-mode
+.insignias-modal-topo {
+    border-bottom-color: #334155;
+    background:
+        linear-gradient(
+            135deg,
+            #111827,
+            #172033
+        );
+}
+
+body.dark-mode
+.insignias-modal-titulo-area h2,
+body.dark-mode
+.insignias-modal-categoria-topo h3,
+body.dark-mode
+.insignia-modal-card-info h4,
+body.dark-mode
+.insignias-modal-vazio h3 {
+    color: #e2e8f0;
+}
+
+body.dark-mode
+.insignias-modal-titulo-area p,
+body.dark-mode
+.insignias-modal-categoria-topo p,
+body.dark-mode
+.insignia-modal-card-info p {
+    color: #94a3b8;
+}
+
+body.dark-mode
+.insignias-modal-fechar {
+    background: #253247;
+    color: #cbd5e1;
+}
+
+body.dark-mode
+.insignias-modal-resumo {
+    border-bottom-color: #334155;
+    background: #0f172a;
+}
+
+body.dark-mode
+.insignias-modal-stat,
+body.dark-mode
+.insignias-modal-progresso,
+body.dark-mode
+.insignia-modal-card {
+    border-color: #334155;
+    background: #172033;
+}
+
+body.dark-mode
+.insignias-modal-stat strong {
+    color: #e2e8f0;
+}
+
+body.dark-mode
+.insignias-modal-progresso-barra {
+    background: #2c3a4d;
+}
+
+body.dark-mode
+.insignia-modal-status {
+    border-color: #172033;
+}
+
+body.dark-mode
+.insignia-modal-card.bloqueada {
+    background: #111827;
+}
+
+body.dark-mode
+.insignia-modal-card.bloqueada
+.insignia-modal-card-visual {
+    background: #253247;
+}
+
+body.dark-mode
+.insignia-modal-card.bloqueada
+.insignia-modal-card-info h4 {
+    color: #8492a3;
+}
+
+body.dark-mode
+.insignia-modal-card.bloqueada
+.insignia-modal-card-info p {
+    color: #657386;
+}
+
+/* =====================================================
+   RESPONSIVO
+   ===================================================== */
+
+@media (max-width: 800px) {
+    .insignias-preview {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+
+    .insignias-modal-resumo {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .insignias-modal-progresso {
+        grid-column: 1 / -1;
+    }
+
+    .insignias-modal-grid {
+        grid-template-columns:
+            repeat(
+                auto-fill,
+                minmax(150px, 1fr)
+            );
+    }
+}
+
+@media (max-width: 550px) {
+    .insignias-cabecalho {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .insignias-cabecalho-acoes {
+        width: 100%;
+        margin-left: 0;
+        justify-content: space-between;
+    }
+
+    .btn-ver-todas-insignias {
+        flex: 1;
+    }
+
+    .insignias-preview {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .insignias-modal-overlay {
+        padding: 0;
+        align-items: flex-end;
+    }
+
+    .insignias-modal {
+        width: 100%;
+        max-height: 92vh;
+        border-radius: 18px 18px 0 0;
+    }
+
+    .insignias-modal-topo {
+        padding: 16px;
+    }
+
+    .insignias-modal-icone {
+        width: 42px;
+        height: 42px;
+        flex-basis: 42px;
+    }
+
+    .insignias-modal-titulo-area h2 {
+        font-size: 17px;
+    }
+
+    .insignias-modal-titulo-area p {
+        display: none;
+    }
+
+    .insignias-modal-resumo {
+        padding: 11px 14px;
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .insignias-modal-conteudo {
+        padding: 15px 14px 22px;
+    }
+
+    .insignias-modal-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .insignia-modal-card {
+        min-height: 155px;
+        padding: 10px 8px;
+    }
+
+    .insignia-modal-card-visual {
+        width: 56px;
+        height: 56px;
+        font-size: 24px;
+    }
+}
+
+
+
+/* =====================================================
+   MODAL DE INSÍGNIAS — NORMAIS X ESPECIAIS
+   ===================================================== */
+
+.insignias-modal-grupo + .insignias-modal-grupo {
+    margin-top: 30px;
+    padding-top: 26px;
+    border-top: 1px solid var(--borda);
+}
+
+.insignias-modal-grupo-topo {
+    margin-bottom: 13px;
+    padding: 0 2px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.insignias-modal-grupo-titulo {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.grupo-insignia-icone {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    font-size: 15px;
+}
+
+.grupo-insignia-icone.normal {
+    background: var(--azul-claro);
+    color: var(--azul-foag);
+}
+
+.grupo-insignia-icone.especial {
+    background:
+        linear-gradient(
+            135deg,
+            #fff3b8,
+            #ffe07a
+        );
+
+    color: #b47a00;
+
+    box-shadow:
+        inset 0 0 0 1px
+        rgba(199, 139, 0, .12);
+}
+
+.grupo-insignia-sobretitulo {
+    display: block;
+
+    color: var(--azul-foag);
+
+    font-size: 7px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+    letter-spacing: .75px;
+}
+
+.grupo-insignia-sobretitulo.especial {
+    color: #bd8400;
+}
+
+.insignias-modal-grupo-titulo h3 {
+    margin: 1px 0 1px;
+
+    color: var(--texto);
+
+    font-size: 14px;
+}
+
+.insignias-modal-grupo-titulo p {
+    margin: 0;
+
+    color: var(--texto-suave);
+
+    font-size: 9px;
+    line-height: 1.4;
+}
+
+.grupo-insignia-contador {
+    min-width: 62px;
+    padding: 7px 10px;
+
+    flex: 0 0 auto;
+
+    border: 1px solid #cce7fa;
+    border-radius: 10px;
+
+    background: #f4fbff;
+
+    text-align: center;
+}
+
+.grupo-insignia-contador strong {
+    display: block;
+
+    color: var(--azul-escuro);
+
+    font-size: 13px;
+}
+
+.grupo-insignia-contador span {
+    display: block;
+
+    margin-top: 1px;
+
+    color: var(--texto-suave);
+
+    font-size: 7px;
+}
+
+.grupo-insignia-contador.especial {
+    border-color: #f1d98e;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fffaf0,
+            #fff3c7
+        );
+}
+
+.grupo-insignia-contador.especial strong {
+    color: #a97100;
+}
+
+/* ------------------------------
+   Cards especiais
+------------------------------ */
+
+.insignia-modal-card.especial {
+    border-color: #efd68d;
+
+    background:
+        linear-gradient(
+            180deg,
+            #fffdf7 0%,
+            #fff9e9 100%
+        );
+
+    overflow: hidden;
+}
+
+.insignia-modal-card.especial::before {
+    content: '';
+
+    width: 92px;
+    height: 92px;
+
+    position: absolute;
+    top: -48px;
+    right: -45px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255, 211, 79, .22),
+            rgba(255, 211, 79, 0)
+        );
+
+    pointer-events: none;
+}
+
+.insignia-modal-card.especial.conquistada:hover {
+    border-color: #e6bd43;
+
+    box-shadow:
+        0 8px 22px
+        rgba(173, 123, 0, .12);
+}
+
+.insignia-modal-card.especial
+.insignia-modal-card-visual {
+    margin-top: 13px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #fff7d7,
+            #fff0af
+        );
+
+    box-shadow:
+        inset 0 0 0 1px
+        rgba(202, 142, 0, .10);
+}
+
+.insignia-modal-card.especial.conquistada
+.insignia-modal-card-visual {
+    box-shadow:
+        inset 0 0 0 1px
+        rgba(202, 142, 0, .10),
+        0 5px 15px
+        rgba(209, 156, 0, .12);
+}
+
+.insignia-selo-especial {
+    min-height: 21px;
+    padding: 4px 8px;
+
+    position: absolute;
+    top: 8px;
+    left: 8px;
+
+    z-index: 3;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    border: 1px solid #f1d178;
+    border-radius: 999px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff9df,
+            #ffeaa4
+        );
+
+    color: #a77000;
+
+    font-size: 7px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+    letter-spacing: .45px;
+}
+
+.insignia-selo-especial i {
+    font-size: 6px;
+}
+
+.insignia-modal-card.especial
+.insignia-modal-estado {
+    color: #b27a00;
+}
+
+.insignia-modal-card.especial.bloqueada {
+    border-color: #ded6c0;
+
+    background: #faf9f6;
+}
+
+.insignia-modal-card.especial.bloqueada
+.insignia-selo-especial {
+    filter: grayscale(.65);
+    opacity: .65;
+}
+
+.insignias-grupo-vazio {
+    min-height: 80px;
+    padding: 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px dashed var(--borda);
+    border-radius: 12px;
+
+    background: #fbfcfd;
+
+    color: var(--texto-suave);
+
+    font-size: 10px;
+}
+
+.insignias-grupo-vazio.especial {
+    border-color: #ebdaa9;
+    background: #fffdf7;
+}
+
+/* ------------------------------
+   Dark mode
+------------------------------ */
+
+body.dark-mode
+.insignias-modal-grupo +
+.insignias-modal-grupo {
+    border-top-color: #334155;
+}
+
+body.dark-mode
+.insignias-modal-grupo-titulo h3 {
+    color: #e2e8f0;
+}
+
+body.dark-mode
+.insignias-modal-grupo-titulo p {
+    color: #94a3b8;
+}
+
+body.dark-mode
+.grupo-insignia-icone.especial {
+    background:
+        linear-gradient(
+            135deg,
+            #493b12,
+            #30270d
+        );
+
+    color: #f0cc55;
+}
+
+body.dark-mode
+.grupo-insignia-contador {
+    border-color: #334155;
+    background: #0f172a;
+}
+
+body.dark-mode
+.grupo-insignia-contador.especial {
+    border-color: #5a4d23;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2d2711,
+            #211d0d
+        );
+}
+
+body.dark-mode
+.grupo-insignia-contador.especial strong {
+    color: #f2d05b;
+}
+
+body.dark-mode
+.insignia-modal-card.especial {
+    border-color: #554a29;
+
+    background:
+        linear-gradient(
+            180deg,
+            #211e14,
+            #1c1a12
+        );
+}
+
+body.dark-mode
+.insignia-modal-card.especial
+.insignia-modal-card-visual {
+    background:
+        linear-gradient(
+            145deg,
+            #322a10,
+            #28220e
+        );
+}
+
+body.dark-mode
+.insignia-selo-especial {
+    border-color: #665621;
+    background: #322a10;
+    color: #f2ce55;
+}
+
+body.dark-mode
+.insignia-modal-card.especial
+.insignia-modal-estado {
+    color: #e6c34e;
+}
+
+body.dark-mode
+.insignia-modal-card.especial.bloqueada {
+    border-color: #3c3a31;
+    background: #171817;
+}
+
+body.dark-mode
+.insignias-grupo-vazio {
+    border-color: #334155;
+    background: #0f172a;
+}
+
+body.dark-mode
+.insignias-grupo-vazio.especial {
+    border-color: #554a29;
+    background: #211e14;
+}
+
+/* ------------------------------
+   Mobile
+------------------------------ */
+
+@media (max-width: 550px) {
+    .insignias-modal-grupo-topo {
+        align-items: flex-start;
+    }
+
+    .insignias-modal-grupo-titulo p {
+        max-width: 230px;
+    }
+
+    .grupo-insignia-contador {
+        min-width: 54px;
+        padding: 6px 8px;
+    }
+}
+
+
+
+/* =====================================================
+   INSÍGNIAS NORMAIS — FAMÍLIAS COM 3 NÍVEIS
+   ===================================================== */
+
+.insignias-familias-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.insignia-familia {
+    padding: 14px;
+
+    border: 1px solid var(--borda);
+    border-radius: 14px;
+
+    background: #fbfcfd;
+}
+
+.insignia-familia-topo {
+    margin-bottom: 11px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.insignia-familia-etiqueta {
+    display: block;
+
+    margin-bottom: 1px;
+
+    color: var(--azul-foag);
+
+    font-size: 7px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+    letter-spacing: .7px;
+}
+
+.insignia-familia-topo h4 {
+    margin: 0;
+
+    color: var(--texto);
+
+    font-size: 13px;
+}
+
+.insignia-familia-niveis {
+    padding: 4px 8px;
+
+    border-radius: 999px;
+
+    background: var(--azul-claro);
+    color: var(--azul-escuro);
+
+    font-size: 8px;
+    font-weight: 700;
+}
+
+.insignia-familia-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+/*
+ * Nos grupos normais a largura é controlada pela
+ * família: exatamente três níveis por linha.
+ */
+.insignia-familia-grid
+.insignia-modal-card {
+    min-width: 0;
+    min-height: 238px;
+}
+
+.insignia-modal-card-meta {
+    min-height: 22px;
+
+    margin-bottom: 4px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.insignia-nivel-chip {
+    padding: 3px 7px;
+
+    border-radius: 999px;
+
+    background: var(--azul-claro);
+    color: var(--azul-escuro);
+
+    font-size: 7px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+    letter-spacing: .4px;
+}
+
+/* ------------------------------
+   Requisito de desbloqueio
+------------------------------ */
+
+.insignia-requisito {
+    width: 100%;
+
+    margin-top: 9px;
+    padding: 8px 9px;
+
+    border: 1px solid #dcecf8;
+    border-radius: 9px;
+
+    background: #f6fbff;
+
+    text-align: left;
+}
+
+.insignia-requisito-titulo {
+    margin-bottom: 4px;
+
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    color: var(--azul-escuro);
+
+    font-size: 7px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+    letter-spacing: .45px;
+}
+
+.insignia-requisito-titulo i {
+    color: var(--azul-foag);
+
+    font-size: 7px;
+}
+
+.insignia-requisito p {
+    margin: 0 !important;
+
+    color: #536272 !important;
+
+    font-size: 8px !important;
+    line-height: 1.45 !important;
+
+    word-break: break-word;
+}
+
+.insignia-modal-card.conquistada
+.insignia-requisito {
+    border-color: #cdebd7;
+    background: #f5fff8;
+}
+
+.insignia-modal-card.conquistada
+.insignia-requisito-titulo {
+    color: #25884c;
+}
+
+.insignia-modal-card.conquistada
+.insignia-requisito-titulo i {
+    color: #30af61;
+}
+
+.insignia-modal-card.bloqueada
+.insignia-requisito {
+    border-color: #e2e6e9;
+    background: #f4f5f6;
+}
+
+.insignia-modal-card.bloqueada
+.insignia-requisito p {
+    color: #7f8b96 !important;
+}
+
+/*
+ * Descrição das especiais continua separada do requisito.
+ */
+.insignia-descricao-especial {
+    min-height: 28px;
+}
+
+/* ------------------------------
+   Nível ausente
+------------------------------ */
+
+.insignia-nivel-ausente {
+    min-height: 238px;
+    padding: 14px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px dashed #d6dde3;
+    border-radius: 13px;
+
+    background: #f8f9fa;
+
+    text-align: center;
+}
+
+.insignia-nivel-ausente > span {
+    margin-bottom: 12px;
+
+    color: #80909f;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+}
+
+.insignia-nivel-ausente > i {
+    color: #bac4cd;
+
+    font-size: 24px;
+}
+
+.insignia-nivel-ausente p {
+    max-width: 145px;
+
+    margin: 9px 0 0;
+
+    color: #96a1ab;
+
+    font-size: 8px;
+    line-height: 1.45;
+}
+
+/* =====================================================
+   ESPECIAIS — requisito também visível
+   ===================================================== */
+
+.insignia-modal-card.especial {
+    min-height: 220px;
+}
+
+.insignia-modal-card.especial
+.insignia-requisito {
+    border-color: #eadba8;
+
+    background:
+        rgba(255, 248, 220, .72);
+}
+
+.insignia-modal-card.especial
+.insignia-requisito-titulo {
+    color: #9c6e00;
+}
+
+.insignia-modal-card.especial
+.insignia-requisito-titulo i {
+    color: #c69200;
+}
+
+/* =====================================================
+   DARK MODE
+   ===================================================== */
+
+body.dark-mode
+.insignia-familia {
+    border-color: #334155;
+    background: #0f172a;
+}
+
+body.dark-mode
+.insignia-familia-topo h4 {
+    color: #e2e8f0;
+}
+
+body.dark-mode
+.insignia-nivel-chip {
+    background: #173251;
+    color: #7bb7f0;
+}
+
+body.dark-mode
+.insignia-requisito {
+    border-color: #31475e;
+    background: #111d2c;
+}
+
+body.dark-mode
+.insignia-requisito-titulo {
+    color: #8fc7f4;
+}
+
+body.dark-mode
+.insignia-requisito p {
+    color: #aebdcc !important;
+}
+
+body.dark-mode
+.insignia-modal-card.conquistada
+.insignia-requisito {
+    border-color: #28583a;
+    background: #102319;
+}
+
+body.dark-mode
+.insignia-modal-card.conquistada
+.insignia-requisito-titulo {
+    color: #70d38e;
+}
+
+body.dark-mode
+.insignia-modal-card.bloqueada
+.insignia-requisito {
+    border-color: #303946;
+    background: #151b24;
+}
+
+body.dark-mode
+.insignia-nivel-ausente {
+    border-color: #334155;
+    background: #111827;
+}
+
+body.dark-mode
+.insignia-modal-card.especial
+.insignia-requisito {
+    border-color: #554a29;
+    background: #211e14;
+}
+
+body.dark-mode
+.insignia-modal-card.especial
+.insignia-requisito-titulo {
+    color: #f0cd59;
+}
+
+/* =====================================================
+   RESPONSIVO
+   ===================================================== */
+
+@media (max-width: 760px) {
+    .insignia-familia-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .insignia-familia-grid
+    .insignia-modal-card,
+    .insignia-nivel-ausente {
+        min-height: auto;
+    }
+}
+
+
+
+/* =====================================================
+   INSÍGNIAS — VISUAL LIMPO E MAIOR
+   ===================================================== */
+
+/*
+   As famílias não são mais caixas.
+   Cada título apenas separa visualmente uma linha de 3 níveis.
+*/
+.insignias-familias-lista {
+    gap: 30px;
+}
+
+.insignia-familia {
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+}
+
+.insignia-familia-topo {
+    margin-bottom: 10px;
+    padding: 0 2px 7px;
+    border-bottom: 1px solid var(--borda);
+}
+
+.insignia-familia-topo h4 {
+    margin: 0;
+    color: var(--texto);
+    font-size: 14px;
+    font-weight: 750;
+}
+
+.insignia-familia-etiqueta,
+.insignia-familia-niveis {
+    display: none !important;
+}
+
+.insignia-familia-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px;
+}
+
+/*
+   Remove o "quadrinho" individual.
+*/
+.insignia-familia-grid .insignia-modal-card.normal {
+    min-height: 0 !important;
+    padding: 8px 4px 2px !important;
+
+    border: 0 !important;
+    border-radius: 0 !important;
+
+    background: transparent !important;
+    box-shadow: none !important;
+
+    overflow: visible;
+}
+
+.insignia-familia-grid
+.insignia-modal-card.normal:hover {
+    transform: translateY(-2px);
+    box-shadow: none !important;
+}
+
+/*
+   Insígnias maiores.
+*/
+.insignia-familia-grid
+.insignia-modal-card.normal
+.insignia-modal-card-visual {
+    width: 132px;
+    height: 132px;
+
+    margin: 0 auto;
+
+    border-radius: 0;
+
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.insignia-familia-grid
+.insignia-modal-card.normal
+.insignia-modal-card-visual img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    border-radius: 0;
+}
+
+.insignia-familia-grid
+.insignia-modal-card.normal
+.insignia-modal-status {
+    right: 2px;
+    bottom: 4px;
+
+    width: 25px;
+    height: 25px;
+
+    border-width: 3px;
+
+    font-size: 8px;
+}
+
+.insignia-familia-grid
+.insignia-modal-card.normal
+.insignia-modal-card-info {
+    margin-top: 7px;
+}
+
+.insignia-modal-card-meta {
+    min-height: auto;
+    margin-bottom: 4px;
+}
+
+.insignia-nivel-chip {
+    padding: 4px 9px;
+
+    font-size: 8px;
+}
+
+.insignia-modal-estado {
+    font-size: 7px;
+}
+
+/*
+   Texto simples, sem números, tempo ou meta exata.
+*/
+.insignia-texto-basico {
+    max-width: 190px;
+
+    margin: 5px auto 0 !important;
+
+    color: var(--texto-suave) !important;
+
+    font-size: 9px !important;
+    line-height: 1.45 !important;
+
+    text-align: center;
+}
+
+/*
+   Requisito detalhado antigo não aparece mais.
+*/
+.insignia-requisito,
+.insignia-requisito-titulo {
+    display: none !important;
+}
+
+/*
+   Caso falte algum nível, mantém o espaço da linha,
+   mas sem aparência de card.
+*/
+.insignia-nivel-ausente {
+    min-height: 182px !important;
+    padding: 10px !important;
+
+    border: 0 !important;
+    border-radius: 0 !important;
+
+    background: transparent !important;
+}
+
+/* =====================================================
+   ESPECIAIS — ÚNICA SEÇÃO SEPARADA
+   ===================================================== */
+
+.grupo-especial {
+    margin-top: 34px !important;
+    padding-top: 28px !important;
+    border-top: 2px solid #ead690 !important;
+}
+
+.especiais-grid {
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr)) !important;
+
+    gap: 18px !important;
+}
+
+.especiais-grid
+.insignia-modal-card.especial {
+    min-height: 0 !important;
+    padding: 14px 8px 10px !important;
+
+    border: 0 !important;
+    border-radius: 0 !important;
+
+    background: transparent !important;
+    box-shadow: none !important;
+
+    overflow: visible;
+}
+
+.especiais-grid
+.insignia-modal-card.especial::before {
+    display: none;
+}
+
+.especiais-grid
+.insignia-modal-card.especial:hover {
+    transform: translateY(-2px);
+    box-shadow: none !important;
+}
+
+.especiais-grid
+.insignia-modal-card.especial
+.insignia-modal-card-visual {
+    width: 145px;
+    height: 145px;
+
+    margin: 12px auto 0;
+
+    border-radius: 0;
+
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.especiais-grid
+.insignia-modal-card.especial
+.insignia-modal-card-visual img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    border-radius: 0;
+}
+
+/*
+   Nas especiais não mostra "como conseguir".
+*/
+.especiais-grid
+.insignia-modal-card.especial
+.insignia-requisito {
+    display: none !important;
+}
+
+.especiais-grid
+.insignia-modal-card.especial
+.insignia-modal-card-info h4 {
+    margin-top: 4px;
+    font-size: 11px;
+}
+
+.insignia-descricao-especial {
+    max-width: 200px;
+    margin: 5px auto 0 !important;
+
+    font-size: 8px !important;
+    line-height: 1.4 !important;
+}
+
+/* =====================================================
+   DARK MODE
+   ===================================================== */
+
+body.dark-mode
+.insignia-familia {
+    background: transparent !important;
+    border: 0 !important;
+}
+
+body.dark-mode
+.insignia-familia-topo {
+    border-bottom-color: #334155;
+}
+
+body.dark-mode
+.insignia-familia-grid
+.insignia-modal-card.normal,
+body.dark-mode
+.especiais-grid
+.insignia-modal-card.especial {
+    background: transparent !important;
+    border: 0 !important;
+}
+
+body.dark-mode
+.grupo-especial {
+    border-top-color: #5a4d23 !important;
+}
+
+/* =====================================================
+   RESPONSIVO
+   ===================================================== */
+
+@media (max-width: 760px) {
+    .insignia-familia-grid,
+    .especiais-grid {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr)) !important;
+
+        gap: 10px !important;
+    }
+
+    .insignia-familia-grid
+    .insignia-modal-card.normal
+    .insignia-modal-card-visual {
+        width: 92px;
+        height: 92px;
+    }
+
+    .especiais-grid
+    .insignia-modal-card.especial
+    .insignia-modal-card-visual {
+        width: 98px;
+        height: 98px;
+    }
+
+    .insignia-texto-basico {
+        font-size: 8px !important;
+    }
+}
+
+@media (max-width: 500px) {
+    .insignia-familia-grid,
+    .especiais-grid {
+        gap: 6px !important;
+    }
+
+    .insignia-familia-grid
+    .insignia-modal-card.normal
+    .insignia-modal-card-visual {
+        width: 78px;
+        height: 78px;
+    }
+
+    .especiais-grid
+    .insignia-modal-card.especial
+    .insignia-modal-card-visual {
+        width: 82px;
+        height: 82px;
+    }
+
+    .insignia-nivel-chip {
+        padding: 3px 6px;
+        font-size: 7px;
+    }
+
+    .insignia-modal-estado {
+        display: none;
+    }
+
+    .insignia-texto-basico {
+        max-width: 105px;
+        font-size: 7px !important;
+    }
+}
+
+
+
+/* =====================================================
+   INSÍGNIAS — ESTILO POKÉDEX
+   ===================================================== */
+
+/*
+   Só existe uma separação visual importante:
+   Normais -> Especiais.
+*/
+.grupo-normal > .insignias-modal-grupo-topo {
+    display: none !important;
+}
+
+.insignia-familia-topo {
+    display: none !important;
+}
+
+.insignias-familias-lista {
+    gap: 8px !important;
+}
+
+.insignia-familia {
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+}
+
+.insignia-familia-grid {
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr)) !important;
+
+    gap: 18px !important;
+}
+
+/* ------------------------------
+   Sem cards/quadrinhos
+------------------------------ */
+
+.insignia-familia-grid
+.insignia-modal-card.normal,
+.especiais-grid
+.insignia-modal-card.especial {
+    min-height: 0 !important;
+    padding: 8px 4px !important;
+
+    border: 0 !important;
+    border-radius: 0 !important;
+
+    background: transparent !important;
+    box-shadow: none !important;
+
+    overflow: visible !important;
+}
+
+.insignia-familia-grid
+.insignia-modal-card.normal:hover,
+.especiais-grid
+.insignia-modal-card.especial:hover {
+    transform: translateY(-2px);
+    box-shadow: none !important;
+}
+
+/* ------------------------------
+   Tamanho das insígnias
+------------------------------ */
+
+.insignia-familia-grid
+.insignia-modal-card.normal
+.insignia-modal-card-visual {
+    width: 148px !important;
+    height: 148px !important;
+
+    margin: 0 auto !important;
+
+    border-radius: 50% !important;
+
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.especiais-grid
+.insignia-modal-card.especial
+.insignia-modal-card-visual {
+    width: 158px !important;
+    height: 158px !important;
+
+    margin: 0 auto !important;
+
+    border-radius: 50% !important;
+
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.insignia-modal-card-visual img {
+    width: 100% !important;
+    height: 100% !important;
+
+    object-fit: contain !important;
+
+    border-radius: 0 !important;
+}
+
+/* =====================================================
+   BLOQUEADAS — NÃO REVELAM A ARTE
+   ===================================================== */
+
+.insignia-bloqueada-placeholder {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle at 42% 35%,
+            #c9cdd2 0%,
+            #aeb4bb 42%,
+            #9299a1 100%
+        );
+
+    box-shadow:
+        inset 0 0 0 7px
+        rgba(255, 255, 255, .20),
+        inset 0 -12px 20px
+        rgba(55, 63, 72, .12);
+
+    color: #767e87;
+}
+
+.insignia-bloqueada-placeholder i {
+    font-size: 30px;
+
+    opacity: .55;
+}
+
+/*
+   Nenhuma imagem real de uma insígnia bloqueada
+   é exibida. O usuário vê somente o placeholder.
+*/
+.insignia-modal-card.bloqueada
+.insignia-modal-card-visual {
+    filter: none !important;
+    opacity: 1 !important;
+    background: transparent !important;
+}
+
+/* Check das conquistadas */
+.insignia-modal-status {
+    width: 25px !important;
+    height: 25px !important;
+
+    right: 1px !important;
+    bottom: 5px !important;
+
+    border-width: 3px !important;
+
+    background: #35c76e !important;
+    color: #ffffff !important;
+
+    font-size: 8px !important;
+}
+
+/* =====================================================
+   NORMAIS
+   ===================================================== */
+
+.insignia-modal-card.normal
+.insignia-modal-card-info {
+    margin-top: 7px !important;
+
+    text-align: center;
+}
+
+.insignia-modal-card.normal
+.insignia-nivel-chip {
+    display: inline-flex;
+
+    padding: 4px 9px;
+
+    border-radius: 999px;
+
+    background: #edf3f7;
+    color: #6b7884;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+    letter-spacing: .35px;
+}
+
+/*
+   Texto intencionalmente genérico.
+   Não mostra minutos, dias, quantidades ou metas exatas.
+*/
+.insignia-texto-basico {
+    max-width: 180px;
+
+    margin: 6px auto 0 !important;
+
+    color: var(--texto-suave) !important;
+
+    font-size: 9px !important;
+    line-height: 1.4 !important;
+
+    text-align: center;
+}
+
+/*
+   Se estiver bloqueada, o texto continua genérico,
+   sem revelar aparência ou requisito exato.
+*/
+.insignia-modal-card.normal.bloqueada
+.insignia-texto-basico {
+    color: #8e979f !important;
+}
+
+/* Esconde elementos antigos */
+.insignia-modal-estado,
+.insignia-modal-card-meta,
+.insignia-requisito,
+.insignia-requisito-titulo {
+    display: none !important;
+}
+
+/* =====================================================
+   ESPECIAIS
+   ===================================================== */
+
+.grupo-especial {
+    margin-top: 35px !important;
+    padding-top: 28px !important;
+
+    border-top:
+        2px solid
+        #ead690 !important;
+}
+
+.especiais-grid {
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr)) !important;
+
+    gap: 18px !important;
+}
+
+/*
+   Remove decoração extra dos cards especiais.
+*/
+.insignia-modal-card.especial::before,
+.insignia-selo-especial,
+.insignia-descricao-especial,
+.insignia-modal-card.especial
+.insignia-requisito {
+    display: none !important;
+}
+
+.insignia-modal-card.especial
+.insignia-modal-card-info {
+    margin-top: 8px !important;
+
+    text-align: center;
+}
+
+.nome-especial-visivel {
+    margin: 0 !important;
+
+    color: var(--texto) !important;
+
+    font-size: 11px !important;
+    font-weight: 750 !important;
+}
+
+/*
+   Nome da especial bloqueada:
+   o texto existe, mas fica escondido sob uma faixa,
+   como um registro secreto da Pokédex.
+*/
+.nome-especial-bloqueado {
+    width: 126px;
+    height: 18px;
+
+    margin: 0 auto !important;
+
+    position: relative;
+
+    overflow: hidden;
+
+    border-radius: 4px;
+
+    background: #7e858d;
+
+    user-select: none;
+}
+
+.nome-especial-bloqueado span {
+    color: transparent !important;
+
+    font-size: 10px;
+
+    text-shadow: none !important;
+
+    opacity: 0;
+}
+
+.nome-especial-bloqueado::after {
+    content: '';
+
+    position: absolute;
+    inset: 4px 8px;
+
+    border-radius: 2px;
+
+    background:
+        repeating-linear-gradient(
+            -10deg,
+            #626970 0 8px,
+            #747b82 8px 14px
+        );
+}
+
+/* =====================================================
+   DARK MODE
+   ===================================================== */
+
+body.dark-mode
+.insignia-familia,
+body.dark-mode
+.insignia-modal-card.normal,
+body.dark-mode
+.insignia-modal-card.especial {
+    border: 0 !important;
+    background: transparent !important;
+}
+
+body.dark-mode
+.insignia-bloqueada-placeholder {
+    background:
+        radial-gradient(
+            circle at 42% 35%,
+            #59616c 0%,
+            #424a55 45%,
+            #303741 100%
+        );
+
+    color: #8a95a1;
+
+    box-shadow:
+        inset 0 0 0 7px
+        rgba(255, 255, 255, .04),
+        inset 0 -12px 20px
+        rgba(0, 0, 0, .18);
+}
+
+body.dark-mode
+.insignia-modal-card.normal
+.insignia-nivel-chip {
+    background: #253143;
+    color: #a8b5c3;
+}
+
+body.dark-mode
+.nome-especial-visivel {
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode
+.nome-especial-bloqueado {
+    background: #4a515a;
+}
+
+body.dark-mode
+.nome-especial-bloqueado::after {
+    background:
+        repeating-linear-gradient(
+            -10deg,
+            #343b43 0 8px,
+            #454d56 8px 14px
+        );
+}
+
+/* =====================================================
+   RESPONSIVO
+   ===================================================== */
+
+@media (max-width: 760px) {
+    .insignia-familia-grid,
+    .especiais-grid {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr)) !important;
+
+        gap: 8px !important;
+    }
+
+    .insignia-familia-grid
+    .insignia-modal-card.normal
+    .insignia-modal-card-visual {
+        width: 100px !important;
+        height: 100px !important;
+    }
+
+    .especiais-grid
+    .insignia-modal-card.especial
+    .insignia-modal-card-visual {
+        width: 106px !important;
+        height: 106px !important;
+    }
+}
+
+@media (max-width: 500px) {
+    .insignia-familia-grid,
+    .especiais-grid {
+        gap: 4px !important;
+    }
+
+    .insignia-familia-grid
+    .insignia-modal-card.normal
+    .insignia-modal-card-visual {
+        width: 82px !important;
+        height: 82px !important;
+    }
+
+    .especiais-grid
+    .insignia-modal-card.especial
+    .insignia-modal-card-visual {
+        width: 88px !important;
+        height: 88px !important;
+    }
+
+    .insignia-bloqueada-placeholder i {
+        font-size: 21px;
+    }
+
+    .insignia-texto-basico {
+        max-width: 105px;
+
+        font-size: 7px !important;
+    }
+
+    .nome-especial-bloqueado {
+        width: 86px;
+        height: 15px;
+    }
+
+    .nome-especial-visivel {
+        font-size: 9px !important;
+    }
+}
+
+
+
+/* =====================================================
+   BLOQUEADAS — SILHUETA REAL DA INSÍGNIA
+   ===================================================== */
+
+/*
+   Usa o canal alfa do PNG como máscara.
+   Resultado: mantém exatamente o contorno da insígnia,
+   mas todo o conteúdo vira uma única cor cinza opaca.
+*/
+.insignia-bloqueada-silhueta {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    background: #9ca3aa;
+
+    -webkit-mask-image: var(--insignia-silhueta);
+    mask-image: var(--insignia-silhueta);
+
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+
+    -webkit-mask-position: center;
+    mask-position: center;
+
+    -webkit-mask-size: contain;
+    mask-size: contain;
+
+    opacity: 1;
+
+    filter: none !important;
+
+    pointer-events: none;
+    user-select: none;
+}
+
+/*
+   Fallback apenas se a insígnia não tiver arquivo de imagem.
+*/
+.insignia-bloqueada-silhueta.sem-imagem {
+    width: 76%;
+    height: 76%;
+
+    margin: auto;
+
+    border-radius: 46% 46% 42% 42%;
+
+    background: #9ca3aa;
+
+    -webkit-mask-image: none;
+    mask-image: none;
+}
+
+/*
+   Remove totalmente o antigo círculo genérico.
+*/
+.insignia-bloqueada-placeholder {
+    display: none !important;
+}
+
+/*
+   O container da bloqueada fica transparente:
+   a única coisa visível é a silhueta do PNG.
+*/
+.insignia-modal-card.bloqueada
+.insignia-modal-card-visual {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: 0 !important;
+
+    filter: none !important;
+    opacity: 1 !important;
+}
+
+/*
+   Nenhum status/cadeado é mostrado sobre a silhueta.
+*/
+.insignia-modal-card.bloqueada
+.insignia-modal-status {
+    display: none !important;
+}
+
+/* Cor um pouco mais escura no dark mode */
+body.dark-mode
+.insignia-bloqueada-silhueta {
+    background: #626b75;
+}
+
+body.dark-mode
+.insignia-bloqueada-silhueta.sem-imagem {
+    background: #626b75;
+}
