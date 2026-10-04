@@ -1981,6 +1981,86 @@ function renderAvatarRankingHtml($jogador, $classeExtra = '')
 ======================================= -->
 
 <div
+    id="share-ranking-modal"
+    class="modal share-modal"
+>
+    <div class="modal-content share-modal-content">
+        <button type="button" class="share-modal-close" id="share-modal-close" aria-label="Fechar modal de compartilhamento">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <div class="share-modal-topo">
+            <span class="share-modal-kicker">Compartilhar posição</span>
+            <h3>Seu destaque no Ranking FOAG</h3>
+            <p>Visualize seu card e compartilhe sua conquista.</p>
+        </div>
+
+        <div class="share-card-preview share-card--estrelas" id="share-card-preview">
+            <div class="share-card-fundo-decor"></div>
+
+            <div class="share-card-brand-row">
+                <div class="share-card-brand">
+                    <span class="share-card-logo">FOAG</span>
+                    <span class="share-card-brand-sub">RANKING</span>
+                </div>
+
+                <div class="share-card-posicao-badge" id="share-card-posicao">#1</div>
+            </div>
+
+            <div class="share-card-categoria-row">
+                <span class="share-card-label">Categoria</span>
+                <strong id="share-card-categoria">Estrelas • Nacional</strong>
+            </div>
+
+            <div class="share-card-corpo">
+                <div class="share-card-avatar" id="share-card-avatar"></div>
+
+                <div class="share-card-info">
+                    <strong id="share-card-nome">Seu nome</strong>
+                    <span id="share-card-escola">Sua escola</span>
+                </div>
+            </div>
+
+            <div class="share-card-valor-box">
+                <span id="share-card-valor-label">Suas estrelas</span>
+                <strong id="share-card-valor">0</strong>
+            </div>
+
+            <div class="share-card-rodape">
+                <span>Estude • evolua • suba no ranking</span>
+                <i class="fa-solid fa-trophy"></i>
+            </div>
+        </div>
+
+        <div class="share-modal-texto">
+            <label for="share-texto-preview">Texto para compartilhar</label>
+            <textarea id="share-texto-preview" readonly></textarea>
+        </div>
+
+        <div class="share-modal-actions">
+            <button type="button" class="btn-share-copy" id="share-copy-btn">
+                <i class="fa-solid fa-copy"></i>
+                Copiar texto
+            </button>
+
+            <button type="button" class="btn-share-native" id="share-native-btn">
+                <i class="fa-solid fa-paper-plane"></i>
+                Compartilhar imagem
+            </button>
+
+            <button type="button" class="btn-share-download" id="share-download-btn">
+                <i class="fa-solid fa-download"></i>
+                Baixar imagem
+            </button>
+
+            <button type="button" class="btn-share-cancel" id="share-cancel-btn">
+                Fechar
+            </button>
+        </div>
+    </div>
+</div>
+
+<div
     id="logout-modal"
     class="modal"
 >
@@ -2008,6 +2088,8 @@ function renderAvatarRankingHtml($jogador, $classeExtra = '')
     </div>
 
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
 <script>
 
@@ -2052,28 +2134,48 @@ document.addEventListener('DOMContentLoaded', function () {
     const headerResumoTexto = document.getElementById('headerResumoTexto');
     const headerResumoIcone = document.getElementById('headerResumoIcone');
     const rankingTituloPill = document.getElementById('rankingTituloPill');
+    const shareModal = document.getElementById('share-ranking-modal');
+    const shareModalClose = document.getElementById('share-modal-close');
+    const shareCancelBtn = document.getElementById('share-cancel-btn');
+    const shareCopyBtn = document.getElementById('share-copy-btn');
+    const shareNativeBtn = document.getElementById('share-native-btn');
+    const shareDownloadBtn = document.getElementById('share-download-btn');
+    const shareTextoPreview = document.getElementById('share-texto-preview');
+    const shareCardPreview = document.getElementById('share-card-preview');
+    const shareCardCategoria = document.getElementById('share-card-categoria');
+    const shareCardPosicao = document.getElementById('share-card-posicao');
+    const shareCardAvatar = document.getElementById('share-card-avatar');
+    const shareCardNome = document.getElementById('share-card-nome');
+    const shareCardEscola = document.getElementById('share-card-escola');
+    const shareCardValorLabel = document.getElementById('share-card-valor-label');
+    const shareCardValor = document.getElementById('share-card-valor');
 
     const resumoCategoria = {
         estrelas: {
             label: 'Suas estrelas',
             icon: 'fa-star',
-            texto: 'Total acumulado nesta categoria'
+            texto: 'Total acumulado nesta categoria',
+            shareClass: 'share-card--estrelas'
         },
         pomodoro: {
             label: 'Seu tempo de foco',
             icon: 'fa-clock',
-            texto: 'Tempo acumulado em sessões focadas'
+            texto: 'Tempo acumulado em sessões focadas',
+            shareClass: 'share-card--pomodoro'
         },
         notas: {
             label: 'Sua média',
             icon: 'fa-book-open',
-            texto: 'Desempenho escolar cadastrado'
+            texto: 'Desempenho escolar cadastrado',
+            shareClass: 'share-card--notas'
         }
     };
 
     let nivelAtual = 'nacional';
     let escolaScopeAtual = 'escola';
     let categoriaAtual = 'estrelas';
+    let currentShareText = '';
+    let currentShareImageName = 'ranking-foag.png';
 
     function nivelEfetivo() {
         return nivelAtual === 'escola'
@@ -2109,6 +2211,222 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         return null;
+    }
+
+    function normalizarAjusteMolduraRankingJs(ajuste) {
+        const padrao = {
+            moldura_escala: 1.28,
+            moldura_x: 0,
+            moldura_y: 0,
+            foto_escala: 1,
+            foto_x: 0,
+            foto_y: 0
+        };
+
+        if (!ajuste || typeof ajuste !== 'object') {
+            return padrao;
+        }
+
+        Object.keys(padrao).forEach(chave => {
+            const valor = Number(ajuste[chave]);
+            if (!Number.isNaN(valor)) {
+                padrao[chave] = valor;
+            }
+        });
+
+        return padrao;
+    }
+
+    function deslocamentoRankingPercentualJs(valorPx) {
+        const numero = Number(valorPx);
+        if (Number.isNaN(numero)) {
+            return 0;
+        }
+        return (numero / 132) * 100;
+    }
+
+    function renderAvatarCompartilhar(jogador) {
+        if (!jogador) {
+            return '<div class="avatar avatar-foto share-avatar"><div class="avatar-stage"><div class="avatar-foto-recorte"><span class="avatar-fallback" style="display:flex"><i class="fa-solid fa-user"></i></span></div></div></div>';
+        }
+
+        const moldura = jogador.moldura && typeof jogador.moldura === 'object'
+            ? jogador.moldura
+            : null;
+
+        const ajuste = normalizarAjusteMolduraRankingJs(moldura?.ajuste_perfil || {});
+        const temMoldura = !!(moldura && moldura.imagem);
+        const style = `
+            --rank-moldura-escala: ${ajuste.moldura_escala};
+            --rank-moldura-x: ${deslocamentoRankingPercentualJs(ajuste.moldura_x)}%;
+            --rank-moldura-y: ${deslocamentoRankingPercentualJs(ajuste.moldura_y)}%;
+            --rank-foto-escala: ${ajuste.foto_escala};
+            --rank-foto-x: ${deslocamentoRankingPercentualJs(ajuste.foto_x)}%;
+            --rank-foto-y: ${deslocamentoRankingPercentualJs(ajuste.foto_y)}%;
+        `;
+
+        const foto = jogador.foto || '';
+        const nome = jogador.nome || 'Estudante';
+
+        return `
+            <div class="avatar avatar-foto ${temMoldura ? 'com-moldura' : ''} share-avatar">
+                <div class="avatar-stage ${temMoldura ? 'tem-moldura' : ''}" style="${style}">
+                    <div class="avatar-foto-recorte">
+                        <img class="avatar-foto-img" src="${foto}" alt="Foto de perfil de ${nome}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <span class="avatar-fallback" aria-hidden="true">
+                            <i class="fa-solid fa-user"></i>
+                        </span>
+                    </div>
+                    ${temMoldura ? `<img class="avatar-moldura-img" src="${moldura.imagem}" alt="" aria-hidden="true">` : ''}
+                </div>
+            </div>
+        `;
+    }
+
+    function montarTextoCompartilhamento(categoria, nivel, atual) {
+        if (!atual || !atual.jogador) {
+            return '';
+        }
+
+        const nomeCategoria = nomesCategoriaCurto[categoria] || categoria;
+        const nomeNivel = nomesNivelCurto[nivel] || nivel;
+        return `🏆 Estou em ${atual.posicao}º lugar no Ranking FOAG — ${nomeCategoria} / ${nomeNivel}! Minha marca atual é ${atual.jogador.valor}.`;
+    }
+
+    function abrirModalCompartilhar(categoria, nivel, atual) {
+        if (!shareModal || !atual || !atual.jogador) return;
+
+        const configResumo = resumoCategoria[categoria] || resumoCategoria.estrelas;
+        const nomeCategoria = nomesCategoriaCurto[categoria] || categoria;
+        const nomeNivel = nomesNivelCurto[nivel] || nivel;
+        const jogador = atual.jogador;
+        currentShareText = montarTextoCompartilhamento(categoria, nivel, atual);
+        currentShareImageName = `ranking-foag-${categoria}-${nivel}.png`;
+
+        if (shareCardPreview) {
+            shareCardPreview.classList.remove('share-card--estrelas', 'share-card--pomodoro', 'share-card--notas');
+            shareCardPreview.classList.add(configResumo.shareClass || 'share-card--estrelas');
+        }
+
+        if (shareCardCategoria) {
+            shareCardCategoria.textContent = `${nomeCategoria} • ${nomeNivel}`;
+        }
+
+        if (shareCardPosicao) {
+            shareCardPosicao.textContent = `#${atual.posicao}`;
+        }
+
+        if (shareCardAvatar) {
+            shareCardAvatar.innerHTML = renderAvatarCompartilhar(jogador);
+        }
+
+        if (shareCardNome) {
+            shareCardNome.textContent = jogador.nome || 'Estudante';
+        }
+
+        if (shareCardEscola) {
+            const detalhes = [jogador.escola || '', jogador.serie || ''].filter(Boolean).join(' • ');
+            shareCardEscola.textContent = detalhes || 'Ranking FOAG';
+        }
+
+        if (shareCardValorLabel) {
+            shareCardValorLabel.textContent = configResumo.label;
+        }
+
+        if (shareCardValor) {
+            shareCardValor.innerHTML = `<i class="fa-solid ${configResumo.icon}"></i><span>${jogador.valor || '—'}</span>`;
+        }
+
+        if (shareTextoPreview) {
+            shareTextoPreview.value = currentShareText;
+        }
+
+        if (shareNativeBtn) {
+            shareNativeBtn.style.display = 'inline-flex';
+            shareNativeBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Compartilhar imagem';
+        }
+
+        if (shareDownloadBtn) {
+            shareDownloadBtn.style.display = 'inline-flex';
+        }
+
+        shareModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    async function gerarImagemCompartilhamento() {
+        if (!shareCardPreview || typeof html2canvas === 'undefined') {
+            throw new Error('html2canvas não disponível');
+        }
+
+        if (document.fonts?.ready) {
+            await document.fonts.ready;
+        }
+
+        const clone = shareCardPreview.cloneNode(true);
+        clone.removeAttribute('id');
+        clone.classList.add('share-card-render-target');
+        clone.style.position = 'fixed';
+        clone.style.left = '-9999px';
+        clone.style.top = '0';
+        clone.style.width = '432px';
+        clone.style.height = '432px';
+        clone.style.maxWidth = 'none';
+        clone.style.margin = '0';
+        clone.style.transform = 'none';
+
+        document.body.appendChild(clone);
+
+        const imagens = Array.from(clone.querySelectorAll('img'));
+        await Promise.all(
+            imagens.map(img => {
+                if (img.complete) return Promise.resolve();
+                return new Promise(resolve => {
+                    img.addEventListener('load', resolve, { once: true });
+                    img.addEventListener('error', resolve, { once: true });
+                });
+            })
+        );
+
+        try {
+            const canvas = await html2canvas(clone, {
+                backgroundColor: null,
+                scale: 2.5,
+                width: 432,
+                height: 432,
+                useCORS: true,
+                logging: false
+            });
+
+            return await new Promise((resolve, reject) => {
+                canvas.toBlob(blob => {
+                    if (!blob) {
+                        reject(new Error('Não foi possível gerar a imagem.'));
+                        return;
+                    }
+                    resolve(blob);
+                }, 'image/png');
+            });
+        } finally {
+            clone.remove();
+        }
+    }
+
+    function baixarBlobImagem(blob, nomeArquivo) {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = nomeArquivo || 'ranking-foag.png';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    function fecharModalCompartilhar() {
+        if (!shareModal) return;
+        shareModal.style.display = 'none';
+        document.body.style.overflow = '';
     }
 
     function formatarDiferenca(categoria, diferenca) {
@@ -2275,7 +2593,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.querySelectorAll('[data-share-ranking]').forEach(botao => {
-        botao.addEventListener('click', async function () {
+        botao.addEventListener('click', function () {
             const categoria = botao.dataset.categoria || categoriaAtual;
             const nivel = nivelEfetivo();
             const jogadores = jogadoresDa(categoria, nivel);
@@ -2283,21 +2601,90 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (!atual) return;
 
-            const texto = `🏆 Estou em ${atual.posicao}º lugar no Ranking FOAG — ${nomesCategoriaCurto[categoria]} / ${nomesNivelCurto[nivel]}!`;
-
-            try {
-                if (navigator.share) {
-                    await navigator.share({ title: 'Ranking FOAG', text: texto });
-                } else if (navigator.clipboard) {
-                    await navigator.clipboard.writeText(texto);
-                    const original = botao.innerHTML;
-                    botao.innerHTML = '<i class="fa-solid fa-check"></i> Copiado!';
-                    setTimeout(() => { botao.innerHTML = original; }, 1800);
-                }
-            } catch (erro) {
-                console.log('Compartilhamento cancelado.', erro);
-            }
+            abrirModalCompartilhar(categoria, nivel, atual);
         });
+    });
+
+    shareModalClose?.addEventListener('click', fecharModalCompartilhar);
+    shareCancelBtn?.addEventListener('click', fecharModalCompartilhar);
+
+    shareModal?.addEventListener('click', function (event) {
+        if (event.target === shareModal) {
+            fecharModalCompartilhar();
+        }
+    });
+
+    shareCopyBtn?.addEventListener('click', async function () {
+        if (!currentShareText) return;
+
+        try {
+            if (navigator.clipboard) {
+                await navigator.clipboard.writeText(currentShareText);
+            } else if (shareTextoPreview) {
+                shareTextoPreview.focus();
+                shareTextoPreview.select();
+                document.execCommand('copy');
+            }
+
+            const original = shareCopyBtn.innerHTML;
+            shareCopyBtn.innerHTML = '<i class="fa-solid fa-check"></i> Copiado!';
+            setTimeout(() => { shareCopyBtn.innerHTML = original; }, 1800);
+        } catch (erro) {
+            console.log('Não foi possível copiar o texto.', erro);
+        }
+    });
+
+    shareDownloadBtn?.addEventListener('click', async function () {
+        if (!shareCardPreview) return;
+
+        const original = shareDownloadBtn.innerHTML;
+
+        try {
+            shareDownloadBtn.disabled = true;
+            shareDownloadBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Gerando...';
+
+            const blob = await gerarImagemCompartilhamento();
+            baixarBlobImagem(blob, currentShareImageName);
+
+            shareDownloadBtn.innerHTML = '<i class="fa-solid fa-check"></i> Imagem baixada';
+            setTimeout(() => {
+                shareDownloadBtn.innerHTML = original;
+            }, 1800);
+        } catch (erro) {
+            console.log('Não foi possível baixar a imagem.', erro);
+            shareDownloadBtn.innerHTML = original;
+        } finally {
+            shareDownloadBtn.disabled = false;
+        }
+    });
+
+    shareNativeBtn?.addEventListener('click', async function () {
+        if (!shareCardPreview) return;
+
+        const original = shareNativeBtn.innerHTML;
+
+        try {
+            shareNativeBtn.disabled = true;
+            shareNativeBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Gerando imagem...';
+
+            const blob = await gerarImagemCompartilhamento();
+            const arquivo = new File([blob], currentShareImageName, { type: 'image/png' });
+
+            if (navigator.share && navigator.canShare && navigator.canShare({ files: [arquivo] })) {
+                await navigator.share({
+                    title: 'Ranking FOAG',
+                    text: currentShareText,
+                    files: [arquivo]
+                });
+            } else {
+                baixarBlobImagem(blob, currentShareImageName);
+            }
+        } catch (erro) {
+            console.log('Não foi possível compartilhar a imagem.', erro);
+        } finally {
+            shareNativeBtn.disabled = false;
+            shareNativeBtn.innerHTML = original;
+        }
     });
 
     document.querySelectorAll('[data-toggle-ranking]').forEach(botao => {
@@ -2309,6 +2696,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 ? '<i class="fa-solid fa-chevron-up"></i> Mostrar apenas Top 10'
                 : '<i class="fa-solid fa-chevron-down"></i> Ver ranking completo';
         });
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && shareModal?.style.display === 'flex') {
+            fecharModalCompartilhar();
+        }
     });
 
     const perfilIcon = document.getElementById('icon-perfil');
