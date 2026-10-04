@@ -13,6 +13,18 @@ document.addEventListener('DOMContentLoaded', function () {
     const usuarioCodigo = String(window.USUARIO_CODIGO || '');
     const usuarioNome = window.USUARIO_NOME || 'Usuário';
 
+    const usuariosVisuais =
+        window.USUARIOS_VISUAIS &&
+        typeof window.USUARIOS_VISUAIS === 'object'
+            ? window.USUARIOS_VISUAIS
+            : {};
+
+    const usuariosPorNome =
+        window.USUARIOS_POR_NOME &&
+        typeof window.USUARIOS_POR_NOME === 'object'
+            ? window.USUARIOS_POR_NOME
+            : {};
+
     const CHAT_ACTION_URL = window.CHAT_SAVE_URL || 'salvar_chat.php';
     const INTERACAO_URL = window.INTERACAO_URL || 'interacao.php';
     const INTERACOES_SAVE_URL = window.INTERACOES_SAVE_URL || 'salvar_interacao.php';
@@ -103,6 +115,193 @@ document.addEventListener('DOMContentLoaded', function () {
             partes[0].charAt(0) +
             partes[partes.length - 1].charAt(0)
         ).toUpperCase();
+    }
+
+
+    function normalizarNomeAvatar(nome) {
+        return String(nome || '')
+            .trim()
+            .toLocaleLowerCase('pt-BR');
+    }
+
+    function obterVisualUsuario(codigo, nome) {
+        const id = String(codigo || '').trim();
+
+        if (
+            id &&
+            usuariosVisuais[id]
+        ) {
+            return usuariosVisuais[id];
+        }
+
+        const chaveNome =
+            normalizarNomeAvatar(nome);
+
+        const codigoPorNome =
+            usuariosPorNome[chaveNome];
+
+        if (
+            codigoPorNome &&
+            usuariosVisuais[String(codigoPorNome)]
+        ) {
+            return usuariosVisuais[
+                String(codigoPorNome)
+            ];
+        }
+
+        return null;
+    }
+
+    /*
+     * Os ajustes foram calibrados no Perfil usando
+     * um avatar-base de 132px. Na Comunidade os
+     * deslocamentos são convertidos para porcentagem,
+     * então funcionam tanto no avatar de pergunta
+     * quanto no avatar menor das respostas.
+     */
+    function deslocamentoAvatarPercentual(valorPx) {
+        const numero = Number(valorPx);
+
+        if (!Number.isFinite(numero)) {
+            return 0;
+        }
+
+        return (numero / 132) * 100;
+    }
+
+    function normalizarAjusteAvatar(visual) {
+        const ajuste =
+            visual &&
+            visual.moldura &&
+            visual.moldura.ajuste_perfil
+                ? visual.moldura.ajuste_perfil
+                : {};
+
+        const numero = function(valor, padrao) {
+            const convertido = Number(valor);
+
+            return Number.isFinite(convertido)
+                ? convertido
+                : padrao;
+        };
+
+        return {
+            moldura_escala:
+                numero(ajuste.moldura_escala, 1.28),
+
+            moldura_x:
+                deslocamentoAvatarPercentual(
+                    numero(ajuste.moldura_x, 0)
+                ),
+
+            moldura_y:
+                deslocamentoAvatarPercentual(
+                    numero(ajuste.moldura_y, 0)
+                ),
+
+            foto_escala:
+                numero(ajuste.foto_escala, 1),
+
+            foto_x:
+                deslocamentoAvatarPercentual(
+                    numero(ajuste.foto_x, 0)
+                ),
+
+            foto_y:
+                deslocamentoAvatarPercentual(
+                    numero(ajuste.foto_y, 0)
+                )
+        };
+    }
+
+    function renderizarAvatarUsuario(
+        codigo,
+        nome,
+        tamanho = 'pergunta'
+    ) {
+        const visual =
+            obterVisualUsuario(codigo, nome);
+
+        const iniciais =
+            escaparHtml(obterIniciais(nome || '?'));
+
+        const classeTamanho =
+            tamanho === 'resposta'
+                ? 'avatar-comunidade-resposta'
+                : 'avatar-comunidade-pergunta';
+
+        /*
+         * Compatibilidade com registros antigos ou
+         * usuários sem perfil encontrado.
+         */
+        if (!visual || !visual.foto) {
+            return `
+                <div class="avatar-comunidade ${classeTamanho} sem-foto">
+                    <span class="avatar-comunidade-fallback">
+                        ${iniciais}
+                    </span>
+                </div>
+            `;
+        }
+
+        const moldura =
+            visual.moldura &&
+            visual.moldura.imagem
+                ? visual.moldura
+                : null;
+
+        const ajuste =
+            normalizarAjusteAvatar(visual);
+
+        const estilos = moldura
+            ? [
+                `--comu-moldura-escala:${ajuste.moldura_escala}`,
+                `--comu-moldura-x:${ajuste.moldura_x}%`,
+                `--comu-moldura-y:${ajuste.moldura_y}%`,
+                `--comu-foto-escala:${ajuste.foto_escala}`,
+                `--comu-foto-x:${ajuste.foto_x}%`,
+                `--comu-foto-y:${ajuste.foto_y}%`
+            ].join(';')
+            : '';
+
+        return `
+            <div
+                class="avatar-comunidade ${classeTamanho} ${moldura ? 'tem-moldura' : ''}"
+                ${estilos ? `style="${estilos}"` : ''}
+            >
+                <div class="avatar-comunidade-foto-wrap">
+                    <img
+                        class="avatar-comunidade-foto"
+                        src="${escaparHtml(visual.foto)}"
+                        alt="Foto de perfil de ${escaparHtml(nome || visual.nome || 'Usuário')}"
+                        loading="lazy"
+                        onerror="
+                            this.style.display='none';
+                            this.nextElementSibling.style.display='flex';
+                        "
+                    >
+                    <span
+                        class="avatar-comunidade-fallback"
+                        aria-hidden="true"
+                    >
+                        ${iniciais}
+                    </span>
+                </div>
+
+                ${
+                    moldura
+                        ? `
+                            <img
+                                class="avatar-comunidade-moldura"
+                                src="${escaparHtml(moldura.imagem)}"
+                                alt=""
+                                aria-hidden="true"
+                            >
+                        `
+                        : ''
+                }
+            </div>
+        `;
     }
 
     function formatarData(data) {
@@ -343,13 +542,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     <div class="resposta-header">
 
-                        <div class="avatar-pequeno">
-                            ${escaparHtml(
-                                obterIniciais(
-                                    resposta.autor || '?'
-                                )
-                            )}
-                        </div>
+                        ${renderizarAvatarUsuario(
+                            resposta.usuario_id || '',
+                            resposta.autor || 'Anônimo',
+                            'resposta'
+                        )}
 
                         <span class="nome">
 
@@ -543,11 +740,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
                             <div class="pergunta-autor">
 
-                                <div class="avatar">
-                                    ${escaparHtml(
-                                        obterIniciais(usuarioNome)
-                                    )}
-                                </div>
+                                ${renderizarAvatarUsuario(
+                                    usuarioCodigo,
+                                    usuarioNome,
+                                    'pergunta'
+                                )}
 
                                 <div>
 
@@ -715,13 +912,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
                             <div class="pergunta-autor">
 
-                                <div class="avatar">
-                                    ${escaparHtml(
-                                        obterIniciais(
-                                            pergunta.autor || '?'
-                                        )
-                                    )}
-                                </div>
+                                ${renderizarAvatarUsuario(
+                                    pergunta.usuario_id || '',
+                                    pergunta.autor || 'Anônimo',
+                                    'pergunta'
+                                )}
 
                                 <div>
 

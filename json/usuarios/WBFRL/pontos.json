@@ -1,5 +1,5 @@
 {
-    "estrelas": 100,
+    "estrelas": 99303,
     "historico": [
         {
             "id": "estrela_d63d0474bd6e",
@@ -108,6 +108,186 @@
             "data": "2026-09-03 08:55:49",
             "timestamp": 1788440149,
             "chave": "compra_loja_moldura_dragao"
+        },
+        {
+            "id": "estrela_1ef6338b3ce3",
+            "tipo": "sequencia_presenca",
+            "descricao": "10 dias seguidos de presença",
+            "estrelas": 12,
+            "data": "2026-10-03 12:41:27",
+            "timestamp": 1791045687,
+            "chave": "sequencia_presenca_2026-10"
+        },
+        {
+            "id": "estrela_d612eec7b462",
+            "tipo": "nota",
+            "descricao": "Nota 10,00 em Ed. fisica — 3º Bimestre",
+            "estrelas": 10,
+            "data": "2026-10-03 12:43:50",
+            "timestamp": 1791045830,
+            "chave": "nota_mat_d2031fa95c05_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_f834086e6bc4",
+            "tipo": "nota",
+            "descricao": "Nota 7,50 em biologia — 3º Bimestre",
+            "estrelas": 3,
+            "data": "2026-10-03 12:44:56",
+            "timestamp": 1791045896,
+            "chave": "nota_mat_d7201e4e39f9_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_861d3c679934",
+            "tipo": "nota",
+            "descricao": "Nota 9,14 em Inglês — 3º Bimestre",
+            "estrelas": 7,
+            "data": "2026-10-03 12:44:56",
+            "timestamp": 1791045896,
+            "chave": "nota_mat_a9102dddebde_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "gasto_6bb10a4b4042",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Nuvens",
+            "estrelas": -75,
+            "data": "2026-10-03 22:07:01",
+            "timestamp": 1791079621,
+            "chave": "compra_loja_moldura_nuvens"
+        },
+        {
+            "id": "gasto_444a6c0c9c57",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Gato Laranja",
+            "estrelas": -90,
+            "data": "2026-10-03 22:12:07",
+            "timestamp": 1791079927,
+            "chave": "compra_loja_moldura_gato_laranja"
+        },
+        {
+            "id": "gasto_b203a2325078",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Borboletas",
+            "estrelas": -85,
+            "data": "2026-10-03 22:12:09",
+            "timestamp": 1791079929,
+            "chave": "compra_loja_moldura_borboletas"
+        },
+        {
+            "id": "gasto_76cff5ef3611",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Estrelas",
+            "estrelas": -75,
+            "data": "2026-10-03 22:12:12",
+            "timestamp": 1791079932,
+            "chave": "compra_loja_moldura_estrelas"
+        },
+        {
+            "id": "gasto_3019d3277e67",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Sakura",
+            "estrelas": -75,
+            "data": "2026-10-03 22:12:19",
+            "timestamp": 1791079939,
+            "chave": "compra_loja_moldura_sakura"
+        },
+        {
+            "id": "gasto_8d769a7a2471",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Livros",
+            "estrelas": -80,
+            "data": "2026-10-03 22:12:23",
+            "timestamp": 1791079943,
+            "chave": "compra_loja_moldura_livros"
+        },
+        {
+            "id": "gasto_3476c7085713",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Fogo",
+            "estrelas": -100,
+            "data": "2026-10-03 22:12:32",
+            "timestamp": 1791079952,
+            "chave": "compra_loja_moldura_fogo"
+        },
+        {
+            "id": "gasto_7e0fafa50e30",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Gato Preto",
+            "estrelas": -98,
+            "data": "2026-10-03 22:12:35",
+            "timestamp": 1791079955,
+            "chave": "compra_loja_moldura_gato_preto"
+        },
+        {
+            "id": "gasto_a66a14507b5f",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Natureza",
+            "estrelas": -70,
+            "data": "2026-10-03 22:41:43",
+            "timestamp": 1791081703,
+            "chave": "compra_loja_moldura_natureza"
+        },
+        {
+            "id": "gasto_ca3b8f05b278",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Água",
+            "estrelas": -80,
+            "data": "2026-10-03 22:41:45",
+            "timestamp": 1791081705,
+            "chave": "compra_loja_moldura_agua"
+        },
+        {
+            "id": "gasto_21ce438acd7b",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Cachorrinho",
+            "estrelas": -90,
+            "data": "2026-10-03 22:41:48",
+            "timestamp": 1791081708,
+            "chave": "compra_loja_moldura_cachorro"
+        },
+        {
+            "id": "gasto_6724a9619025",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Neon",
+            "estrelas": -80,
+            "data": "2026-10-03 22:41:52",
+            "timestamp": 1791081712,
+            "chave": "compra_loja_moldura_neon"
+        },
+        {
+            "id": "gasto_99b0e54e9bb2",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Campeão",
+            "estrelas": -92,
+            "data": "2026-10-03 22:41:55",
+            "timestamp": 1791081715,
+            "chave": "compra_loja_moldura_campeao"
+        },
+        {
+            "id": "gasto_35427b7ac9c2",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Galáxia",
+            "estrelas": -90,
+            "data": "2026-10-03 22:41:58",
+            "timestamp": 1791081718,
+            "chave": "compra_loja_moldura_galaxia"
+        },
+        {
+            "id": "gasto_833158608eeb",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Querubim",
+            "estrelas": -95,
+            "data": "2026-10-03 22:42:03",
+            "timestamp": 1791081723,
+            "chave": "compra_loja_moldura_querubim"
+        },
+        {
+            "id": "gasto_dad22f6b3923",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Rei",
+            "estrelas": -100,
+            "data": "2026-10-03 22:42:06",
+            "timestamp": 1791081726,
+            "chave": "compra_loja_moldura_rei"
         }
     ],
     "controle": {
@@ -121,17 +301,21 @@
         "frequencia": {
             "meses_processados": [],
             "sequencia_presenca": {
-                "dias": 2,
-                "ultima_data": "2026-09-03",
+                "dias": 23,
+                "ultima_data": "2026-10-02",
                 "marcos_recebidos": {
-                    "2026-08": 5
+                    "2026-08": 5,
+                    "2026-10": 10
                 }
             }
         },
         "notas": {
             "recompensas": [
                 "nota_MAT_ADEFFDD5_0758c00e6ea0_avaliacao_3",
-                "evolucao_nota_MAT_ADEFFDD5_0758c00e6ea0_avaliacao_3"
+                "evolucao_nota_MAT_ADEFFDD5_0758c00e6ea0_avaliacao_3",
+                "nota_mat_d2031fa95c05_0758c00e6ea0_avaliacao_3",
+                "nota_mat_d7201e4e39f9_0758c00e6ea0_avaliacao_3",
+                "nota_mat_a9102dddebde_0758c00e6ea0_avaliacao_3"
             ]
         },
         "sequencia_estudo": {
@@ -149,7 +333,11 @@
             "cronometro_628b0acf-a85d-4af5-88c9-ad79bd6561ac",
             "flashcards_baralho_15_BAR_F299F4FB",
             "flashcards_baralho_31_BAR_F299F4FB",
-            "flashcards_revisao_2026-09-03_BAR_F299F4FB"
+            "flashcards_revisao_2026-09-03_BAR_F299F4FB",
+            "sequencia_presenca_2026-10",
+            "nota_mat_d2031fa95c05_0758c00e6ea0_avaliacao_3",
+            "nota_mat_d7201e4e39f9_0758c00e6ea0_avaliacao_3",
+            "nota_mat_a9102dddebde_0758c00e6ea0_avaliacao_3"
         ]
     }
 }

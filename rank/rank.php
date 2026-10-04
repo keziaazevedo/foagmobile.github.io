@@ -55,6 +55,97 @@ function lerJson($arquivo)
     return is_array($dados) ? $dados : [];
 }
 
+
+// ======================================
+// MOLDURAS DA LOJA
+// ======================================
+
+function normalizarAjusteMolduraRanking($ajuste)
+{
+    $padrao = [
+        'moldura_escala' => 1.28,
+        'moldura_x' => 0,
+        'moldura_y' => 0,
+        'foto_escala' => 1.00,
+        'foto_x' => 0,
+        'foto_y' => 0
+    ];
+
+    if (!is_array($ajuste)) {
+        return $padrao;
+    }
+
+    foreach ($padrao as $chave => $valorPadrao) {
+        if (
+            array_key_exists($chave, $ajuste) &&
+            is_numeric($ajuste[$chave])
+        ) {
+            $padrao[$chave] = (float) $ajuste[$chave];
+        }
+    }
+
+    return $padrao;
+}
+
+/*
+ * Os deslocamentos do ajuste_perfil foram calibrados sobre
+ * um avatar-base de 132px. No Ranking usamos porcentagens
+ * equivalentes para manter o encaixe em qualquer tamanho.
+ */
+function deslocamentoRankingPercentual($valorPx)
+{
+    if (!is_numeric($valorPx)) {
+        return 0;
+    }
+
+    return ((float) $valorPx / 132) * 100;
+}
+
+$arquivoProdutosLoja =
+    __DIR__ . '/../json/loja/produtos.json';
+
+$dadosProdutosLoja =
+    lerJson($arquivoProdutosLoja);
+
+$moldurasLojaPorId = [];
+
+$itensCatalogoLoja =
+    isset($dadosProdutosLoja['itens']) &&
+    is_array($dadosProdutosLoja['itens'])
+        ? $dadosProdutosLoja['itens']
+        : [];
+
+foreach ($itensCatalogoLoja as $produtoLoja) {
+    if (
+        !is_array($produtoLoja) ||
+        (string)($produtoLoja['categoria'] ?? '') !== 'molduras'
+    ) {
+        continue;
+    }
+
+    $idMoldura =
+        trim((string)($produtoLoja['id'] ?? ''));
+
+    $imagemMoldura =
+        trim((string)($produtoLoja['imagem'] ?? ''));
+
+    if (
+        $idMoldura === '' ||
+        $imagemMoldura === ''
+    ) {
+        continue;
+    }
+
+    $moldurasLojaPorId[$idMoldura] = [
+        'id' => $idMoldura,
+        'nome' => (string)($produtoLoja['nome'] ?? 'Moldura'),
+        'imagem' => $imagemMoldura,
+        'ajuste_perfil' => normalizarAjusteMolduraRanking(
+            $produtoLoja['ajuste_perfil'] ?? []
+        )
+    ];
+}
+
 // ======================================
 // NORMALIZAR TEXTO
 // ======================================
@@ -423,6 +514,48 @@ foreach ($pastasUsuarios as $pasta) {
             $fotoPerfil
         );
 
+
+    // ==================================
+    // MOLDURA ATIVA DO USUÁRIO
+    // ==================================
+
+    $molduraPerfil = null;
+
+    $dadosLojaUsuario =
+        lerJson(
+            $pasta . '/loja.json'
+        );
+
+    $itensAtivosUsuario =
+        isset($dadosLojaUsuario['itens_ativos']) &&
+        is_array($dadosLojaUsuario['itens_ativos'])
+            ? $dadosLojaUsuario['itens_ativos']
+            : [];
+
+    $itensCompradosUsuario =
+        isset($dadosLojaUsuario['itens_comprados']) &&
+        is_array($dadosLojaUsuario['itens_comprados'])
+            ? $dadosLojaUsuario['itens_comprados']
+            : [];
+
+    $idMolduraAtiva =
+        isset($itensAtivosUsuario['moldura'])
+            ? trim((string)$itensAtivosUsuario['moldura'])
+            : '';
+
+    if (
+        $idMolduraAtiva !== '' &&
+        in_array(
+            $idMolduraAtiva,
+            $itensCompradosUsuario,
+            true
+        ) &&
+        isset($moldurasLojaPorId[$idMolduraAtiva])
+    ) {
+        $molduraPerfil =
+            $moldurasLojaPorId[$idMolduraAtiva];
+    }
+
     // ==================================
     // LOCALIZAÇÃO
     // ==================================
@@ -513,6 +646,9 @@ foreach ($pastasUsuarios as $pasta) {
 
         'foto' =>
             $caminhoFoto,
+
+        'moldura' =>
+            $molduraPerfil,
 
         'estado' =>
             $estado,
@@ -714,6 +850,9 @@ function criarRanking(
 
             'foto' =>
                 $usuario['foto'],
+
+            'moldura' =>
+                $usuario['moldura'] ?? null,
 
             'estado' =>
                 $usuario['estado'],
@@ -990,7 +1129,7 @@ foreach (
 
     <link
         rel="stylesheet"
-        href="rank.css"
+        href="rank.css?v=2"
     >
 
     <link
@@ -1022,104 +1161,6 @@ foreach (
     >
 
     <script src="../m.escuro/dark-mode.js"></script>
-
-    <style>
-        /* ==========================================
-           FOTO DE PERFIL NO RANKING
-        ========================================== */
-
-        .rank-full-item .avatar.avatar-foto {
-            width: 44px !important;
-            height: 44px !important;
-            min-width: 44px !important;
-            flex: 0 0 44px !important;
-
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-
-            padding: 0 !important;
-            overflow: hidden !important;
-
-            border-radius: 50% !important;
-            border: 2px solid #ffffff !important;
-
-            background: #eef4fa !important;
-
-            box-shadow:
-                0 2px 8px
-                rgba(0, 0, 0, 0.10) !important;
-
-            font-size: 0 !important;
-        }
-
-        .rank-full-item .avatar.avatar-foto img {
-            width: 100% !important;
-            height: 100% !important;
-
-            display: block;
-
-            object-fit: cover !important;
-            object-position: center !important;
-
-            border-radius: 50% !important;
-        }
-
-        .rank-full-item .avatar-fallback {
-            width: 100%;
-            height: 100%;
-
-            display: none;
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 50%;
-
-            color: #7c8da0;
-            background: #eef4fa;
-
-            font-size: 17px !important;
-        }
-
-        body.dark-mode .rank-full-item .avatar.avatar-foto {
-            border-color: #334155 !important;
-            background: #243247 !important;
-        }
-
-        body.dark-mode .rank-full-item .avatar-fallback {
-            color: #cbd5e1;
-            background: #243247;
-        }
-
-        @media (max-width: 768px) {
-
-            .rank-full-item .avatar.avatar-foto {
-                width: 38px !important;
-                height: 38px !important;
-                min-width: 38px !important;
-                flex-basis: 38px !important;
-            }
-
-        }
-
-        @media (max-width: 480px) {
-
-            .rank-full-item .avatar.avatar-foto {
-                width: 34px !important;
-                height: 34px !important;
-                min-width: 34px !important;
-                flex-basis: 34px !important;
-            }
-
-            .rank-full-item .avatar-fallback {
-                font-size: 14px !important;
-            }
-
-        }
-    </style>
-
-
-
 
 <style>
 /* ==========================================
@@ -1704,6 +1745,48 @@ foreach (
                                                 $jogador['estado'];
                                         }
 
+                                        // ==================================
+                                        // MOLDURA DO AVATAR
+                                        // ==================================
+
+                                        $molduraJogador =
+                                            isset($jogador['moldura']) &&
+                                            is_array($jogador['moldura'])
+                                                ? $jogador['moldura']
+                                                : null;
+
+                                        $temMolduraRanking =
+                                            is_array($molduraJogador) &&
+                                            !empty($molduraJogador['imagem']);
+
+                                        $ajusteRanking =
+                                            $temMolduraRanking
+                                                ? normalizarAjusteMolduraRanking(
+                                                    $molduraJogador['ajuste_perfil']
+                                                    ?? []
+                                                )
+                                                : normalizarAjusteMolduraRanking([]);
+
+                                        $molduraXPct =
+                                            deslocamentoRankingPercentual(
+                                                $ajusteRanking['moldura_x']
+                                            );
+
+                                        $molduraYPct =
+                                            deslocamentoRankingPercentual(
+                                                $ajusteRanking['moldura_y']
+                                            );
+
+                                        $fotoXPct =
+                                            deslocamentoRankingPercentual(
+                                                $ajusteRanking['foto_x']
+                                            );
+
+                                        $fotoYPct =
+                                            deslocamentoRankingPercentual(
+                                                $ajusteRanking['foto_y']
+                                            );
+
                                         ?>
 
                                         <div
@@ -1732,33 +1815,62 @@ foreach (
 
                                             </div>
 
-                                            <div class="avatar avatar-foto">
-
-                                                <img
-                                                    src="<?= htmlspecialchars(
-                                                        $jogador['foto'] ?? '',
-                                                        ENT_QUOTES,
-                                                        'UTF-8'
-                                                    ) ?>"
-                                                    alt="Foto de perfil de <?= htmlspecialchars(
-                                                        $jogador['nome'],
-                                                        ENT_QUOTES,
-                                                        'UTF-8'
-                                                    ) ?>"
-                                                    loading="lazy"
-                                                    onerror="
-                                                        this.style.display='none';
-                                                        this.nextElementSibling.style.display='flex';
+                                            <div
+                                                class="avatar avatar-foto<?= $temMolduraRanking ? ' com-moldura' : '' ?>"
+                                            >
+                                                <div
+                                                    class="avatar-stage<?= $temMolduraRanking ? ' tem-moldura' : '' ?>"
+                                                    style="
+                                                        --rank-moldura-escala: <?= htmlspecialchars((string)$ajusteRanking['moldura_escala'], ENT_QUOTES, 'UTF-8') ?>;
+                                                        --rank-moldura-x: <?= htmlspecialchars((string)$molduraXPct, ENT_QUOTES, 'UTF-8') ?>%;
+                                                        --rank-moldura-y: <?= htmlspecialchars((string)$molduraYPct, ENT_QUOTES, 'UTF-8') ?>%;
+                                                        --rank-foto-escala: <?= htmlspecialchars((string)$ajusteRanking['foto_escala'], ENT_QUOTES, 'UTF-8') ?>;
+                                                        --rank-foto-x: <?= htmlspecialchars((string)$fotoXPct, ENT_QUOTES, 'UTF-8') ?>%;
+                                                        --rank-foto-y: <?= htmlspecialchars((string)$fotoYPct, ENT_QUOTES, 'UTF-8') ?>%;
                                                     "
                                                 >
+                                                    <div class="avatar-foto-recorte">
+                                                        <img
+                                                            class="avatar-foto-img"
+                                                            src="<?= htmlspecialchars(
+                                                                $jogador['foto'] ?? '',
+                                                                ENT_QUOTES,
+                                                                'UTF-8'
+                                                            ) ?>"
+                                                            alt="Foto de perfil de <?= htmlspecialchars(
+                                                                $jogador['nome'],
+                                                                ENT_QUOTES,
+                                                                'UTF-8'
+                                                            ) ?>"
+                                                            loading="lazy"
+                                                            onerror="
+                                                                this.style.display='none';
+                                                                this.nextElementSibling.style.display='flex';
+                                                            "
+                                                        >
 
-                                                <span
-                                                    class="avatar-fallback"
-                                                    aria-hidden="true"
-                                                >
-                                                    <i class="fa-solid fa-user"></i>
-                                                </span>
+                                                        <span
+                                                            class="avatar-fallback"
+                                                            aria-hidden="true"
+                                                        >
+                                                            <i class="fa-solid fa-user"></i>
+                                                        </span>
+                                                    </div>
 
+                                                    <?php if ($temMolduraRanking): ?>
+                                                        <img
+                                                            class="avatar-moldura-img"
+                                                            src="<?= htmlspecialchars(
+                                                                $molduraJogador['imagem'],
+                                                                ENT_QUOTES,
+                                                                'UTF-8'
+                                                            ) ?>"
+                                                            alt=""
+                                                            aria-hidden="true"
+                                                            loading="lazy"
+                                                        >
+                                                    <?php endif; ?>
+                                                </div>
                                             </div>
 
                                             <div class="info">

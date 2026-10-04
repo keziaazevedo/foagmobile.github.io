@@ -1472,3 +1472,260 @@ body.dark-mode .btn-responder:hover {
     background: rgba(74, 222, 128, 0.15) !important;
     color: #4ade80 !important;
 }
+
+
+/* =====================================================
+   FOTO DE PERFIL + MOLDURA — COMUNIDADE
+   ===================================================== */
+
+/*
+   Os avatares antigos eram apenas círculos com iniciais.
+   Agora foto e moldura são camadas independentes.
+*/
+
+.avatar-comunidade {
+    --comu-avatar-size: 38px;
+
+    --comu-moldura-escala: 1.28;
+    --comu-moldura-x: 0%;
+    --comu-moldura-y: 0%;
+
+    --comu-foto-escala: 1;
+    --comu-foto-x: 0%;
+    --comu-foto-y: 0%;
+
+    width: var(--comu-avatar-size);
+    height: var(--comu-avatar-size);
+    min-width: var(--comu-avatar-size);
+
+    position: relative;
+    flex: 0 0 var(--comu-avatar-size);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: visible;
+}
+
+/* Avatar das perguntas */
+.avatar-comunidade-pergunta {
+    --comu-avatar-size: 38px;
+}
+
+/* Avatar menor das respostas */
+.avatar-comunidade-resposta {
+    --comu-avatar-size: 27px;
+}
+
+/* Área recortada da foto */
+.avatar-comunidade-foto-wrap {
+    width: 100%;
+    height: 100%;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 1;
+
+    overflow: hidden;
+
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+
+    background: #eaf6ff;
+
+    box-shadow:
+        0 2px 7px
+        rgba(20, 70, 110, 0.14);
+
+    transform:
+        translate(-50%, -50%);
+
+    transform-origin: center;
+}
+
+/*
+   Se há moldura, o recorte da foto também pode ter
+   escala e posição independentes.
+*/
+.avatar-comunidade.tem-moldura
+.avatar-comunidade-foto-wrap {
+    width:
+        calc(
+            100% *
+            var(--comu-foto-escala)
+        );
+
+    height:
+        calc(
+            100% *
+            var(--comu-foto-escala)
+        );
+
+    top:
+        calc(
+            50% +
+            var(--comu-foto-y)
+        );
+
+    left:
+        calc(
+            50% +
+            var(--comu-foto-x)
+        );
+
+    border: 0;
+    box-shadow: none;
+}
+
+/* Foto real */
+.avatar-comunidade-foto {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+    object-position: center;
+
+    border: 0 !important;
+    border-radius: 50% !important;
+    box-shadow: none !important;
+}
+
+/* Iniciais caso a imagem falhe */
+.avatar-comunidade-fallback {
+    width: 100%;
+    height: 100%;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #38a5ff;
+    color: #ffffff;
+
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.avatar-comunidade.sem-foto
+.avatar-comunidade-fallback {
+    display: flex;
+}
+
+.avatar-comunidade-resposta
+.avatar-comunidade-fallback {
+    font-size: 8px;
+}
+
+/* PNG da moldura */
+.avatar-comunidade-moldura {
+    width:
+        calc(
+            100% *
+            var(--comu-moldura-escala)
+        ) !important;
+
+    height:
+        calc(
+            100% *
+            var(--comu-moldura-escala)
+        ) !important;
+
+    position: absolute;
+
+    top:
+        calc(
+            50% +
+            var(--comu-moldura-y)
+        );
+
+    left:
+        calc(
+            50% +
+            var(--comu-moldura-x)
+        );
+
+    z-index: 4;
+
+    display: block;
+
+    object-fit: contain !important;
+    object-position: center !important;
+
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+
+    pointer-events: none;
+    user-select: none;
+
+    transform:
+        translate(-50%, -50%);
+
+    transform-origin: center;
+}
+
+/*
+   Sobrescreve os estilos antigos de avatar por iniciais.
+*/
+.pergunta-item
+.pergunta-autor
+.avatar-comunidade {
+    background: transparent;
+    color: inherit;
+    border-radius: 0;
+    font-size: inherit;
+    font-weight: inherit;
+}
+
+.resposta-item
+.resposta-header
+.avatar-comunidade {
+    background: transparent;
+    color: inherit;
+    border-radius: 0;
+    font-size: inherit;
+    font-weight: inherit;
+}
+
+/*
+   Um pouco mais de espaço para artes que ultrapassam
+   bastante a foto, como gatos/cachorro.
+*/
+.pergunta-item .pergunta-autor {
+    gap: 12px;
+}
+
+.resposta-item .resposta-header {
+    gap: 10px;
+}
+
+/* Dark mode */
+body.dark-mode
+.avatar-comunidade-foto-wrap {
+    border-color: #334155;
+    background: #243247;
+}
+
+body.dark-mode
+.avatar-comunidade-fallback {
+    background: #3b82f6;
+    color: #ffffff;
+}
+
+/* Responsivo */
+@media (max-width: 520px) {
+    .avatar-comunidade-pergunta {
+        --comu-avatar-size: 36px;
+    }
+
+    .avatar-comunidade-resposta {
+        --comu-avatar-size: 26px;
+    }
+}

@@ -1,7 +1,23 @@
 {
     "itens_comprados": [
         "tema_verde",
-        "moldura_dragao"
+        "moldura_dragao",
+        "moldura_nuvens",
+        "moldura_gato_laranja",
+        "moldura_borboletas",
+        "moldura_estrelas",
+        "moldura_sakura",
+        "moldura_livros",
+        "moldura_fogo",
+        "moldura_gato_preto",
+        "moldura_natureza",
+        "moldura_agua",
+        "moldura_cachorro",
+        "moldura_neon",
+        "moldura_campeao",
+        "moldura_galaxia",
+        "moldura_querubim",
+        "moldura_rei"
     ],
     "itens_ativos": {
         "tema": "tema_verde",

@@ -129,6 +129,134 @@ if (!empty($usuario_logado["foto"])) {
 
 $caminho_foto = $pasta_fotos_url . $foto_perfil;
 
+
+/*
+|--------------------------------------------------------------------------
+| Moldura ativa da Loja + ajustes individuais
+|--------------------------------------------------------------------------
+|
+| Cada moldura pode ter uma área interna diferente. O produtos.json guarda
+| escala/posição da moldura e escala/posição da foto separadamente.
+| Modo de calibração: perfil.php?calibrar=1
+|
+*/
+
+$caminhoLojaUsuario = $pastaUsuario . '/loja.json';
+$caminhoProdutosLoja = __DIR__ . '/../json/loja/produtos.json';
+
+$ajuste_moldura_padrao = [
+    'moldura_escala' => 1.28,
+    'moldura_x' => 0,
+    'moldura_y' => 0,
+    'foto_escala' => 1.00,
+    'foto_x' => 0,
+    'foto_y' => 0
+];
+
+$moldura_ativa_id = null;
+$moldura_ativa_imagem = null;
+$moldura_ativa_nome = null;
+$moldura_ativa_ajuste = $ajuste_moldura_padrao;
+$molduras_catalogo = [];
+$dadosProdutosLoja = [];
+
+if (file_exists($caminhoProdutosLoja)) {
+    $conteudoProdutos = file_get_contents($caminhoProdutosLoja);
+
+    if ($conteudoProdutos !== false) {
+        $dadosProdutosLoja = json_decode($conteudoProdutos, true);
+
+        if (!is_array($dadosProdutosLoja)) {
+            $dadosProdutosLoja = [];
+        }
+    }
+}
+
+$produtosLoja =
+    isset($dadosProdutosLoja['itens']) &&
+    is_array($dadosProdutosLoja['itens'])
+        ? $dadosProdutosLoja['itens']
+        : [];
+
+foreach ($produtosLoja as $produtoLoja) {
+    if (
+        !is_array($produtoLoja) ||
+        (string)($produtoLoja['categoria'] ?? '') !== 'molduras'
+    ) {
+        continue;
+    }
+
+    $ajusteProduto = $ajuste_moldura_padrao;
+
+    if (
+        isset($produtoLoja['ajuste_perfil']) &&
+        is_array($produtoLoja['ajuste_perfil'])
+    ) {
+        foreach ($ajuste_moldura_padrao as $chave => $valorPadrao) {
+            if (
+                array_key_exists($chave, $produtoLoja['ajuste_perfil']) &&
+                is_numeric($produtoLoja['ajuste_perfil'][$chave])
+            ) {
+                $ajusteProduto[$chave] =
+                    (float)$produtoLoja['ajuste_perfil'][$chave];
+            }
+        }
+    }
+
+    $molduras_catalogo[] = [
+        'id' => (string)($produtoLoja['id'] ?? ''),
+        'nome' => (string)($produtoLoja['nome'] ?? 'Moldura'),
+        'imagem' => (string)($produtoLoja['imagem'] ?? ''),
+        'ajuste_perfil' => $ajusteProduto
+    ];
+}
+
+if (file_exists($caminhoLojaUsuario)) {
+    $conteudoLoja = file_get_contents($caminhoLojaUsuario);
+    $dadosLojaUsuario =
+        $conteudoLoja !== false
+            ? json_decode($conteudoLoja, true)
+            : null;
+
+    if (
+        is_array($dadosLojaUsuario) &&
+        isset($dadosLojaUsuario['itens_ativos']) &&
+        is_array($dadosLojaUsuario['itens_ativos'])
+    ) {
+        $idMoldura =
+            $dadosLojaUsuario['itens_ativos']['moldura'] ?? null;
+
+        $itensComprados =
+            isset($dadosLojaUsuario['itens_comprados']) &&
+            is_array($dadosLojaUsuario['itens_comprados'])
+                ? $dadosLojaUsuario['itens_comprados']
+                : [];
+
+        if (
+            is_string($idMoldura) &&
+            trim($idMoldura) !== '' &&
+            in_array(trim($idMoldura), $itensComprados, true)
+        ) {
+            $idMoldura = trim($idMoldura);
+
+            foreach ($molduras_catalogo as $molduraCatalogo) {
+                if ((string)$molduraCatalogo['id'] !== $idMoldura) {
+                    continue;
+                }
+
+                if (trim((string)$molduraCatalogo['imagem']) !== '') {
+                    $moldura_ativa_id = $idMoldura;
+                    $moldura_ativa_imagem = (string)$molduraCatalogo['imagem'];
+                    $moldura_ativa_nome = (string)$molduraCatalogo['nome'];
+                    $moldura_ativa_ajuste = $molduraCatalogo['ajuste_perfil'];
+                }
+
+                break;
+            }
+        }
+    }
+}
+
 /*
 |--------------------------------------------------------------------------
 | Carregar insígnias
@@ -154,7 +282,7 @@ $insignias_usuario = getInsigniasUsuario($codigoUsuario);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- CSS PRINCIPAL DO PERFIL -->
-    <link rel="stylesheet" href="perfilfil.css?v=12">
+    <link rel="stylesheet" href="perfilfil.css?v=15">
     
     <!-- DARK MODE BASE -->
     <link rel="stylesheet" href="../m.escuro/dark_basee.css?v=12">
@@ -231,11 +359,36 @@ $insignias_usuario = getInsigniasUsuario($codigoUsuario);
                 ============================================ -->
                 <section class="perfil-destaque">
                     <div class="perfil-identidade">
-                        <div class="foto-container">
+                        <div
+                            class="foto-container<?= $moldura_ativa_imagem ? ' tem-moldura' : '' ?>"
+                            id="fotoContainerPerfil"
+                            style="
+                                --moldura-escala: <?= escapar((string)$moldura_ativa_ajuste['moldura_escala']) ?>;
+                                --moldura-x: <?= escapar((string)$moldura_ativa_ajuste['moldura_x']) ?>px;
+                                --moldura-y: <?= escapar((string)$moldura_ativa_ajuste['moldura_y']) ?>px;
+                                --foto-escala: <?= escapar((string)$moldura_ativa_ajuste['foto_escala']) ?>;
+                                --foto-x: <?= escapar((string)$moldura_ativa_ajuste['foto_x']) ?>px;
+                                --foto-y: <?= escapar((string)$moldura_ativa_ajuste['foto_y']) ?>px;
+                            "
+                        >
                             <div class="moldura-container">
                                 <div class="moldura-borda" id="molduraPerfil">
-                                    <img src="<?= escapar($caminho_foto) ?>" alt="Foto de perfil de <?= escapar($nome) ?>">
+                                    <img
+                                        class="foto-perfil-img"
+                                        src="<?= escapar($caminho_foto) ?>"
+                                        alt="Foto de perfil de <?= escapar($nome) ?>"
+                                    >
                                 </div>
+
+                                <img
+                                    id="molduraImagemPerfil"
+                                    class="moldura-imagem-perfil<?= $moldura_ativa_imagem ? ' ativa' : '' ?>"
+                                    src="<?= $moldura_ativa_imagem ? escapar($moldura_ativa_imagem) : '' ?>"
+                                    alt="<?= $moldura_ativa_nome ? escapar($moldura_ativa_nome) : '' ?>"
+                                    data-moldura-id="<?= $moldura_ativa_id ? escapar($moldura_ativa_id) : '' ?>"
+                                    aria-hidden="true"
+                                >
+
                                 <span class="foto-status"></span>
                             </div>
                         </div>
@@ -261,6 +414,8 @@ $insignias_usuario = getInsigniasUsuario($codigoUsuario);
                         </div>
                     </div>
                 </section>
+
+                
 
                 <!-- ===========================================
                      CARD PRINCIPAL - INFORMAÇÕES + INSÍGNIAS
@@ -452,6 +607,25 @@ $insignias_usuario = getInsigniasUsuario($codigoUsuario);
     document.addEventListener("DOMContentLoaded", function() {
         console.log('Perfil carregado ✅');
 
+
+        const AJUSTE_MOLDURA_PADRAO = {
+            moldura_escala: 1.28,
+            moldura_x: 0,
+            moldura_y: 0,
+            foto_escala: 1,
+            foto_x: 0,
+            foto_y: 0
+        };
+
+        // Catálogo carregado pelo próprio perfil.php.
+        // Serve de fonte segura caso loja_data.php não devolva
+        // todos os dados da moldura (principalmente ajuste_perfil).
+        const MOLDURAS_CATALOGO = <?= json_encode(
+            $molduras_catalogo,
+            JSON_UNESCAPED_UNICODE |
+            JSON_UNESCAPED_SLASHES
+        ) ?>;
+
         // ===========================================
         // REDIRECIONAMENTO - PERFIL
         // ===========================================
@@ -494,6 +668,154 @@ $insignias_usuario = getInsigniasUsuario($codigoUsuario);
         // CARREGAR ITENS DA LOJA NO PERFIL
         // ===========================================
 
+        function normalizarAjusteMoldura(item) {
+            const ajuste = item && item.ajuste_perfil ? item.ajuste_perfil : {};
+            const numero = (valor, padrao) => {
+                const convertido = Number(valor);
+                return Number.isFinite(convertido) ? convertido : padrao;
+            };
+
+            return {
+                moldura_escala: numero(ajuste.moldura_escala, AJUSTE_MOLDURA_PADRAO.moldura_escala),
+                moldura_x: numero(ajuste.moldura_x, AJUSTE_MOLDURA_PADRAO.moldura_x),
+                moldura_y: numero(ajuste.moldura_y, AJUSTE_MOLDURA_PADRAO.moldura_y),
+                foto_escala: numero(ajuste.foto_escala, AJUSTE_MOLDURA_PADRAO.foto_escala),
+                foto_x: numero(ajuste.foto_x, AJUSTE_MOLDURA_PADRAO.foto_x),
+                foto_y: numero(ajuste.foto_y, AJUSTE_MOLDURA_PADRAO.foto_y)
+            };
+        }
+
+        function aplicarAjusteVisual(ajuste) {
+            const fotoContainer = document.getElementById('fotoContainerPerfil');
+            if (!fotoContainer) return;
+
+            const a = { ...AJUSTE_MOLDURA_PADRAO, ...(ajuste || {}) };
+            fotoContainer.style.setProperty('--moldura-escala', String(a.moldura_escala));
+            fotoContainer.style.setProperty('--moldura-x', `${a.moldura_x}px`);
+            fotoContainer.style.setProperty('--moldura-y', `${a.moldura_y}px`);
+            fotoContainer.style.setProperty('--foto-escala', String(a.foto_escala));
+            fotoContainer.style.setProperty('--foto-x', `${a.foto_x}px`);
+            fotoContainer.style.setProperty('--foto-y', `${a.foto_y}px`);
+        }
+
+        function limparMolduraVisual() {
+            const fotoContainer = document.getElementById('fotoContainerPerfil');
+            const molduraImagem = document.getElementById('molduraImagemPerfil');
+
+            if (fotoContainer) {
+                fotoContainer.classList.remove('tem-moldura');
+                aplicarAjusteVisual(AJUSTE_MOLDURA_PADRAO);
+            }
+
+            if (molduraImagem) {
+                molduraImagem.removeAttribute('src');
+                molduraImagem.alt = '';
+                molduraImagem.dataset.molduraId = '';
+                molduraImagem.classList.remove('ativa');
+            }
+        }
+
+        function aplicarItemMoldura(itemMoldura, ajusteOverride = null) {
+            const fotoContainer = document.getElementById('fotoContainerPerfil');
+            const molduraImagem = document.getElementById('molduraImagemPerfil');
+
+            if (!fotoContainer || !molduraImagem || !itemMoldura || !itemMoldura.imagem) {
+                limparMolduraVisual();
+                return;
+            }
+
+            const ajuste = ajusteOverride || normalizarAjusteMoldura(itemMoldura);
+            fotoContainer.classList.add('tem-moldura');
+            molduraImagem.src = itemMoldura.imagem;
+            molduraImagem.alt = itemMoldura.nome || 'Moldura do perfil';
+            molduraImagem.dataset.molduraId = String(itemMoldura.id || '');
+            molduraImagem.classList.add('ativa');
+            aplicarAjusteVisual(ajuste);
+        }
+
+        function aplicarMolduraAtiva(dados) {
+            if (!dados) {
+                return;
+            }
+
+            const molduraAtivaId =
+                dados.itens_ativos &&
+                dados.itens_ativos.moldura
+                    ? String(dados.itens_ativos.moldura)
+                    : '';
+
+            /*
+             * IMPORTANTE:
+             * O PHP já renderiza a moldura correta antes do JS carregar.
+             * Se a resposta de loja_data.php vier incompleta, NÃO limpamos
+             * a moldura que já está funcionando.
+             */
+            if (!molduraAtivaId) {
+                console.warn(
+                    '⚠️ loja_data.php não informou uma moldura ativa. Mantendo a moldura renderizada pelo PHP.'
+                );
+                return;
+            }
+
+            const itensServidor =
+                Array.isArray(dados.itens)
+                    ? dados.itens
+                    : [];
+
+            const itemServidor =
+                itensServidor.find(function(item) {
+                    return (
+                        String(item.id) === molduraAtivaId &&
+                        item.categoria === 'molduras'
+                    );
+                }) || null;
+
+            const itemCatalogo =
+                Array.isArray(MOLDURAS_CATALOGO)
+                    ? MOLDURAS_CATALOGO.find(function(item) {
+                        return String(item.id) === molduraAtivaId;
+                    }) || null
+                    : null;
+
+            /*
+             * Preferimos os dados atuais da Loja, mas completamos com
+             * ajuste_perfil do catálogo carregado pelo PHP.
+             */
+            let itemMoldura = null;
+
+            if (itemServidor || itemCatalogo) {
+                itemMoldura = {
+                    ...(itemCatalogo || {}),
+                    ...(itemServidor || {}),
+                    ajuste_perfil:
+                        (itemServidor && itemServidor.ajuste_perfil)
+                            ? itemServidor.ajuste_perfil
+                            : (
+                                itemCatalogo &&
+                                itemCatalogo.ajuste_perfil
+                                    ? itemCatalogo.ajuste_perfil
+                                    : {}
+                            )
+                };
+            }
+
+            if (!itemMoldura || !itemMoldura.imagem) {
+                console.warn(
+                    '⚠️ Não foi possível localizar os dados da moldura ativa:',
+                    molduraAtivaId,
+                    '- mantendo a moldura atual.'
+                );
+                return;
+            }
+
+            aplicarItemMoldura(itemMoldura);
+
+            console.log(
+                '🖼️ Moldura aplicada no perfil:',
+                itemMoldura.nome
+            );
+        }
+
         function carregarItensLojaPerfil() {
             const container = document.getElementById('itensLojaPerfil');
             if (!container) {
@@ -518,6 +840,8 @@ $insignias_usuario = getInsigniasUsuario($codigoUsuario);
                 })
                 .then(function(dados) {
                     console.log('📦 Dados da loja:', dados);
+
+                    aplicarMolduraAtiva(dados);
                     
                     if (dados && dados.estrelas !== undefined) {
                         atualizarEstrelasPerfil(dados.estrelas);
@@ -532,10 +856,11 @@ $insignias_usuario = getInsigniasUsuario($codigoUsuario);
                         
                         try {
                             sessionStorage.setItem('itens_loja', JSON.stringify(itensAtivos));
+                            sessionStorage.setItem('itens_ativos_loja', JSON.stringify(dados.itens_ativos || {}));
                             sessionStorage.setItem('estrelas_total', dados.estrelas || 0);
                         } catch (e) {}
                         
-                        renderizarItensPerfil(container, itensAtivos, dados.estrelas || 0);
+                        renderizarItensPerfil(container, itensAtivos, dados.estrelas || 0, dados.itens_ativos || {});
                     } else {
                         container.innerHTML = `
                             <div class="sem-itens-loja">
@@ -582,7 +907,7 @@ $insignias_usuario = getInsigniasUsuario($codigoUsuario);
             }
         }
 
-        function renderizarItensPerfil(container, itens, estrelas) {
+        function renderizarItensPerfil(container, itens, estrelas, itensAtivos = {}) {
             if (!itens || itens.length === 0) {
                 container.innerHTML = `
                     <div class="sem-itens-loja">
@@ -608,12 +933,32 @@ $insignias_usuario = getInsigniasUsuario($codigoUsuario);
                 const categoria = item.categoria || 'geral';
                 const icone = item.icone || 'fa-solid fa-gift';
                 const categoriaTraduzida = categoriasTraduzidas[categoria] || categoria;
-                
+
+                const tiposPorCategoria = {
+                    'temas': 'tema',
+                    'fundos': 'fundo',
+                    'molduras': 'moldura',
+                    'especiais': 'cursor'
+                };
+
+                const tipoEquipavel = tiposPorCategoria[categoria] || null;
+                const estaAtivo =
+                    tipoEquipavel &&
+                    itensAtivos &&
+                    String(itensAtivos[tipoEquipavel] || '') === String(item.id);
+
+                const visualItem =
+                    item.imagem
+                        ? `<img src="${item.imagem}" alt="${item.nome || 'Item'}">`
+                        : `<i class="${icone}"></i>`;
+
                 html += `
-                    <div class="item-loja-perfil">
-                        <div class="icone-item"><i class="${icone}"></i></div>
+                    <div class="item-loja-perfil${estaAtivo ? ' ativo' : ''}">
+                        <div class="icone-item">${visualItem}</div>
                         <div class="nome-item">${item.nome || 'Item'}</div>
-                        <div class="categoria-item">${categoriaTraduzida}</div>
+                        <div class="categoria-item">
+                            ${estaAtivo ? 'ATIVO' : categoriaTraduzida}
+                        </div>
                     </div>
                 `;
             });
@@ -630,9 +975,13 @@ $insignias_usuario = getInsigniasUsuario($codigoUsuario);
             console.log('✅ Itens renderizados:', itens.length, 'itens + estrelas');
         }
 
+        
+
         // ===========================================
         // INICIALIZAR
         // ===========================================
+
+        
 
         setTimeout(carregarItensLojaPerfil, 500);
 
@@ -648,7 +997,7 @@ $insignias_usuario = getInsigniasUsuario($codigoUsuario);
             channel.onmessage = function(evento) {
                 if (evento.data && evento.data.type === 'LOJA_ATUALIZADA') {
                     console.log('📢 Loja atualizada! Recarregando perfil...');
-                    setTimeout(carregarItensLojaPerfil, 300);
+                    setTimeout(carregarItensLojaPerfil, 150);
                 }
             };
             console.log('📡 BroadcastChannel configurado');

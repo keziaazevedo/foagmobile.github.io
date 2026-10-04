@@ -1324,3 +1324,116 @@ body.dark-mode .sem-insignias p {
         font-size: 10px;
     }
 }
+
+/* ===========================================
+   MOLDURA DA LOJA APLICADA AO PERFIL
+   ========================================== */
+
+.foto-container {
+    --moldura-escala: 1.28;
+    --moldura-x: 0px;
+    --moldura-y: 0px;
+    --foto-escala: 1;
+    --foto-x: 0px;
+    --foto-y: 0px;
+}
+
+.moldura-container { overflow: visible; }
+.moldura-borda { z-index: 1; }
+
+.foto-container.tem-moldura .moldura-borda {
+    width: calc(100% * var(--foto-escala));
+    height: calc(100% * var(--foto-escala));
+    position: absolute;
+    top: calc(50% + var(--foto-y));
+    left: calc(50% + var(--foto-x));
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    box-shadow: none;
+    overflow: hidden;
+    transform: translate(-50%, -50%);
+    transform-origin: center;
+}
+
+.moldura-borda .foto-perfil-img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    object-position: center;
+    border-radius: inherit;
+}
+
+.foto-container.tem-moldura .moldura-borda .foto-perfil-img {
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+.foto-container .moldura-imagem-perfil {
+    width: calc(100% * var(--moldura-escala));
+    height: calc(100% * var(--moldura-escala));
+    position: absolute;
+    top: calc(50% + var(--moldura-y));
+    left: calc(50% + var(--moldura-x));
+    z-index: 4;
+    display: none;
+    object-fit: contain;
+    object-position: center;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    pointer-events: none;
+    user-select: none;
+    transform: translate(-50%, -50%);
+    transform-origin: center;
+}
+
+.foto-container .moldura-imagem-perfil.ativa { display: block; }
+.foto-status { z-index: 6; }
+
+
+/* Miniaturas reais dos itens da Loja dentro do Perfil. */
+.item-loja-perfil .icone-item {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.item-loja-perfil .icone-item img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+}
+
+.item-loja-perfil.ativo {
+    position: relative;
+    border-color: #36c66f !important;
+    background: #f2fff7 !important;
+}
+
+.item-loja-perfil.ativo::after {
+    content: "✓";
+    width: 19px;
+    height: 19px;
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #36c66f;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+body.dark-mode .item-loja-perfil.ativo {
+    border-color: #36c66f !important;
+    background: #10251a !important;
+}
+
