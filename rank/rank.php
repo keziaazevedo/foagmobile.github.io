@@ -735,6 +735,23 @@ foreach ($pastasUsuarios as $pasta) {
 }
 
 // ======================================
+// ESTRELAS DO USUÁRIO ATUAL
+// ======================================
+
+$estrelasUsuarioAtual = 0;
+
+foreach ($usuarios as $usuarioCarregado) {
+    if (
+        (string)($usuarioCarregado['codigo_usuario'] ?? '')
+        === (string)$codigoUsuario
+    ) {
+        $estrelasUsuarioAtual =
+            (int)($usuarioCarregado['estrelas'] ?? 0);
+        break;
+    }
+}
+
+// ======================================
 // FILTRAR POR NÍVEL
 // ======================================
 
@@ -1031,7 +1048,7 @@ $rankings = [
     'estrelas' => [
 
         'titulo' =>
-            '⭐ Estrelas',
+            'Estrelas',
 
         'icone' =>
             '⭐',
@@ -1055,7 +1072,7 @@ $rankings = [
     'pomodoro' => [
 
         'titulo' =>
-            '⏱️ Foco',
+            'Foco',
 
         'icone' =>
             '⏱️',
@@ -1081,7 +1098,7 @@ $rankings = [
     'notas' => [
 
         'titulo' =>
-            '📚 Desempenho',
+            'Desempenho',
 
         'icone' =>
             '📚',
@@ -1305,7 +1322,7 @@ function renderAvatarRankingHtml($jogador, $classeExtra = '')
 
     <link
         rel="stylesheet"
-        href="rank.css?v=4"
+        href="rank.css?v=5"
     >
 
     <link
@@ -1315,7 +1332,7 @@ function renderAvatarRankingHtml($jogador, $classeExtra = '')
 
     <link
         rel="stylesheet"
-        href="dark_rank.css?v=4"
+        href="dark_rank.css?v=5"
     >
 
     <!-- ACESSIBILIDADE GLOBAL -->
@@ -1510,19 +1527,32 @@ function renderAvatarRankingHtml($jogador, $classeExtra = '')
 
     <div class="ranking-header">
         <div class="ranking-titulo">
+            <span class="ranking-kicker">Competição saudável • progresso real</span>
+
             <h1>
                 <i class="fa-solid fa-trophy"></i>
                 Ranking FOAG
             </h1>
+
             <p>
-                Estude, evolua e suba de posição entre outros estudantes.
+                Estude, evolua e acompanhe sua posição entre outros estudantes.
             </p>
+
+            <div class="ranking-titulo-pill" id="rankingTituloPill">
+                <i class="fa-solid fa-star"></i>
+                <span>Categoria ativa: Estrelas</span>
+            </div>
         </div>
 
-        <div class="ranking-header-posicao">
-            <span class="header-posicao-label">Sua posição</span>
-            <strong id="headerMinhaPosicao">—</strong>
-            <small id="headerMinhaPosicaoLegenda">Nacional • Estrelas</small>
+        <div class="ranking-header-estrelas" aria-live="polite" aria-label="Resumo da sua pontuação no ranking">
+            <span class="header-estrelas-label" id="headerResumoLabel">Suas estrelas</span>
+
+            <strong class="header-estrelas-valor">
+                <i class="fa-solid fa-star" id="headerResumoIcone"></i>
+                <span id="headerResumoValor"><?= number_format($estrelasUsuarioAtual, 0, ',', '.') ?></span>
+            </strong>
+
+            <small id="headerResumoTexto">Categoria Estrelas • Nacional</small>
         </div>
     </div>
 
@@ -1585,6 +1615,12 @@ function renderAvatarRankingHtml($jogador, $classeExtra = '')
                 $ranking = $rankings[$key];
                 $ativo = $index === 0 ? 'active' : '';
                 $totalEstudantes = count($ranking['niveis']['nacional']['jogadores']);
+
+                $descricaoCategoria = [
+                    'estrelas' => 'Conquistas e progresso',
+                    'pomodoro' => 'Tempo de estudo focado',
+                    'notas' => 'Média escolar'
+                ][$key] ?? '';
                 ?>
 
                 <button
@@ -1593,8 +1629,16 @@ function renderAvatarRankingHtml($jogador, $classeExtra = '')
                     data-categoria="<?= htmlspecialchars($key) ?>"
                 >
                     <span class="item-icone"><?= htmlspecialchars($ranking['icone']) ?></span>
-                    <span class="item-nome"><?= htmlspecialchars($ranking['titulo']) ?></span>
-                    <span class="item-badge"><?= $totalEstudantes ?></span>
+
+                    <span class="item-textos">
+                        <strong class="item-nome"><?= htmlspecialchars($ranking['titulo']) ?></strong>
+                        <small class="item-descricao"><?= htmlspecialchars($descricaoCategoria) ?></small>
+                    </span>
+
+                    <span class="item-badge" title="Estudantes neste ranking">
+                        <?= $totalEstudantes ?>
+                    </span>
+
                     <span class="indicador-ativo"></span>
                 </button>
             <?php endforeach; ?>
@@ -2003,6 +2047,29 @@ document.addEventListener('DOMContentLoaded', function () {
     const escolaScopes = document.querySelectorAll('.escola-scope');
     const headerMinhaPosicao = document.getElementById('headerMinhaPosicao');
     const headerMinhaPosicaoLegenda = document.getElementById('headerMinhaPosicaoLegenda');
+    const headerResumoLabel = document.getElementById('headerResumoLabel');
+    const headerResumoValor = document.getElementById('headerResumoValor');
+    const headerResumoTexto = document.getElementById('headerResumoTexto');
+    const headerResumoIcone = document.getElementById('headerResumoIcone');
+    const rankingTituloPill = document.getElementById('rankingTituloPill');
+
+    const resumoCategoria = {
+        estrelas: {
+            label: 'Suas estrelas',
+            icon: 'fa-star',
+            texto: 'Total acumulado nesta categoria'
+        },
+        pomodoro: {
+            label: 'Seu tempo de foco',
+            icon: 'fa-clock',
+            texto: 'Tempo acumulado em sessões focadas'
+        },
+        notas: {
+            label: 'Sua média',
+            icon: 'fa-book-open',
+            texto: 'Desempenho escolar cadastrado'
+        }
+    };
 
     let nivelAtual = 'nacional';
     let escolaScopeAtual = 'escola';
@@ -2026,6 +2093,22 @@ document.addEventListener('DOMContentLoaded', function () {
         return indice >= 0
             ? { indice, jogador: jogadores[indice], posicao: indice + 1 }
             : null;
+    }
+
+    function obterResumoUsuario(categoria, nivel) {
+        const listaAtual = jogadoresDa(categoria, nivel);
+        const atualNoNivel = encontrarUsuario(listaAtual);
+
+        if (atualNoNivel) {
+            return atualNoNivel;
+        }
+
+        if (nivel !== 'nacional') {
+            const listaNacional = jogadoresDa(categoria, 'nacional');
+            return encontrarUsuario(listaNacional);
+        }
+
+        return null;
     }
 
     function formatarDiferenca(categoria, diferenca) {
@@ -2079,6 +2162,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const nivel = nivelEfetivo();
         const jogadores = jogadoresDa(categoriaAtual, nivel);
         const atual = encontrarUsuario(jogadores);
+        const resumoAtual = obterResumoUsuario(categoriaAtual, nivel);
+        const configResumo = resumoCategoria[categoriaAtual] || resumoCategoria.estrelas;
+        const nomeNivel = nomesNivelCurto[nivel] || nivel;
+        const nomeCategoria = nomesCategoriaCurto[categoriaAtual] || categoriaAtual;
 
         if (headerMinhaPosicao) {
             headerMinhaPosicao.textContent = atual ? `#${atual.posicao}` : '—';
@@ -2086,7 +2173,30 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (headerMinhaPosicaoLegenda) {
             headerMinhaPosicaoLegenda.textContent =
-                `${nomesNivelCurto[nivel] || nivel} • ${nomesCategoriaCurto[categoriaAtual] || categoriaAtual}`;
+                `${nomeNivel} • ${nomeCategoria}`;
+        }
+
+        if (headerResumoLabel) {
+            headerResumoLabel.textContent = configResumo.label;
+        }
+
+        if (headerResumoValor) {
+            headerResumoValor.textContent = resumoAtual?.jogador?.valor ?? '—';
+        }
+
+        if (headerResumoTexto) {
+            headerResumoTexto.textContent = `${nomeCategoria} • ${nomeNivel}`;
+        }
+
+        if (headerResumoIcone) {
+            headerResumoIcone.className = `fa-solid ${configResumo.icon}`;
+        }
+
+        if (rankingTituloPill) {
+            rankingTituloPill.innerHTML = `
+                <i class="fa-solid ${configResumo.icon}"></i>
+                <span>Categoria ativa: ${nomeCategoria}</span>
+            `;
         }
     }
 

@@ -3006,3 +3006,581 @@ body.dark-mode
     }
     .valor-bloco .valor { font-size: 15px !important; }
 }
+
+
+
+/* =====================================================
+   AJUSTE — SALDO DE ESTRELAS + CATEGORIAS MAIS VISÍVEIS
+===================================================== */
+
+/* -----------------------------------------------------
+   SALDO DE ESTRELAS NO TOPO
+----------------------------------------------------- */
+
+.ranking-header-estrelas {
+    min-width: 190px;
+    padding: 13px 16px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+
+    border: 1px solid #e5edf4;
+    border-radius: 16px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 5px 16px
+        rgba(23, 56, 82, .05);
+}
+
+.header-estrelas-label {
+    color: #738596;
+
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .65px;
+}
+
+.header-estrelas-valor {
+    margin: 2px 0;
+
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    color: #1f2d3d;
+
+    font-size: 27px;
+    font-weight: 800;
+    line-height: 1.05;
+}
+
+.header-estrelas-valor i {
+    color: #f3bd18;
+    font-size: 22px;
+}
+
+.ranking-header-estrelas small {
+    color: #8a99a7;
+    font-size: 10px;
+}
+
+/* garante que o antigo bloco escondido não afete o novo */
+.ranking-header-posicao {
+    display: none !important;
+}
+
+/* -----------------------------------------------------
+   CATEGORIAS — 3 CARDS BEM VISÍVEIS
+----------------------------------------------------- */
+
+.rank-menu-lateral {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+
+    margin: 0 0 20px !important;
+    padding: 0 !important;
+
+    display: grid !important;
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr)) !important;
+
+    gap: 12px !important;
+
+    overflow: visible !important;
+
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+.rank-menu-lateral .menu-titulo {
+    display: none !important;
+}
+
+.rank-menu-lateral .menu-item {
+    width: 100% !important;
+    min-height: 86px !important;
+
+    padding: 14px 15px !important;
+
+    position: relative !important;
+
+    display: grid !important;
+    grid-template-columns: 48px minmax(0, 1fr) auto !important;
+    align-items: center !important;
+
+    gap: 11px !important;
+
+    border: 1px solid #dfe8f0 !important;
+    border-radius: 18px !important;
+
+    background: #ffffff !important;
+    color: #27394a !important;
+
+    text-align: left !important;
+
+    box-shadow:
+        0 5px 16px
+        rgba(24, 58, 82, .045) !important;
+
+    transform: none !important;
+
+    transition:
+        border-color .18s ease,
+        box-shadow .18s ease,
+        transform .18s ease,
+        background .18s ease !important;
+}
+
+.rank-menu-lateral .menu-item:hover {
+    transform: translateY(-2px) !important;
+
+    border-color: #bfdaee !important;
+
+    background: #ffffff !important;
+
+    box-shadow:
+        0 9px 22px
+        rgba(24, 58, 82, .075) !important;
+}
+
+.rank-menu-lateral .menu-item .item-icone {
+    width: 48px !important;
+    height: 48px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    border-radius: 14px !important;
+
+    font-size: 25px !important;
+}
+
+.rank-menu-lateral
+.menu-item[data-categoria="estrelas"]
+.item-icone {
+    background: #fff7d8 !important;
+}
+
+.rank-menu-lateral
+.menu-item[data-categoria="pomodoro"]
+.item-icone {
+    background: #eaf8ef !important;
+}
+
+.rank-menu-lateral
+.menu-item[data-categoria="notas"]
+.item-icone {
+    background: #f5ebfb !important;
+}
+
+.rank-menu-lateral .item-textos {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+.rank-menu-lateral .menu-item .item-nome {
+    color: #223547 !important;
+
+    font-size: 16px !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
+}
+
+.rank-menu-lateral .menu-item .item-descricao {
+    overflow: hidden;
+
+    color: #81909e;
+
+    font-size: 10.5px;
+    line-height: 1.35;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.rank-menu-lateral .menu-item .item-badge {
+    min-width: 30px !important;
+    height: 30px !important;
+
+    margin: 0 !important;
+    padding: 0 7px !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    border-radius: 10px !important;
+
+    background: #f2f6f9 !important;
+    color: #718394 !important;
+
+    font-size: 10px !important;
+    font-weight: 800 !important;
+}
+
+.rank-menu-lateral .menu-item.active {
+    border-color: #78bff5 !important;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f4faff,
+            #ffffff
+        ) !important;
+
+    color: #223547 !important;
+
+    box-shadow:
+        0 0 0 2px rgba(56, 165, 255, .10),
+        0 8px 20px rgba(56, 165, 255, .10) !important;
+}
+
+.rank-menu-lateral .menu-item.active::after {
+    content: '';
+
+    width: 38px;
+    height: 3px;
+
+    position: absolute;
+    left: 50%;
+    bottom: -1px;
+
+    border-radius: 999px 999px 0 0;
+
+    background: #38a5ff;
+
+    transform: translateX(-50%);
+}
+
+.rank-menu-lateral .menu-item.active .item-nome {
+    color: #2185d0 !important;
+}
+
+.rank-menu-lateral .menu-item.active .item-badge {
+    background: #e7f4ff !important;
+    color: #2787d0 !important;
+}
+
+.rank-menu-lateral .menu-item .indicador-ativo {
+    display: none !important;
+}
+
+/* -----------------------------------------------------
+   DARK MODE
+----------------------------------------------------- */
+
+body.dark-mode .ranking-header-estrelas {
+    border-color: #283b50;
+    background: #122033;
+    box-shadow: none;
+}
+
+body.dark-mode .header-estrelas-label,
+body.dark-mode .ranking-header-estrelas small {
+    color: #94a7b8;
+}
+
+body.dark-mode .header-estrelas-valor {
+    color: #e6eef7;
+}
+
+body.dark-mode .rank-menu-lateral .menu-item {
+    border-color: #263a50 !important;
+    background: #122033 !important;
+    box-shadow: none !important;
+}
+
+body.dark-mode .rank-menu-lateral .menu-item:hover {
+    border-color: #36536e !important;
+    background: #16263a !important;
+}
+
+body.dark-mode .rank-menu-lateral .menu-item .item-nome {
+    color: #e0eaf4 !important;
+}
+
+body.dark-mode .rank-menu-lateral .menu-item .item-descricao {
+    color: #91a3b4;
+}
+
+body.dark-mode .rank-menu-lateral .menu-item .item-badge {
+    background: #1d2d41 !important;
+    color: #b5c5d4 !important;
+}
+
+body.dark-mode .rank-menu-lateral .menu-item.active {
+    border-color: #3b86bf !important;
+    background: #152a40 !important;
+}
+
+body.dark-mode .rank-menu-lateral .menu-item.active .item-nome {
+    color: #80c8ff !important;
+}
+
+body.dark-mode .rank-menu-lateral .menu-item.active .item-badge {
+    background: #193a56 !important;
+    color: #8bd0ff !important;
+}
+
+/* -----------------------------------------------------
+   RESPONSIVO
+----------------------------------------------------- */
+
+@media (max-width: 900px) {
+    .rank-menu-lateral {
+        grid-template-columns:
+            repeat(3, minmax(190px, 1fr)) !important;
+
+        overflow-x: auto !important;
+        padding-bottom: 5px !important;
+        scrollbar-width: none;
+    }
+
+    .rank-menu-lateral::-webkit-scrollbar {
+        display: none;
+    }
+
+    .rank-menu-lateral .menu-item {
+        min-width: 190px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .ranking-header-estrelas {
+        width: 100%;
+        min-width: 0;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 560px) {
+    .rank-menu-lateral {
+        grid-template-columns:
+            repeat(3, minmax(180px, 1fr)) !important;
+
+        gap: 9px !important;
+    }
+
+    .rank-menu-lateral .menu-item {
+        min-height: 78px !important;
+        min-width: 180px !important;
+        padding: 11px 12px !important;
+        grid-template-columns: 42px minmax(0, 1fr) auto !important;
+    }
+
+    .rank-menu-lateral .menu-item .item-icone {
+        width: 42px !important;
+        height: 42px !important;
+        font-size: 22px !important;
+    }
+
+    .rank-menu-lateral .menu-item .item-nome {
+        font-size: 14px !important;
+    }
+
+    .rank-menu-lateral .menu-item .item-descricao {
+        font-size: 9.5px !important;
+    }
+}
+
+/* =====================================================
+   AJUSTE EXTRA — CABEÇALHO MAIS CHAMATIVO E DINÂMICO
+===================================================== */
+
+.ranking-header {
+    padding: 22px 24px !important;
+    border: 1px solid #e3edf6 !important;
+    border-radius: 24px !important;
+    background:
+        radial-gradient(circle at top left, rgba(56,165,255,.10), transparent 32%),
+        linear-gradient(135deg, #f8fcff 0%, #ffffff 55%, #f7fbff 100%) !important;
+    box-shadow: 0 10px 28px rgba(26, 60, 87, .06) !important;
+    gap: 18px !important;
+}
+
+.ranking-titulo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.ranking-kicker {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 11px;
+    border-radius: 999px;
+    background: #eaf6ff;
+    color: #2f8ed8;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .3px;
+    text-transform: uppercase;
+}
+
+.ranking-titulo h1 {
+    margin: 0 !important;
+    color: #18354b !important;
+    font-size: 38px !important;
+    font-weight: 800 !important;
+    line-height: 1.08 !important;
+    letter-spacing: -.6px !important;
+}
+
+.ranking-titulo h1 i {
+    color: #38a5ff !important;
+    margin-right: 6px;
+}
+
+.ranking-titulo p {
+    max-width: 560px;
+    margin: 0 !important;
+    color: #688093 !important;
+    font-size: 15px !important;
+    line-height: 1.55 !important;
+}
+
+.ranking-titulo-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border: 1px solid #dceaf7;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, .8);
+    color: #25435a;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
+}
+
+.ranking-titulo-pill i {
+    color: #38a5ff;
+    font-size: 13px;
+}
+
+.ranking-header-estrelas {
+    min-width: 230px !important;
+    padding: 16px 18px !important;
+    border-radius: 20px !important;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%) !important;
+    box-shadow: 0 8px 24px rgba(23, 56, 82, .07) !important;
+}
+
+.header-estrelas-label {
+    font-size: 10px !important;
+    letter-spacing: .8px !important;
+}
+
+.header-estrelas-valor {
+    margin: 4px 0 3px !important;
+    font-size: 32px !important;
+    line-height: 1 !important;
+}
+
+.header-estrelas-valor i {
+    font-size: 24px !important;
+}
+
+.ranking-header-estrelas small {
+    font-size: 11px !important;
+    line-height: 1.35;
+}
+
+body.dark-mode .ranking-header {
+    border-color: #223649 !important;
+    background:
+        radial-gradient(circle at top left, rgba(56,165,255,.12), transparent 34%),
+        linear-gradient(135deg, #0f1d2e 0%, #112133 58%, #13263b 100%) !important;
+    box-shadow: none !important;
+}
+
+body.dark-mode .ranking-kicker {
+    background: #14304b;
+    color: #8ed2ff;
+}
+
+body.dark-mode .ranking-titulo h1 {
+    color: #edf5fb !important;
+}
+
+body.dark-mode .ranking-titulo p {
+    color: #9bb0c2 !important;
+}
+
+body.dark-mode .ranking-titulo-pill {
+    border-color: #2a4054;
+    background: rgba(17, 33, 51, .88);
+    color: #d9e7f3;
+    box-shadow: none;
+}
+
+body.dark-mode .ranking-titulo-pill i {
+    color: #80c8ff;
+}
+
+@media (max-width: 900px) {
+    .ranking-header {
+        padding: 20px 18px !important;
+    }
+
+    .ranking-titulo h1 {
+        font-size: 33px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .ranking-header {
+        gap: 14px !important;
+    }
+
+    .ranking-kicker {
+        font-size: 10px;
+    }
+
+    .ranking-titulo h1 {
+        font-size: 29px !important;
+    }
+
+    .ranking-titulo p {
+        font-size: 14px !important;
+    }
+
+    .ranking-titulo-pill {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .ranking-header-estrelas {
+        width: 100%;
+        min-width: 0 !important;
+        align-items: flex-start !important;
+    }
+}
+
+@media (max-width: 560px) {
+    .ranking-header {
+        padding: 17px 15px !important;
+        border-radius: 20px !important;
+    }
+
+    .ranking-titulo h1 {
+        font-size: 25px !important;
+    }
+
+    .header-estrelas-valor {
+        font-size: 28px !important;
+    }
+}

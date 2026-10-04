@@ -1065,13 +1065,6 @@ $lojaData = [
                     Veja como o item aparece antes de comprar.
                 </p>
 
-                <button
-                    type="button"
-                    class="btn-preview-voltar"
-                    id="previewVoltar"
-                >
-                    Fechar preview
-                </button>
             </div>
         </div>
 
