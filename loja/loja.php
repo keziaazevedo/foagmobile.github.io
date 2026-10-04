@@ -502,7 +502,7 @@ $lojaData = [
 
     <link
         rel="stylesheet"
-        href="loja.css"
+        href="loja.css?v=2"
     >
 
     <link

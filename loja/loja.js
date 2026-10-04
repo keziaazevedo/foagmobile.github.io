@@ -635,6 +635,15 @@ document.addEventListener(
                     card.className =
                         'item-card';
 
+                    if (
+                        item.categoria ===
+                        'emojis'
+                    ) {
+                        card.classList.add(
+                            'item-card-emoji'
+                        );
+                    }
+
 
                     const status =
                         getStatusItem(
@@ -684,7 +693,7 @@ document.addEventListener(
                                         <img
                                             src="${item.imagem}"
                                             alt="${item.nome}"
-                                            class="item-imagem"
+                                            class="item-imagem${item.categoria === 'emojis' ? ' emoji-imagem' : ''}"
                                         >
 
                                     `
@@ -864,6 +873,19 @@ document.addEventListener(
                 modalIcone
             ) {
 
+                modalIcone.classList.remove(
+                    'modal-icon-emoji'
+                );
+
+                if (
+                    item.categoria ===
+                    'emojis'
+                ) {
+                    modalIcone.classList.add(
+                        'modal-icon-emoji'
+                    );
+                }
+
                 const temImagem =
                     item.imagem &&
                     String(
@@ -881,7 +903,7 @@ document.addEventListener(
                             <img
                                 src="${item.imagem}"
                                 alt="${item.nome}"
-                                class="modal-item-imagem"
+                                class="modal-item-imagem${item.categoria === 'emojis' ? ' modal-emoji-imagem' : ''}"
                             >
 
                         `
