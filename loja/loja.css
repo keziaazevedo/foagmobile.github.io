@@ -1790,3 +1790,3012 @@ body.dark-mode
         height: 74px;
     }
 }
+
+
+
+/* =====================================================
+   ESTADO VAZIO — LOJA
+   ===================================================== */
+
+.sem-itens {
+    grid-column: 1 / -1;
+
+    width: 100%;
+    min-height: 330px;
+    padding: 42px 24px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    border: 1px dashed #cfdce7;
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff 0%,
+            #f8fbfe 100%
+        );
+}
+
+.sem-itens-icone {
+    width: 74px;
+    height: 74px;
+
+    margin-bottom: 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 22px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #e9f5ff,
+            #f5faff
+        );
+
+    color: #38a5ff;
+    font-size: 29px;
+
+    box-shadow:
+        inset 0 0 0 1px
+        rgba(56, 165, 255, .10),
+        0 8px 24px
+        rgba(56, 165, 255, .10);
+}
+
+.sem-itens h3 {
+    margin: 0 0 7px;
+
+    color: #1a2a3a;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.sem-itens p {
+    max-width: 440px;
+    margin: 0;
+
+    color: #718096;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.btn-ver-todos-itens {
+    margin-top: 20px;
+    padding: 9px 16px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    border: 1px solid #cfe7fa;
+    border-radius: 10px;
+
+    background: #eef8ff;
+    color: #2587d5;
+
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        transform .2s ease,
+        background .2s ease,
+        border-color .2s ease;
+}
+
+.btn-ver-todos-itens:hover {
+    transform: translateY(-1px);
+
+    border-color: #38a5ff;
+    background: #e2f3ff;
+}
+
+/* Dark mode */
+body.dark-mode .sem-itens {
+    border-color: #334155;
+
+    background:
+        linear-gradient(
+            180deg,
+            #111827 0%,
+            #0f172a 100%
+        );
+}
+
+body.dark-mode .sem-itens-icone {
+    background: #172a40;
+    color: #72bdff;
+
+    box-shadow:
+        inset 0 0 0 1px
+        rgba(114, 189, 255, .10);
+}
+
+body.dark-mode .sem-itens h3 {
+    color: #e2e8f0;
+}
+
+body.dark-mode .sem-itens p {
+    color: #94a3b8;
+}
+
+body.dark-mode .btn-ver-todos-itens {
+    border-color: #294965;
+    background: #132b40;
+    color: #83c7ff;
+}
+
+body.dark-mode .btn-ver-todos-itens:hover {
+    border-color: #4faef7;
+    background: #183650;
+}
+
+@media (max-width: 600px) {
+    .sem-itens {
+        min-height: 270px;
+        padding: 32px 18px;
+    }
+
+    .sem-itens-icone {
+        width: 64px;
+        height: 64px;
+        border-radius: 18px;
+        font-size: 25px;
+    }
+
+    .sem-itens h3 {
+        font-size: 15px;
+    }
+
+    .sem-itens p {
+        font-size: 11px;
+    }
+}
+
+
+
+/* =====================================================
+   STATUS DOS ITENS — PADRÃO ÚNICO
+   ===================================================== */
+
+/*
+   Todos os estados usam a mesma estrutura.
+   A cor comunica o estado, sem mudar tamanho ou posição.
+*/
+.item-card .status {
+    width: 100%;
+    min-height: 36px;
+
+    margin-top: 2px;
+    padding: 8px 12px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    border: 1px solid transparent;
+    border-radius: 10px;
+
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+
+    transition:
+        transform .2s ease,
+        background .2s ease,
+        border-color .2s ease,
+        box-shadow .2s ease;
+}
+
+.item-card .status i {
+    font-size: 10px;
+}
+
+.item-card .status span {
+    white-space: nowrap;
+}
+
+/* ------------------------------
+   COMPRAR
+------------------------------ */
+
+.item-card .status.disponivel {
+    border-color: #c8e6fb;
+    background: #edf8ff;
+    color: #2588d8;
+}
+
+.item-card:hover .status.disponivel {
+    border-color: #38a5ff;
+    background: #e2f3ff;
+
+    box-shadow:
+        0 4px 12px
+        rgba(56, 165, 255, .10);
+}
+
+/* ------------------------------
+   COMPRADO
+------------------------------ */
+
+.item-card .status.comprado {
+    border-color: #dce6ee;
+    background: #f5f8fa;
+    color: #647789;
+}
+
+/*
+   Em item comprado/equipável, o card continua clicável.
+   O status permanece neutro para não confundir "comprado"
+   com "já em uso".
+*/
+.item-card:has(.status.comprado):hover
+.status.comprado {
+    border-color: #c4d5e3;
+    background: #edf3f7;
+    color: #536779;
+}
+
+/* ------------------------------
+   ATIVO
+------------------------------ */
+
+.item-card .status.ativo {
+    border-color: #c8ebd4;
+    background: #ecfaf1;
+    color: #299456;
+}
+
+.item-card .status.ativo i {
+    width: 18px;
+    height: 18px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #35bd68;
+    color: #ffffff;
+
+    font-size: 8px;
+}
+
+.item-card:has(.status.ativo) {
+    border-color: #bfe6cc;
+}
+
+.item-card:has(.status.ativo):hover {
+    border-color: #74cc91;
+}
+
+/* ------------------------------
+   SALDO INSUFICIENTE
+------------------------------ */
+
+.item-card .status.insuficiente {
+    border-color: #edd9dc;
+    background: #fbf3f4;
+    color: #a46770;
+}
+
+.item-card .status.insuficiente i {
+    color: #b77982;
+}
+
+/*
+   Não precisa mais do badge absoluto "ATIVO";
+   o próprio status mostra isso.
+*/
+.item-card .badge-ativo {
+    display: none !important;
+}
+
+/* =====================================================
+   DARK MODE
+   ===================================================== */
+
+body.dark-mode
+.item-card .status.disponivel {
+    border-color: #284c68;
+    background: #122b40;
+    color: #7fc5fb;
+}
+
+body.dark-mode
+.item-card .status.comprado {
+    border-color: #334155;
+    background: #1a2331;
+    color: #a8b4c0;
+}
+
+body.dark-mode
+.item-card .status.ativo {
+    border-color: #2b6740;
+    background: #142d1d;
+    color: #74db96;
+}
+
+body.dark-mode
+.item-card .status.insuficiente {
+    border-color: #5a3940;
+    background: #2b1b1e;
+    color: #d89ba4;
+}
+
+body.dark-mode
+.item-card:has(.status.ativo) {
+    border-color: #326d48;
+}
+
+/* =====================================================
+   MOBILE
+   ===================================================== */
+
+@media (max-width: 480px) {
+    .item-card .status {
+        min-height: 33px;
+        padding: 7px 8px;
+        gap: 5px;
+
+        font-size: 9px;
+    }
+
+    .item-card .status i {
+        font-size: 9px;
+    }
+
+    .item-card .status.ativo i {
+        width: 16px;
+        height: 16px;
+        font-size: 7px;
+    }
+}
+
+
+
+/* =====================================================
+   REFINO COMPLETO — LOJA FOAG
+   ===================================================== */
+
+:root {
+    --loja-azul: #38a5ff;
+    --loja-azul-escuro: #247fc8;
+    --loja-texto: #1d2d3d;
+    --loja-suave: #718096;
+    --loja-borda: #dde6ee;
+    --loja-card: #ffffff;
+    --loja-fundo: #f5f7fb;
+}
+
+/* =====================================================
+   HEADER MAIS COMPACTO + COLEÇÃO
+   ===================================================== */
+
+.loja-header {
+    padding: 22px 26px;
+    border-radius: 18px;
+}
+
+.loja-titulo h1 {
+    font-size: 25px;
+}
+
+.loja-titulo p {
+    font-size: 12px;
+}
+
+.loja-saldo {
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.saldo-estrelas,
+.tempo-estudo,
+.colecao-header-resumo {
+    min-height: 54px;
+    padding: 9px 13px;
+    border-radius: 12px;
+}
+
+.saldo-estrelas,
+.tempo-estudo {
+    gap: 7px;
+    font-size: 18px;
+}
+
+.colecao-header-resumo {
+    width: 185px;
+    background: rgba(255, 255, 255, .15);
+    backdrop-filter: blur(10px);
+}
+
+.colecao-header-topo {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 9px;
+    opacity: .95;
+}
+
+.colecao-header-topo span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.colecao-header-topo strong {
+    font-size: 10px;
+}
+
+.colecao-header-barra {
+    height: 5px;
+    margin-top: 7px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .20);
+}
+
+.colecao-header-barra span {
+    width: 0;
+    height: 100%;
+    display: block;
+    border-radius: inherit;
+    background: #ffffff;
+    transition: width .35s ease;
+}
+
+.saldo-estrelas.saldo-animando {
+    animation: saldoFoagPop .7s ease;
+}
+
+@keyframes saldoFoagPop {
+    0%, 100% { transform: scale(1); }
+    35% { transform: scale(1.08) rotate(-1deg); }
+    65% { transform: scale(1.03) rotate(1deg); }
+}
+
+/* =====================================================
+   VITRINES OPCIONAIS
+   ===================================================== */
+
+.loja-vitrines {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.vitrine-bloco {
+    min-width: 0;
+    padding: 16px;
+    border: 1px solid var(--loja-borda);
+    border-radius: 16px;
+    background: #ffffff;
+}
+
+.vitrine-cabecalho {
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: flex-end;
+}
+
+.vitrine-selo {
+    color: var(--loja-azul);
+    font-size: 8px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+}
+
+.vitrine-selo.destaque {
+    color: #a56c00;
+}
+
+.vitrine-cabecalho h2 {
+    margin-top: 1px;
+    color: var(--loja-texto);
+    font-size: 15px;
+}
+
+.vitrine-ver {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--loja-azul);
+    font: inherit;
+    font-size: 9px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.vitrine-itens {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.vitrine-mini-card {
+    min-width: 0;
+    padding: 9px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid #edf1f5;
+    border-radius: 11px;
+    background: #fbfcfd;
+    text-align: left;
+    cursor: pointer;
+}
+
+.vitrine-mini-imagem {
+    width: 45px;
+    height: 45px;
+    flex: 0 0 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vitrine-mini-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.vitrine-mini-info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.vitrine-mini-info small {
+    color: var(--loja-suave);
+    font-size: 7px;
+    text-transform: uppercase;
+}
+
+.vitrine-mini-info strong {
+    overflow: hidden;
+    color: var(--loja-texto);
+    font-size: 9px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.vitrine-mini-info > span {
+    margin-top: 2px;
+    color: #c99800;
+    font-size: 8px;
+}
+
+/* =====================================================
+   FILTROS — STICKY + CONTADOR
+   ===================================================== */
+
+.loja-filtros {
+    position: sticky;
+    top: 8px;
+    z-index: 80;
+
+    padding: 10px;
+    gap: 7px;
+
+    border: 1px solid rgba(221, 230, 238, .88);
+    border-radius: 14px;
+
+    background: rgba(245, 247, 251, .88);
+    backdrop-filter: blur(12px);
+
+    box-shadow: 0 6px 18px rgba(30, 63, 88, .05);
+}
+
+.filtro-btn {
+    min-height: 35px;
+    padding: 7px 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    border-width: 1px;
+    font-size: 10px;
+}
+
+.filtro-btn i {
+    margin-right: 1px;
+}
+
+.filtro-count {
+    min-width: 19px;
+    height: 19px;
+    padding: 0 5px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 999px;
+
+    background: #eef2f6;
+    color: #7a8794;
+
+    font-size: 8px;
+    font-weight: 800;
+}
+
+.filtro-btn.active .filtro-count {
+    background: rgba(255,255,255,.20);
+    color: #ffffff;
+}
+
+/* =====================================================
+   PAINEL MEUS ITENS
+   ===================================================== */
+
+.colecao-painel {
+    padding: 16px 18px;
+
+    display: grid;
+    grid-template-columns: minmax(260px, 1fr) 210px;
+    gap: 15px 22px;
+    align-items: center;
+
+    border: 1px solid #d9e9f5;
+    border-radius: 16px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f8fcff,
+            #ffffff
+        );
+}
+
+.colecao-painel[hidden] {
+    display: none !important;
+}
+
+.colecao-painel-info {
+    display: flex;
+    gap: 11px;
+    align-items: center;
+}
+
+.colecao-painel-icone {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background: #eaf6ff;
+    color: var(--loja-azul);
+}
+
+.colecao-painel-sobretitulo {
+    color: var(--loja-azul);
+    font-size: 7px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .75px;
+}
+
+.colecao-painel-info h2 {
+    margin: 1px 0;
+    color: var(--loja-texto);
+    font-size: 14px;
+}
+
+.colecao-painel-info p {
+    margin: 0;
+    color: var(--loja-suave);
+    font-size: 9px;
+}
+
+.colecao-painel-numeros {
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.colecao-painel-numeros strong {
+    color: var(--loja-texto);
+    font-size: 11px;
+}
+
+.colecao-painel-numeros span {
+    color: var(--loja-azul);
+    font-size: 9px;
+    font-weight: 800;
+}
+
+.colecao-painel-barra {
+    height: 7px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #e8eef3;
+}
+
+.colecao-painel-barra span {
+    width: 0;
+    height: 100%;
+    display: block;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #38a5ff, #78c6ff);
+    transition: width .35s ease;
+}
+
+.colecao-em-uso {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.colecao-em-uso-label,
+.colecao-em-uso-item,
+.colecao-em-uso-vazio {
+    padding: 5px 8px;
+    border-radius: 8px;
+    font-size: 8px;
+}
+
+.colecao-em-uso-label {
+    background: #eaf6ff;
+    color: var(--loja-azul);
+    font-weight: 800;
+}
+
+.colecao-em-uso-item {
+    display: inline-flex;
+    gap: 5px;
+    align-items: center;
+    background: #f0f4f7;
+    color: #5f7181;
+}
+
+.colecao-em-uso-vazio {
+    color: var(--loja-suave);
+}
+
+/* =====================================================
+   GRID + CARDS
+   ===================================================== */
+
+.loja-grid {
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 14px;
+}
+
+.item-card {
+    min-height: 340px;
+    padding: 14px 14px 13px;
+
+    border-width: 1px;
+    border-radius: 14px;
+
+    box-shadow: 0 3px 12px rgba(23, 52, 76, .035);
+
+    transform: translateY(0);
+
+    transition:
+        transform .18s ease,
+        border-color .18s ease,
+        box-shadow .18s ease;
+}
+
+.item-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 9px 22px rgba(27, 64, 92, .09);
+}
+
+.item-card-topo-meta {
+    width: 100%;
+    min-height: 23px;
+    margin-bottom: 7px;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.item-categoria-label {
+    color: #8a98a5;
+    font-size: 7px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .65px;
+}
+
+.item-selos {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.item-selo,
+.item-raridade {
+    padding: 3px 5px;
+    border-radius: 999px;
+    font-size: 6px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .35px;
+}
+
+.item-selo.novo {
+    background: #e9f7ff;
+    color: #268ad9;
+}
+
+.item-selo.destaque {
+    background: #fff5d9;
+    color: #a77300;
+}
+
+.item-raridade {
+    background: #f1f3f5;
+    color: #758391;
+}
+
+.item-raridade.raro {
+    background: #eee9ff;
+    color: #7357b4;
+}
+
+.item-raridade.epico,
+.item-raridade.épico {
+    background: #f7e8ff;
+    color: #9946b8;
+}
+
+.item-raridade.especial {
+    background: #fff1d5;
+    color: #9f6d00;
+}
+
+/* Visual default */
+.item-card .icone {
+    width: 86px;
+    height: 86px;
+
+    margin: 2px auto 10px;
+
+    background: #f3f7fa;
+    border-radius: 18px;
+}
+
+.item-card .icone .item-imagem {
+    width: 78px;
+    height: 78px;
+    object-fit: contain;
+    border-radius: 13px;
+}
+
+/* Fundos = mini tela horizontal */
+.item-card.categoria-fundos .icone {
+    width: 100%;
+    height: 102px;
+    border-radius: 13px;
+    overflow: hidden;
+    background: #eaf0f4;
+}
+
+.item-card.categoria-fundos .icone .item-imagem {
+    width: 100%;
+    height: 100%;
+    border-radius: 13px;
+    object-fit: cover;
+}
+
+/* Temas = mini interface */
+.item-card.categoria-temas .icone {
+    width: 100%;
+    height: 102px;
+    padding: 9px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #e4ebf0;
+    border-radius: 13px;
+    background: #f8fafc;
+}
+
+.item-card.categoria-temas .icone::before {
+    content: '';
+    height: 10px;
+    position: absolute;
+    inset: 0 0 auto 0;
+    background: rgba(56,165,255,.18);
+}
+
+.item-card.categoria-temas .icone::after {
+    content: '';
+    width: 19px;
+    position: absolute;
+    left: 0;
+    top: 10px;
+    bottom: 0;
+    background: rgba(56,165,255,.08);
+}
+
+.item-card.categoria-temas .icone .item-imagem {
+    width: calc(100% - 9px);
+    height: calc(100% - 8px);
+    margin: 7px 0 0 9px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+/* Especiais / cursor */
+.item-card.categoria-especiais .icone {
+    background:
+        radial-gradient(circle, #f7fbff 0%, #edf5fb 100%);
+}
+
+.item-card .nome {
+    width: 100%;
+    min-height: 42px;
+    margin-bottom: 3px;
+
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+
+    color: var(--loja-texto);
+    font-size: 14px;
+    line-height: 1.35;
+}
+
+.item-card .descricao {
+    width: 100%;
+    min-height: 36px;
+    margin-bottom: 8px;
+
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+
+    color: var(--loja-suave);
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+.item-card-rodape {
+    width: 100%;
+    margin-top: auto;
+    margin-bottom: 9px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 7px;
+}
+
+.item-card .preco {
+    margin: 0;
+    padding: 0;
+
+    background: transparent;
+
+    color: #c79700;
+    font-size: 12px;
+}
+
+.item-card .preco i {
+    font-size: 10px;
+}
+
+.btn-preview-card {
+    padding: 5px 7px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    border: 0;
+    border-radius: 7px;
+
+    background: #f0f5f8;
+    color: #687b8d;
+
+    font-family: inherit;
+    font-size: 7px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background .18s ease,
+        color .18s ease;
+}
+
+.btn-preview-card:hover {
+    background: #e7f4fd;
+    color: var(--loja-azul);
+}
+
+/* Ativo = destaque discreto */
+.item-card.item-ativo-card {
+    border-color: #acdcbc;
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff,
+            #fbfffc
+        );
+}
+
+.item-card.item-ativo-card::after {
+    content: '';
+    width: 7px;
+    height: 7px;
+
+    position: absolute;
+    top: 11px;
+    left: 11px;
+
+    border-radius: 50%;
+    background: #38bd6c;
+
+    box-shadow: 0 0 0 3px rgba(56,189,108,.10);
+}
+
+/* =====================================================
+   STATUS — MAIS COMPACTOS
+   ===================================================== */
+
+.item-card .status {
+    min-height: 33px;
+    padding: 7px 10px;
+    border-radius: 9px;
+    font-size: 9px;
+}
+
+/* =====================================================
+   MODAIS PADRONIZADOS
+   ===================================================== */
+
+.modal-compra,
+.modal-preview-item,
+.modal-sucesso,
+.modal-perfil,
+.modal-estrelas,
+.modal {
+    backdrop-filter: blur(7px);
+}
+
+.modal-preview-item {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 10010;
+
+    padding: 20px;
+
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(12, 27, 40, .60);
+    backdrop-filter: blur(7px);
+}
+
+.modal-loja-padronizado,
+.modal-compra .modal-content,
+.modal-sucesso .modal-content,
+.modal .modal-content {
+    width: min(430px, 92vw);
+    max-width: 430px;
+
+    padding: 25px;
+
+    position: relative;
+
+    border: 1px solid #e2e9ef;
+    border-radius: 18px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 24px 65px
+        rgba(21, 44, 61, .22);
+
+    animation: modalFoagEntrada .2s ease;
+}
+
+@keyframes modalFoagEntrada {
+    from {
+        opacity: 0;
+        transform: translateY(9px) scale(.985);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modal-fechar-x {
+    width: 34px;
+    height: 34px;
+
+    position: absolute;
+    top: 13px;
+    right: 13px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 0;
+    border-radius: 9px;
+
+    background: #f0f3f6;
+    color: #687785;
+
+    cursor: pointer;
+}
+
+.modal-fechar-x:hover {
+    background: #e7edf2;
+    color: #263849;
+}
+
+.modal-categoria {
+    display: inline-block;
+    margin-bottom: 8px;
+
+    color: var(--loja-azul);
+    font-size: 8px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+}
+
+.modal-compra .modal-icon {
+    margin-bottom: 9px;
+}
+
+.modal-compra h3,
+.modal-preview-item h3 {
+    margin-bottom: 5px;
+    color: var(--loja-texto);
+    font-size: 19px;
+}
+
+.modal-compra p,
+.modal-preview-item p {
+    max-width: 330px;
+    margin: 0 auto 14px;
+    color: var(--loja-suave);
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+.modal-compra-resumo {
+    margin: 14px 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 7px;
+}
+
+.modal-compra-resumo > div {
+    min-width: 0;
+    padding: 8px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    border: 1px solid #e5ecf2;
+    border-radius: 10px;
+
+    background: #fafcfd;
+}
+
+.modal-compra-resumo > div > span {
+    color: #8b98a4;
+    font-size: 7px;
+}
+
+.modal-compra-resumo strong {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+
+    color: #c79700;
+    font-size: 10px;
+}
+
+.modal-compra .modal-preco {
+    margin: 0;
+    padding: 8px;
+    border-radius: 10px;
+    background: #fafcfd;
+}
+
+.btn-experimentar-modal,
+.btn-preview-voltar {
+    width: 100%;
+    margin: 2px 0 10px;
+    padding: 9px 12px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    border: 1px solid #dce8f2;
+    border-radius: 9px;
+
+    background: #f6fbff;
+    color: #318bd2;
+
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.modal-buttons {
+    gap: 8px;
+}
+
+.modal-compra .btn-comprar,
+.modal-compra .btn-cancelar,
+.modal .modal-buttons button {
+    min-height: 39px;
+    padding: 9px 15px;
+    border-radius: 9px;
+    font-size: 10px;
+}
+
+.modal-compra .btn-comprar {
+    flex: 1;
+}
+
+.modal-compra .btn-cancelar {
+    flex: 1;
+}
+
+/* =====================================================
+   PREVIEW
+   ===================================================== */
+
+.preview-palco {
+    min-height: 245px;
+    margin: 8px 0 14px;
+    padding: 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    border: 1px solid #e2eaf0;
+    border-radius: 15px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #f8fbfd,
+            #eef4f8
+        );
+}
+
+.preview-item-visual {
+    width: 100%;
+    min-height: 190px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.preview-item-img {
+    max-width: 210px;
+    max-height: 190px;
+    object-fit: contain;
+}
+
+.preview-avatar {
+    width: 145px;
+    height: 145px;
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #e6eef4;
+    color: #98aab9;
+    font-size: 48px;
+}
+
+.preview-avatar .preview-item-img {
+    width: 190px;
+    height: 190px;
+
+    position: absolute;
+
+    object-fit: contain;
+}
+
+.preview-mini-interface {
+    width: 250px;
+    height: 170px;
+
+    position: relative;
+    overflow: hidden;
+
+    border: 1px solid #dce5ec;
+    border-radius: 12px;
+
+    background: #ffffff;
+
+    box-shadow: 0 10px 25px rgba(24,56,79,.10);
+}
+
+.preview-mini-header {
+    height: 22px;
+    position: absolute;
+    inset: 0 0 auto 0;
+    background: #38a5ff;
+}
+
+.preview-mini-menu {
+    width: 45px;
+    position: absolute;
+    left: 0;
+    top: 22px;
+    bottom: 0;
+    background: #e6f4ff;
+}
+
+.preview-mini-conteudo {
+    position: absolute;
+    left: 52px;
+    right: 8px;
+    top: 30px;
+    bottom: 8px;
+}
+
+.preview-mini-conteudo .preview-item-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.preview-fundo-tela {
+    width: 280px;
+    height: 175px;
+
+    position: relative;
+    overflow: hidden;
+
+    border-radius: 15px;
+
+    background: #dce4ea;
+
+    box-shadow: 0 10px 25px rgba(24,56,79,.12);
+}
+
+.preview-fundo-tela .preview-item-img {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    object-fit: cover;
+}
+
+.preview-fundo-avatar {
+    width: 55px;
+    height: 55px;
+
+    position: absolute;
+    left: 16px;
+    bottom: 14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 3px solid #ffffff;
+    border-radius: 50%;
+
+    background: #e8eef3;
+    color: #8fa1af;
+}
+
+/* =====================================================
+   TOAST
+   ===================================================== */
+
+.loja-toast {
+    width: min(380px, calc(100vw - 28px));
+
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 12000;
+
+    padding: 12px;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    border: 1px solid #d9e9df;
+    border-radius: 13px;
+
+    background: #ffffff;
+
+    box-shadow: 0 15px 38px rgba(27, 53, 72, .16);
+
+    opacity: 0;
+    visibility: hidden;
+
+    transform: translateY(14px);
+
+    transition:
+        opacity .2s ease,
+        transform .2s ease,
+        visibility .2s ease;
+}
+
+.loja-toast.mostrar {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.loja-toast.erro {
+    border-color: #ead8db;
+}
+
+.loja-toast-icone {
+    width: 35px;
+    height: 35px;
+    flex: 0 0 35px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: #eaf9ef;
+    color: #2aa259;
+}
+
+.loja-toast.erro .loja-toast-icone {
+    background: #fff0f1;
+    color: #c75d68;
+}
+
+.loja-toast-conteudo {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.loja-toast-conteudo strong {
+    color: var(--loja-texto);
+    font-size: 10px;
+}
+
+.loja-toast-conteudo span {
+    color: var(--loja-suave);
+    font-size: 8px;
+    line-height: 1.4;
+}
+
+.loja-toast-fechar {
+    width: 28px;
+    height: 28px;
+
+    border: 0;
+    border-radius: 8px;
+
+    background: transparent;
+    color: #8a98a5;
+
+    cursor: pointer;
+}
+
+/* =====================================================
+   SKELETON
+   ===================================================== */
+
+.item-skeleton {
+    min-height: 320px;
+    padding: 14px;
+
+    border: 1px solid #e5ebf0;
+    border-radius: 14px;
+
+    background: #ffffff;
+}
+
+.skeleton-visual,
+.skeleton-linha {
+    display: block;
+    overflow: hidden;
+    position: relative;
+    border-radius: 8px;
+    background: #edf1f4;
+}
+
+.skeleton-visual {
+    height: 105px;
+    margin: 20px 0 18px;
+}
+
+.skeleton-linha {
+    height: 10px;
+    margin-top: 10px;
+}
+
+.skeleton-linha.grande {
+    width: 78%;
+}
+
+.skeleton-linha.curta {
+    width: 52%;
+}
+
+.skeleton-visual::after,
+.skeleton-linha::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,.70),
+            transparent
+        );
+
+    transform: translateX(-100%);
+    animation: skeletonFoag 1.1s infinite;
+}
+
+@keyframes skeletonFoag {
+    to {
+        transform: translateX(100%);
+    }
+}
+
+/* =====================================================
+   MOBILE
+   ===================================================== */
+
+@media (max-width: 900px) {
+    .loja-vitrines {
+        grid-template-columns: 1fr;
+    }
+
+    .colecao-header-resumo {
+        width: 170px;
+    }
+}
+
+@media (max-width: 768px) {
+    .loja-header {
+        align-items: stretch;
+    }
+
+    .loja-saldo {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .colecao-header-resumo {
+        width: min(270px, 100%);
+    }
+
+    .loja-filtros {
+        width: 100%;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+
+    .loja-filtros::-webkit-scrollbar {
+        display: none;
+    }
+
+    .filtro-btn {
+        flex: 0 0 auto;
+    }
+
+    .colecao-painel {
+        grid-template-columns: 1fr;
+    }
+
+    .loja-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .item-card {
+        min-height: 310px;
+        padding: 12px 10px;
+    }
+
+    .item-card.categoria-fundos .icone,
+    .item-card.categoria-temas .icone {
+        height: 88px;
+    }
+
+    .item-card .nome {
+        min-height: 36px;
+        font-size: 12px;
+    }
+
+    .item-card .descricao {
+        min-height: 32px;
+        font-size: 9px;
+    }
+
+    .modal-compra-resumo {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-content {
+        padding-inline: 8px;
+    }
+
+    .loja-header {
+        border-radius: 14px;
+    }
+
+    .loja-vitrines {
+        gap: 10px;
+    }
+
+    .vitrine-itens {
+        grid-template-columns: 1fr;
+    }
+
+    .item-card {
+        min-height: 295px;
+    }
+
+    .item-card-topo-meta {
+        min-height: 18px;
+    }
+
+    .item-categoria-label {
+        font-size: 6px;
+    }
+
+    .btn-preview-card {
+        padding: 5px;
+    }
+
+    .btn-preview-card {
+        font-size: 0;
+    }
+
+    .btn-preview-card i {
+        font-size: 9px;
+    }
+
+    .modal-loja-padronizado,
+    .modal-compra .modal-content,
+    .modal .modal-content {
+        padding: 22px 16px 17px;
+    }
+
+    .loja-toast {
+        right: 10px;
+        bottom: 10px;
+        width: calc(100vw - 20px);
+    }
+}
+
+
+
+/* =====================================================
+   LEGIBILIDADE — CONTEÚDO DA LOJA
+   Cabeçalho principal preservado
+   ===================================================== */
+
+/* Filtros */
+.filtro-btn {
+    font-size: 11px !important;
+}
+
+.filtro-count {
+    font-size: 9px !important;
+}
+
+/* Cards */
+.item-categoria-label {
+    font-size: 8px !important;
+}
+
+.item-selo,
+.item-raridade {
+    font-size: 7px !important;
+}
+
+.item-card .nome {
+    font-size: 15px !important;
+    line-height: 1.4 !important;
+}
+
+.item-card .descricao {
+    font-size: 11px !important;
+    line-height: 1.55 !important;
+}
+
+.item-card .preco {
+    font-size: 13px !important;
+}
+
+.item-card .preco i {
+    font-size: 11px !important;
+}
+
+.btn-preview-card {
+    font-size: 8px !important;
+}
+
+.item-card .status {
+    font-size: 10px !important;
+}
+
+.item-card .status i {
+    font-size: 9px !important;
+}
+
+/* Painel Meus Itens */
+.colecao-painel-sobretitulo {
+    font-size: 8px !important;
+}
+
+.colecao-painel-info h2 {
+    font-size: 15px !important;
+}
+
+.colecao-painel-info p {
+    font-size: 10px !important;
+}
+
+.colecao-painel-numeros strong {
+    font-size: 12px !important;
+}
+
+.colecao-painel-numeros span {
+    font-size: 10px !important;
+}
+
+.colecao-em-uso-label,
+.colecao-em-uso-item,
+.colecao-em-uso-vazio {
+    font-size: 9px !important;
+}
+
+/* Vitrines opcionais */
+.vitrine-selo {
+    font-size: 9px !important;
+}
+
+.vitrine-cabecalho h2 {
+    font-size: 16px !important;
+}
+
+.vitrine-ver {
+    font-size: 10px !important;
+}
+
+.vitrine-mini-info small {
+    font-size: 8px !important;
+}
+
+.vitrine-mini-info strong {
+    font-size: 10px !important;
+}
+
+.vitrine-mini-info > span {
+    font-size: 9px !important;
+}
+
+/* Modal de compra e preview */
+.modal-categoria {
+    font-size: 9px !important;
+}
+
+.modal-compra h3,
+.modal-preview-item h3 {
+    font-size: 20px !important;
+}
+
+.modal-compra p,
+.modal-preview-item p {
+    font-size: 11px !important;
+    line-height: 1.55 !important;
+}
+
+.modal-compra-resumo > div > span {
+    font-size: 8px !important;
+}
+
+.modal-compra-resumo strong {
+    font-size: 11px !important;
+}
+
+.btn-experimentar-modal,
+.btn-preview-voltar {
+    font-size: 10px !important;
+}
+
+.modal-compra .btn-comprar,
+.modal-compra .btn-cancelar,
+.modal .modal-buttons button {
+    font-size: 11px !important;
+}
+
+/* Toast */
+.loja-toast-conteudo strong {
+    font-size: 11px !important;
+}
+
+.loja-toast-conteudo span {
+    font-size: 9px !important;
+}
+
+/* Estado vazio / erro */
+.sem-itens h3 {
+    font-size: 18px !important;
+}
+
+.sem-itens p {
+    font-size: 13px !important;
+}
+
+.btn-ver-todos-itens {
+    font-size: 12px !important;
+}
+
+/* Mobile: mantém legível sem estourar */
+@media (max-width: 768px) {
+    .filtro-btn {
+        font-size: 10px !important;
+    }
+
+    .item-card .nome {
+        font-size: 13px !important;
+    }
+
+    .item-card .descricao {
+        font-size: 10px !important;
+    }
+
+    .item-card .preco {
+        font-size: 12px !important;
+    }
+
+    .item-card .status {
+        font-size: 9px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .item-categoria-label {
+        font-size: 7px !important;
+    }
+
+    .item-card .nome {
+        font-size: 12.5px !important;
+    }
+
+    .item-card .descricao {
+        font-size: 9.5px !important;
+    }
+
+    .item-card .status {
+        font-size: 9px !important;
+    }
+
+    .btn-preview-card {
+        font-size: 0 !important;
+    }
+
+    .btn-preview-card i {
+        font-size: 10px !important;
+    }
+}
+
+
+
+/* =====================================================
+   GRID — 4 ITENS POR LINHA + CONTEÚDO MAIOR
+   ===================================================== */
+
+/*
+   Desktop: exatamente quatro colunas.
+   Dá mais espaço para cada produto e melhora a leitura.
+*/
+.loja-grid {
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr)) !important;
+
+    gap: 18px !important;
+}
+
+/* Cards um pouco maiores e com mais respiro */
+.item-card {
+    min-height: 380px !important;
+
+    padding:
+        17px 16px
+        15px !important;
+
+    border-radius: 15px !important;
+}
+
+/* Área visual maior */
+.item-card .icone {
+    width: 98px !important;
+    height: 98px !important;
+
+    margin:
+        4px auto
+        13px !important;
+}
+
+.item-card .icone .item-imagem {
+    width: 90px !important;
+    height: 90px !important;
+}
+
+/* Emojis */
+.item-card.item-card-emoji .icone {
+    width: 124px !important;
+    height: 124px !important;
+    min-width: 124px !important;
+    min-height: 124px !important;
+}
+
+.item-card.item-card-emoji
+.icone
+.emoji-imagem {
+    width: 112px !important;
+    height: 112px !important;
+}
+
+/* Fundos e temas com preview maior */
+.item-card.categoria-fundos .icone,
+.item-card.categoria-temas .icone {
+    height: 118px !important;
+}
+
+/* Molduras com um pouco mais de presença */
+.item-card .icone:has(.item-imagem[src*="/moldura/"]) {
+    width: 126px !important;
+    height: 126px !important;
+    min-width: 126px !important;
+    min-height: 126px !important;
+}
+
+.item-card .icone:has(.item-imagem[src*="/moldura/"])::before {
+    width: 72px !important;
+    height: 72px !important;
+    font-size: 29px !important;
+}
+
+.item-card .icone .item-imagem[src*="/moldura/"] {
+    width: 126px !important;
+    height: 126px !important;
+}
+
+/* Tipografia maior */
+.item-categoria-label {
+    font-size: 9px !important;
+}
+
+.item-selo,
+.item-raridade {
+    font-size: 7.5px !important;
+}
+
+.item-card .nome {
+    min-height: 44px !important;
+
+    font-size: 16px !important;
+    line-height: 1.4 !important;
+}
+
+.item-card .descricao {
+    min-height: 42px !important;
+
+    font-size: 12px !important;
+    line-height: 1.55 !important;
+}
+
+.item-card .preco {
+    font-size: 14px !important;
+}
+
+.item-card .preco i {
+    font-size: 12px !important;
+}
+
+.btn-preview-card {
+    padding:
+        6px 8px !important;
+
+    font-size: 9px !important;
+}
+
+.item-card .status {
+    min-height: 36px !important;
+
+    padding:
+        8px 11px !important;
+
+    font-size: 11px !important;
+}
+
+.item-card .status i {
+    font-size: 10px !important;
+}
+
+/* Mais espaço no rodapé */
+.item-card-rodape {
+    margin-bottom: 11px !important;
+}
+
+/* =====================================================
+   BREAKPOINTS
+   ===================================================== */
+
+/*
+   Notebook / telas médias:
+   mantém 4 colunas enquanto houver espaço suficiente.
+*/
+@media (max-width: 1180px) {
+    .loja-grid {
+        grid-template-columns:
+            repeat(4, minmax(0, 1fr)) !important;
+
+        gap: 14px !important;
+    }
+
+    .item-card {
+        padding:
+            15px 13px
+            14px !important;
+    }
+
+    .item-card .nome {
+        font-size: 15px !important;
+    }
+
+    .item-card .descricao {
+        font-size: 11px !important;
+    }
+}
+
+/*
+   Tablet:
+   duas colunas para não apertar demais.
+*/
+@media (max-width: 850px) {
+    .loja-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr)) !important;
+
+        gap: 12px !important;
+    }
+
+    .item-card {
+        min-height: 350px !important;
+    }
+}
+
+/*
+   Celular:
+   mantém duas colunas, mas com conteúdo proporcional.
+*/
+@media (max-width: 480px) {
+    .loja-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr)) !important;
+
+        gap: 8px !important;
+    }
+
+    .item-card {
+        min-height: 320px !important;
+
+        padding:
+            12px 9px
+            11px !important;
+    }
+
+    .item-card .icone {
+        width: 78px !important;
+        height: 78px !important;
+    }
+
+    .item-card .icone .item-imagem {
+        width: 72px !important;
+        height: 72px !important;
+    }
+
+    .item-card.item-card-emoji .icone {
+        width: 86px !important;
+        height: 86px !important;
+        min-width: 86px !important;
+        min-height: 86px !important;
+    }
+
+    .item-card.item-card-emoji
+    .icone
+    .emoji-imagem {
+        width: 78px !important;
+        height: 78px !important;
+    }
+
+    .item-card.categoria-fundos .icone,
+    .item-card.categoria-temas .icone {
+        height: 82px !important;
+    }
+
+    .item-card .nome {
+        min-height: 35px !important;
+
+        font-size: 13px !important;
+    }
+
+    .item-card .descricao {
+        min-height: 31px !important;
+
+        font-size: 10px !important;
+    }
+
+    .item-card .preco {
+        font-size: 12px !important;
+    }
+
+    .item-card .status {
+        min-height: 33px !important;
+
+        font-size: 9.5px !important;
+    }
+
+    .btn-preview-card {
+        font-size: 0 !important;
+    }
+
+    .btn-preview-card i {
+        font-size: 10px !important;
+    }
+}
+
+
+
+/* =====================================================
+   ACABAMENTO FINAL — LEGIBILIDADE + ENCAIXE DOS ITENS
+   ===================================================== */
+
+/* -----------------------------------------------------
+   TEXTO GERAL DA ÁREA DA LOJA
+   ----------------------------------------------------- */
+
+.loja-filtros,
+.colecao-painel,
+.loja-vitrines,
+.loja-grid,
+.modal-compra,
+.modal-preview-item,
+.loja-toast {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+/* Filtros */
+.filtro-btn {
+    font-size: 12px !important;
+    line-height: 1.2 !important;
+}
+
+.filtro-btn i {
+    font-size: 12px !important;
+}
+
+.filtro-count {
+    min-width: 21px !important;
+    height: 21px !important;
+    font-size: 10px !important;
+}
+
+/* Painel Minha coleção */
+.colecao-painel-sobretitulo {
+    font-size: 9px !important;
+}
+
+.colecao-painel-info h2 {
+    font-size: 17px !important;
+    line-height: 1.25 !important;
+}
+
+.colecao-painel-info p {
+    font-size: 12px !important;
+    line-height: 1.5 !important;
+}
+
+.colecao-painel-numeros strong {
+    font-size: 13px !important;
+}
+
+.colecao-painel-numeros span {
+    font-size: 11px !important;
+}
+
+.colecao-em-uso-label,
+.colecao-em-uso-item,
+.colecao-em-uso-vazio {
+    font-size: 10px !important;
+    line-height: 1.35 !important;
+}
+
+/* Vitrines */
+.vitrine-selo {
+    font-size: 9px !important;
+}
+
+.vitrine-cabecalho h2 {
+    font-size: 17px !important;
+}
+
+.vitrine-ver {
+    font-size: 11px !important;
+}
+
+.vitrine-mini-info small {
+    font-size: 9px !important;
+}
+
+.vitrine-mini-info strong {
+    font-size: 11px !important;
+    line-height: 1.3 !important;
+}
+
+.vitrine-mini-info > span {
+    font-size: 10px !important;
+}
+
+/* -----------------------------------------------------
+   GRID FINAL — 4 COLUNAS
+   ----------------------------------------------------- */
+
+.loja-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 18px !important;
+    align-items: stretch !important;
+}
+
+.item-card {
+    min-width: 0 !important;
+    min-height: 405px !important;
+    height: 100% !important;
+
+    padding: 17px 16px 15px !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+
+    overflow: hidden !important;
+
+    border-radius: 16px !important;
+}
+
+/* Topo do card */
+.item-card-topo-meta {
+    min-height: 27px !important;
+    margin-bottom: 7px !important;
+}
+
+.item-categoria-label {
+    font-size: 9px !important;
+    line-height: 1.2 !important;
+}
+
+.item-selo,
+.item-raridade {
+    font-size: 8px !important;
+    line-height: 1 !important;
+}
+
+/* -----------------------------------------------------
+   ÁREA VISUAL PADRÃO
+   ----------------------------------------------------- */
+
+.item-card .icone {
+    width: 112px !important;
+    height: 112px !important;
+    min-width: 112px !important;
+    min-height: 112px !important;
+
+    margin: 4px auto 14px !important;
+    padding: 8px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    overflow: visible !important;
+
+    border-radius: 20px !important;
+
+    background: #f5f8fb !important;
+}
+
+.item-card .icone > i {
+    font-size: 38px !important;
+}
+
+.item-card .icone .item-imagem {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+
+    display: block !important;
+
+    object-fit: contain !important;
+    object-position: center center !important;
+
+    border-radius: 12px !important;
+}
+
+/* -----------------------------------------------------
+   EMOJIS — ARTE INTEIRA, SEM CARA DE FOTO
+   ----------------------------------------------------- */
+
+.item-card.item-card-emoji .icone,
+.item-card.categoria-emojis .icone {
+    width: 132px !important;
+    height: 132px !important;
+    min-width: 132px !important;
+    min-height: 132px !important;
+
+    padding: 5px !important;
+
+    overflow: visible !important;
+
+    border-radius: 0 !important;
+    background: transparent !important;
+}
+
+.item-card.item-card-emoji .emoji-imagem,
+.item-card.categoria-emojis .item-imagem {
+    width: 122px !important;
+    height: 122px !important;
+
+    object-fit: contain !important;
+
+    border-radius: 0 !important;
+    background: transparent !important;
+}
+
+/* -----------------------------------------------------
+   MOLDURAS — PREVIEW MAIOR E CENTRALIZADO
+   ----------------------------------------------------- */
+
+.item-card.categoria-molduras .icone {
+    width: 136px !important;
+    height: 136px !important;
+    min-width: 136px !important;
+    min-height: 136px !important;
+
+    padding: 0 !important;
+
+    position: relative !important;
+
+    overflow: visible !important;
+
+    border-radius: 50% !important;
+    background: transparent !important;
+}
+
+.item-card.categoria-molduras .icone::before {
+    width: 74px !important;
+    height: 74px !important;
+
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+
+    z-index: 1 !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    border-radius: 50% !important;
+
+    background: #dfe8ef !important;
+    color: #899ba9 !important;
+
+    font-size: 29px !important;
+
+    transform: translate(-50%, -50%) !important;
+}
+
+.item-card.categoria-molduras .icone .item-imagem {
+    width: 136px !important;
+    height: 136px !important;
+    max-width: 136px !important;
+    max-height: 136px !important;
+
+    position: relative !important;
+    z-index: 2 !important;
+
+    object-fit: contain !important;
+
+    border-radius: 0 !important;
+}
+
+/* -----------------------------------------------------
+   FUNDOS — PREVIEW HORIZONTAL
+   ----------------------------------------------------- */
+
+.item-card.categoria-fundos .icone {
+    width: 100% !important;
+    height: 122px !important;
+    min-width: 0 !important;
+    min-height: 122px !important;
+
+    padding: 0 !important;
+
+    overflow: hidden !important;
+
+    border: 1px solid #e3e9ee !important;
+    border-radius: 14px !important;
+
+    background: #eaf0f4 !important;
+}
+
+.item-card.categoria-fundos .icone .item-imagem {
+    width: 100% !important;
+    height: 100% !important;
+
+    object-fit: cover !important;
+    object-position: center !important;
+
+    border-radius: 13px !important;
+}
+
+/* -----------------------------------------------------
+   TEMAS — MINI INTERFACE
+   ----------------------------------------------------- */
+
+.item-card.categoria-temas .icone {
+    width: 100% !important;
+    height: 122px !important;
+    min-width: 0 !important;
+    min-height: 122px !important;
+
+    padding: 13px 10px 8px 28px !important;
+
+    overflow: hidden !important;
+
+    border: 1px solid #e2e9ef !important;
+    border-radius: 14px !important;
+
+    background: #f8fafc !important;
+}
+
+.item-card.categoria-temas .icone::before {
+    height: 13px !important;
+}
+
+.item-card.categoria-temas .icone::after {
+    width: 22px !important;
+    top: 13px !important;
+}
+
+.item-card.categoria-temas .icone .item-imagem {
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+
+    object-fit: contain !important;
+    object-position: center !important;
+
+    border-radius: 8px !important;
+}
+
+/* -----------------------------------------------------
+   ESPECIAIS
+   ----------------------------------------------------- */
+
+.item-card.categoria-especiais .icone {
+    width: 116px !important;
+    height: 116px !important;
+
+    padding: 8px !important;
+
+    background:
+        radial-gradient(
+            circle,
+            #ffffff 0%,
+            #edf5fb 100%
+        ) !important;
+}
+
+.item-card.categoria-especiais .icone .item-imagem {
+    object-fit: contain !important;
+}
+
+/* -----------------------------------------------------
+   TEXTOS DOS CARDS
+   ----------------------------------------------------- */
+
+.item-card .nome {
+    width: 100% !important;
+    min-height: 48px !important;
+
+    margin-bottom: 5px !important;
+
+    font-size: 17px !important;
+    line-height: 1.38 !important;
+    font-weight: 700 !important;
+
+    text-align: center !important;
+
+    word-break: normal !important;
+    overflow-wrap: anywhere !important;
+}
+
+.item-card .descricao {
+    width: 100% !important;
+    min-height: 43px !important;
+
+    margin-bottom: 11px !important;
+
+    font-size: 12.5px !important;
+    line-height: 1.55 !important;
+
+    text-align: center !important;
+}
+
+.item-card-rodape {
+    margin-top: auto !important;
+    margin-bottom: 10px !important;
+}
+
+.item-card .preco {
+    font-size: 14.5px !important;
+    font-weight: 800 !important;
+}
+
+.item-card .preco i {
+    font-size: 12px !important;
+}
+
+.btn-preview-card {
+    min-height: 29px !important;
+
+    padding: 6px 9px !important;
+
+    font-size: 10px !important;
+}
+
+.item-card .status {
+    min-height: 38px !important;
+
+    padding: 8px 12px !important;
+
+    font-size: 11.5px !important;
+    line-height: 1.15 !important;
+}
+
+.item-card .status i {
+    font-size: 10px !important;
+}
+
+/* -----------------------------------------------------
+   MODAIS / PREVIEW / TOAST — TUDO LEGÍVEL
+   ----------------------------------------------------- */
+
+.modal-categoria {
+    font-size: 10px !important;
+}
+
+.modal-compra h3,
+.modal-preview-item h3 {
+    font-size: 21px !important;
+    line-height: 1.25 !important;
+}
+
+.modal-compra p,
+.modal-preview-item p {
+    font-size: 12px !important;
+    line-height: 1.6 !important;
+}
+
+.modal-compra-resumo > div > span {
+    font-size: 9px !important;
+}
+
+.modal-compra-resumo strong {
+    font-size: 12px !important;
+}
+
+.btn-experimentar-modal,
+.btn-preview-voltar {
+    font-size: 11px !important;
+}
+
+.modal-compra .btn-comprar,
+.modal-compra .btn-cancelar,
+.modal .modal-buttons button {
+    font-size: 12px !important;
+}
+
+.loja-toast-conteudo strong {
+    font-size: 12px !important;
+}
+
+.loja-toast-conteudo span {
+    font-size: 10px !important;
+    line-height: 1.45 !important;
+}
+
+/* -----------------------------------------------------
+   ESTADOS VAZIOS / ERRO
+   ----------------------------------------------------- */
+
+.sem-itens h3 {
+    font-size: 19px !important;
+}
+
+.sem-itens p {
+    font-size: 13px !important;
+    line-height: 1.6 !important;
+}
+
+.btn-ver-todos-itens {
+    font-size: 12px !important;
+}
+
+/* -----------------------------------------------------
+   RESPONSIVIDADE
+   ----------------------------------------------------- */
+
+@media (max-width: 1180px) {
+    .loja-grid {
+        gap: 14px !important;
+    }
+
+    .item-card {
+        min-height: 390px !important;
+        padding: 15px 13px 14px !important;
+    }
+
+    .item-card .nome {
+        font-size: 16px !important;
+    }
+
+    .item-card .descricao {
+        font-size: 11.5px !important;
+    }
+}
+
+@media (max-width: 900px) {
+    .loja-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr)) !important;
+
+        gap: 13px !important;
+    }
+
+    .item-card {
+        min-height: 380px !important;
+    }
+}
+
+@media (max-width: 600px) {
+    .filtro-btn {
+        font-size: 11px !important;
+    }
+
+    .loja-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr)) !important;
+
+        gap: 9px !important;
+    }
+
+    .item-card {
+        min-height: 335px !important;
+
+        padding: 12px 9px 11px !important;
+    }
+
+    .item-card .icone {
+        width: 84px !important;
+        height: 84px !important;
+        min-width: 84px !important;
+        min-height: 84px !important;
+    }
+
+    .item-card.item-card-emoji .icone,
+    .item-card.categoria-emojis .icone {
+        width: 94px !important;
+        height: 94px !important;
+        min-width: 94px !important;
+        min-height: 94px !important;
+    }
+
+    .item-card.item-card-emoji .emoji-imagem,
+    .item-card.categoria-emojis .item-imagem {
+        width: 88px !important;
+        height: 88px !important;
+    }
+
+    .item-card.categoria-molduras .icone {
+        width: 100px !important;
+        height: 100px !important;
+        min-width: 100px !important;
+        min-height: 100px !important;
+    }
+
+    .item-card.categoria-molduras .icone .item-imagem {
+        width: 100px !important;
+        height: 100px !important;
+    }
+
+    .item-card.categoria-fundos .icone,
+    .item-card.categoria-temas .icone {
+        height: 88px !important;
+        min-height: 88px !important;
+    }
+
+    .item-card .nome {
+        min-height: 37px !important;
+
+        font-size: 13.5px !important;
+        line-height: 1.35 !important;
+    }
+
+    .item-card .descricao {
+        min-height: 31px !important;
+
+        font-size: 10px !important;
+        line-height: 1.45 !important;
+    }
+
+    .item-card .preco {
+        font-size: 12px !important;
+    }
+
+    .item-card .status {
+        min-height: 34px !important;
+
+        padding: 7px 6px !important;
+
+        font-size: 9.5px !important;
+    }
+
+    .btn-preview-card {
+        min-width: 29px !important;
+        padding: 5px !important;
+
+        font-size: 0 !important;
+    }
+
+    .btn-preview-card i {
+        font-size: 10px !important;
+    }
+}
+
+
+
+/* =====================================================
+   CORREÇÃO FINAL — MOLDURAS
+   Restaura os offsets e escalas individuais calibrados
+   ===================================================== */
+
+/* Container da moldura */
+.item-card.categoria-molduras .icone,
+.item-card .icone:has(.item-imagem[src*="/moldura/"]) {
+    width: 126px !important;
+    height: 126px !important;
+    min-width: 126px !important;
+    min-height: 126px !important;
+
+    margin: 4px auto 14px !important;
+    padding: 0 !important;
+
+    position: relative !important;
+
+    overflow: visible !important;
+
+    border-radius: 50% !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Avatar central */
+.item-card.categoria-molduras .icone::before,
+.item-card .icone:has(.item-imagem[src*="/moldura/"])::before {
+    content: "\f007" !important;
+    font-family: "Font Awesome 6 Free" !important;
+    font-weight: 900 !important;
+
+    width: 72px !important;
+    height: 72px !important;
+
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    z-index: 1 !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    border-radius: 50% !important;
+
+    background:
+        linear-gradient(
+            145deg,
+            #f8fbff,
+            #e7f1f9
+        ) !important;
+
+    color: #9bb3c7 !important;
+    font-size: 29px !important;
+
+    transform:
+        translate(
+            -50%,
+            -50%
+        ) !important;
+
+    box-shadow:
+        inset 0 0 0 1px #dbe8f2,
+        0 4px 14px rgba(42, 127, 201, .12) !important;
+}
+
+/* Esconde qualquer ícone genérico */
+.item-card.categoria-molduras .icone > i,
+.item-card .icone:has(.item-imagem[src*="/moldura/"]) > i {
+    display: none !important;
+}
+
+/*
+   IMPORTANTE:
+   A moldura volta a ser ABSOLUTA para respeitar
+   --escala-moldura, --offset-x e --offset-y
+   de cada PNG individual.
+*/
+.item-card.categoria-molduras .icone .item-imagem,
+.item-card .icone .item-imagem[src*="/moldura/"] {
+    width: 126px !important;
+    height: 126px !important;
+    max-width: none !important;
+    max-height: none !important;
+
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    z-index: 2 !important;
+
+    display: block !important;
+
+    object-fit: contain !important;
+    object-position: center !important;
+
+    border-radius: 0 !important;
+    background: transparent !important;
+
+    transform:
+        translate(
+            calc(-50% + var(--offset-x, 0px)),
+            calc(-50% + var(--offset-y, 0px))
+        )
+        scale(
+            var(--escala-moldura, 1)
+        ) !important;
+
+    transform-origin: center center !important;
+
+    filter:
+        drop-shadow(
+            0 4px 5px
+            rgba(0, 0, 0, .15)
+        ) !important;
+
+    pointer-events: none !important;
+}
+
+/* Hover não muda escala/posição */
+.item-card:hover
+.icone
+.item-imagem[src*="/moldura/"] {
+    transform:
+        translate(
+            calc(-50% + var(--offset-x, 0px)),
+            calc(-50% + var(--offset-y, 0px))
+        )
+        scale(
+            var(--escala-moldura, 1)
+        ) !important;
+
+    filter:
+        drop-shadow(
+            0 7px 9px
+            rgba(0, 0, 0, .20)
+        ) !important;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .item-card.categoria-molduras .icone,
+    .item-card .icone:has(.item-imagem[src*="/moldura/"]) {
+        width: 100px !important;
+        height: 100px !important;
+        min-width: 100px !important;
+        min-height: 100px !important;
+    }
+
+    .item-card.categoria-molduras .icone::before,
+    .item-card .icone:has(.item-imagem[src*="/moldura/"])::before {
+        width: 57px !important;
+        height: 57px !important;
+        font-size: 23px !important;
+    }
+
+    .item-card.categoria-molduras .icone .item-imagem,
+    .item-card .icone .item-imagem[src*="/moldura/"] {
+        width: 100px !important;
+        height: 100px !important;
+    }
+}

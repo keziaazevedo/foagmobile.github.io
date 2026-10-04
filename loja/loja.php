@@ -502,7 +502,7 @@ $lojaData = [
 
     <link
         rel="stylesheet"
-        href="loja.css?v=2"
+        href="loja.css?v=9"
     >
 
     <link
@@ -510,10 +510,7 @@ $lojaData = [
         href="../m.escuro/dark_basee.css"
     >
 
-    <link
-        rel="stylesheet"
-        href="dark_loja.css"
-    >
+    <link rel="stylesheet" href="dark_loja.css?v=9">
 
     <link
         rel="preconnect"
@@ -768,9 +765,58 @@ $lojaData = [
 
                 </div>
 
+                <div class="colecao-header-resumo" id="colecaoHeaderResumo">
+                    <div class="colecao-header-topo">
+                        <span>
+                            <i class="fa-solid fa-box-open"></i>
+                            Coleção
+                        </span>
+
+                        <strong id="colecaoHeaderContador">
+                            0 / 0
+                        </strong>
+                    </div>
+
+                    <div class="colecao-header-barra">
+                        <span id="colecaoHeaderProgresso"></span>
+                    </div>
+                </div>
+
             </div>
 
         </div>
+
+        <!-- VITRINES OPCIONAIS: aparecem apenas se houver
+             item.novo / item.destaque no catálogo -->
+        <section class="loja-vitrines" id="lojaVitrines" hidden>
+            <div class="vitrine-bloco" id="vitrineNovidades" hidden>
+                <div class="vitrine-cabecalho">
+                    <div>
+                        <span class="vitrine-selo">Novidades</span>
+                        <h2>Novos na Loja</h2>
+                    </div>
+                    <button type="button" class="vitrine-ver" data-vitrine-filtro="todos">
+                        Ver na loja
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+                <div class="vitrine-itens" id="vitrineNovidadesItens"></div>
+            </div>
+
+            <div class="vitrine-bloco" id="vitrineDestaques" hidden>
+                <div class="vitrine-cabecalho">
+                    <div>
+                        <span class="vitrine-selo destaque">Destaques</span>
+                        <h2>Itens em destaque</h2>
+                    </div>
+                    <button type="button" class="vitrine-ver" data-vitrine-filtro="todos">
+                        Ver na loja
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+                <div class="vitrine-itens" id="vitrineDestaquesItens"></div>
+            </div>
+        </section>
 
         <!-- ==================================
              FILTROS
@@ -837,6 +883,46 @@ $lojaData = [
         </div>
 
         <!-- ==================================
+             PAINEL DA COLEÇÃO
+        =================================== -->
+
+        <section
+            class="colecao-painel"
+            id="colecaoPainel"
+            hidden
+        >
+            <div class="colecao-painel-info">
+                <span class="colecao-painel-icone">
+                    <i class="fa-solid fa-box-open"></i>
+                </span>
+
+                <div>
+                    <span class="colecao-painel-sobretitulo">
+                        Minha coleção
+                    </span>
+                    <h2>
+                        Seus itens do FOAG
+                    </h2>
+                    <p id="colecaoPainelTexto">
+                        Veja tudo que você já conquistou na Loja.
+                    </p>
+                </div>
+            </div>
+
+            <div class="colecao-painel-status">
+                <div class="colecao-painel-numeros">
+                    <strong id="colecaoPainelContador">0 / 0</strong>
+                    <span id="colecaoPainelPercentual">0%</span>
+                </div>
+                <div class="colecao-painel-barra">
+                    <span id="colecaoPainelProgresso"></span>
+                </div>
+            </div>
+
+            <div class="colecao-em-uso" id="colecaoEmUso"></div>
+        </section>
+
+        <!-- ==================================
              ITENS DA LOJA
         =================================== -->
 
@@ -855,7 +941,23 @@ $lojaData = [
             class="modal-compra"
         >
 
-            <div class="modal-content">
+            <div class="modal-content modal-loja-padronizado">
+
+                <button
+                    type="button"
+                    class="modal-fechar-x"
+                    id="fechar-compra-x"
+                    aria-label="Fechar"
+                >
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+                <span
+                    class="modal-categoria"
+                    id="modalCategoria"
+                >
+                    Item
+                </span>
 
                 <div
                     class="modal-icon"
@@ -872,15 +974,41 @@ $lojaData = [
                     Tem certeza que deseja comprar este item?
                 </p>
 
-                <div class="modal-preco">
+                <div class="modal-compra-resumo">
+                    <div class="modal-preco">
+                        <span>Preço</span>
+                        <strong>
+                            <i class="fa-solid fa-star"></i>
+                            <span id="modalPreco">0</span>
+                        </strong>
+                    </div>
 
-                    <i class="fa-solid fa-star"></i>
+                    <div class="modal-saldo">
+                        <span>Seu saldo</span>
+                        <strong>
+                            <i class="fa-solid fa-star"></i>
+                            <span id="modalSaldoAtual">0</span>
+                        </strong>
+                    </div>
 
-                    <span id="modalPreco">
-                        0
-                    </span>
-
+                    <div class="modal-saldo restante">
+                        <span>Após a compra</span>
+                        <strong>
+                            <i class="fa-solid fa-star"></i>
+                            <span id="modalSaldoRestante">0</span>
+                        </strong>
+                    </div>
                 </div>
+
+                <button
+                    type="button"
+                    class="btn-experimentar-modal"
+                    id="experimentar-item-modal"
+                    hidden
+                >
+                    <i class="fa-regular fa-eye"></i>
+                    Visualizar item
+                </button>
 
                 <div class="modal-buttons">
 
@@ -903,6 +1031,75 @@ $lojaData = [
 
             </div>
 
+        </div>
+
+        <!-- ==================================
+             MODAL DE PREVIEW
+        =================================== -->
+
+        <div
+            id="modal-preview-item"
+            class="modal-preview-item"
+        >
+            <div class="modal-content modal-loja-padronizado">
+                <button
+                    type="button"
+                    class="modal-fechar-x"
+                    id="fechar-preview-item"
+                    aria-label="Fechar"
+                >
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+                <span class="modal-categoria" id="previewCategoria">
+                    Preview
+                </span>
+
+                <div class="preview-palco" id="previewPalco">
+                    <div class="preview-item-visual" id="previewItemVisual"></div>
+                </div>
+
+                <h3 id="previewTitulo">Visualizar item</h3>
+
+                <p id="previewDescricao">
+                    Veja como o item aparece antes de comprar.
+                </p>
+
+                <button
+                    type="button"
+                    class="btn-preview-voltar"
+                    id="previewVoltar"
+                >
+                    Fechar preview
+                </button>
+            </div>
+        </div>
+
+        <div
+            class="loja-toast"
+            id="lojaToast"
+            role="status"
+            aria-live="polite"
+        >
+            <div class="loja-toast-icone" id="lojaToastIcone">
+                <i class="fa-solid fa-check"></i>
+            </div>
+
+            <div class="loja-toast-conteudo">
+                <strong id="lojaToastTitulo">
+                    Tudo certo!
+                </strong>
+                <span id="lojaToastTexto"></span>
+            </div>
+
+            <button
+                type="button"
+                class="loja-toast-fechar"
+                id="lojaToastFechar"
+                aria-label="Fechar"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
         </div>
 
         <!-- ==================================
@@ -972,7 +1169,16 @@ $lojaData = [
     class="modal"
 >
 
-    <div class="modal-content">
+    <div class="modal-content modal-loja-padronizado">
+
+        <button
+            type="button"
+            class="modal-fechar-x"
+            id="fechar-logout-x"
+            aria-label="Fechar"
+        >
+            <i class="fa-solid fa-xmark"></i>
+        </button>
 
         <h3>
             Ah... já vai?

@@ -239,3 +239,265 @@ body.dark-mode .modal-estrelas h3 {
 body.dark-mode .modal-estrelas p {
     color: #94a3b8 !important;
 }
+
+
+/* =====================================================
+   REFINO COMPLETO — DARK MODE
+   ===================================================== */
+
+body.dark-mode .loja-filtros {
+    border-color: #2c3a49 !important;
+    background: rgba(15, 26, 42, .90) !important;
+}
+
+body.dark-mode .filtro-count {
+    background: #253448 !important;
+    color: #a9b7c5 !important;
+}
+
+body.dark-mode .filtro-btn.active .filtro-count {
+    background: rgba(255,255,255,.12) !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .vitrine-bloco,
+body.dark-mode .colecao-painel,
+body.dark-mode .item-skeleton {
+    border-color: #334155 !important;
+    background: #172033 !important;
+}
+
+body.dark-mode .vitrine-cabecalho h2,
+body.dark-mode .colecao-painel-info h2,
+body.dark-mode .vitrine-mini-info strong {
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .vitrine-mini-card {
+    border-color: #2e3d4e !important;
+    background: #111a28 !important;
+}
+
+body.dark-mode .colecao-painel-info p,
+body.dark-mode .colecao-em-uso-vazio {
+    color: #94a3b8 !important;
+}
+
+body.dark-mode .colecao-painel-barra {
+    background: #293648 !important;
+}
+
+body.dark-mode .colecao-em-uso-label {
+    background: #16314a !important;
+    color: #7bc4ff !important;
+}
+
+body.dark-mode .colecao-em-uso-item {
+    background: #202d3d !important;
+    color: #b0becb !important;
+}
+
+body.dark-mode .item-card {
+    background: #172033 !important;
+}
+
+body.dark-mode .item-card.item-ativo-card {
+    border-color: #356449 !important;
+    background:
+        linear-gradient(
+            180deg,
+            #172033,
+            #14231b
+        ) !important;
+}
+
+body.dark-mode .item-categoria-label {
+    color: #8292a3 !important;
+}
+
+body.dark-mode .item-selo.novo {
+    background: #173552 !important;
+    color: #83c6ff !important;
+}
+
+body.dark-mode .item-selo.destaque {
+    background: #3d3212 !important;
+    color: #efcf65 !important;
+}
+
+body.dark-mode .item-raridade {
+    background: #293647 !important;
+    color: #aab7c4 !important;
+}
+
+body.dark-mode .item-card.categoria-fundos .icone,
+body.dark-mode .item-card.categoria-temas .icone,
+body.dark-mode .item-card.categoria-especiais .icone {
+    border-color: #344354 !important;
+    background: #101a28 !important;
+}
+
+body.dark-mode .item-card .preco {
+    background: transparent !important;
+    color: #f1cf58 !important;
+}
+
+body.dark-mode .btn-preview-card {
+    background: #223044 !important;
+    color: #a7b8c7 !important;
+}
+
+body.dark-mode .btn-preview-card:hover {
+    background: #193552 !important;
+    color: #80c4ff !important;
+}
+
+body.dark-mode .modal-loja-padronizado,
+body.dark-mode .modal-preview-item .modal-content {
+    border-color: #334155 !important;
+    background: #172033 !important;
+}
+
+body.dark-mode .modal-fechar-x {
+    background: #253247 !important;
+    color: #c0cbd7 !important;
+}
+
+body.dark-mode .modal-categoria {
+    color: #7fc6ff !important;
+}
+
+body.dark-mode .modal-compra-resumo > div,
+body.dark-mode .modal-compra .modal-preco {
+    border-color: #334155 !important;
+    background: #101a28 !important;
+}
+
+body.dark-mode .btn-experimentar-modal,
+body.dark-mode .btn-preview-voltar {
+    border-color: #31506a !important;
+    background: #142b40 !important;
+    color: #82c7ff !important;
+}
+
+body.dark-mode .preview-palco {
+    border-color: #334155 !important;
+    background:
+        linear-gradient(
+            145deg,
+            #111927,
+            #0f1724
+        ) !important;
+}
+
+body.dark-mode .preview-avatar {
+    background: #263647 !important;
+    color: #72859a !important;
+}
+
+body.dark-mode .preview-mini-interface {
+    border-color: #3a4857 !important;
+    background: #111a27 !important;
+}
+
+body.dark-mode .preview-mini-menu {
+    background: #1b3247 !important;
+}
+
+body.dark-mode .loja-toast {
+    border-color: #334155 !important;
+    background: #172033 !important;
+}
+
+body.dark-mode .loja-toast-conteudo strong {
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .loja-toast-conteudo span {
+    color: #9fb0bf !important;
+}
+
+body.dark-mode .loja-toast-icone {
+    background: #173722 !important;
+    color: #76d697 !important;
+}
+
+body.dark-mode .loja-toast.erro .loja-toast-icone {
+    background: #3a2025 !important;
+    color: #e59aa4 !important;
+}
+
+body.dark-mode .skeleton-visual,
+body.dark-mode .skeleton-linha {
+    background: #273548 !important;
+}
+
+body.dark-mode .skeleton-visual::after,
+body.dark-mode .skeleton-linha::after {
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,.05),
+            transparent
+        ) !important;
+}
+
+
+
+/* =====================================================
+   ACABAMENTO FINAL — DARK MODE
+   ===================================================== */
+
+body.dark-mode .item-card .icone {
+    background: #111a28 !important;
+}
+
+body.dark-mode .item-card.categoria-molduras .icone {
+    background: transparent !important;
+}
+
+body.dark-mode .item-card.categoria-molduras .icone::before {
+    background: #263647 !important;
+    color: #8294a5 !important;
+}
+
+body.dark-mode .item-card.categoria-fundos .icone,
+body.dark-mode .item-card.categoria-temas .icone {
+    border-color: #354456 !important;
+}
+
+body.dark-mode .item-card.categoria-temas .icone {
+    background: #111a28 !important;
+}
+
+
+
+/* =====================================================
+   CORREÇÃO DAS MOLDURAS — DARK MODE
+   ===================================================== */
+
+body.dark-mode
+.item-card.categoria-molduras .icone,
+body.dark-mode
+.item-card .icone:has(.item-imagem[src*="/moldura/"]) {
+    background: transparent !important;
+}
+
+body.dark-mode
+.item-card.categoria-molduras .icone::before,
+body.dark-mode
+.item-card .icone:has(.item-imagem[src*="/moldura/"])::before {
+    background:
+        linear-gradient(
+            145deg,
+            #263647,
+            #1d2b39
+        ) !important;
+
+    color: #8fa3b6 !important;
+
+    box-shadow:
+        inset 0 0 0 1px #3a4d5f,
+        0 4px 14px rgba(0, 0, 0, .18) !important;
+}
