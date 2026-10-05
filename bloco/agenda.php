@@ -246,7 +246,7 @@ if (file_exists($arquivoMaterias)) {
     <title>Agenda e Horário - FOAG</title>
 
     <link rel="stylesheet" href="bloco.css">
-    <link rel="stylesheet" href="agenda.css?v=20261005-expandredo">
+    <link rel="stylesheet" href="agenda.css?v=20261005-excluir-visivel-final">
     <link rel="stylesheet" href="../m.escuro/dark_basee.css">
     <link rel="stylesheet" href="dark_agend.css?v=20261004-2">
 
@@ -693,6 +693,42 @@ if (file_exists($arquivoMaterias)) {
                 </div>
 
                 <div id="horario-conteudo" class="horario-conteudo" hidden>
+                    <div class="horario-resumo-topo">
+                        <div class="horario-proxima-aula" id="horario-proxima-aula">
+                            <span class="horario-proxima-label">Próxima aula</span>
+                            <strong id="horario-proxima-titulo">Nenhuma aula encontrada</strong>
+                            <span id="horario-proxima-meta">Cadastre ou edite seu horário.</span>
+                        </div>
+
+                        <div class="horario-acoes-topo">
+                            <button type="button" id="btn-editar-horario" class="horario-btn-secundario">
+                                <i class="fa-solid fa-pen"></i>
+                                Editar horário
+                            </button>
+
+                            <button type="button" id="btn-menu-horario" class="horario-btn-icone" aria-label="Mais opções" title="Mais opções">
+                                <i class="fa-solid fa-ellipsis"></i>
+                            </button>
+
+                            <div class="horario-menu-opcoes" id="horario-menu-opcoes" hidden>
+                                <button type="button" onclick="salvarComoPDF()">
+                                    <i class="fa-solid fa-file-pdf"></i>
+                                    Exportar PDF
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="horario-visual" id="horario-visual"></div>
+
+                    <div class="horario-editor" id="horario-editor" hidden>
+                    <div class="horario-editor-bar">
+                        <strong>Editar horário semanal</strong>
+                        <div class="horario-editor-acoes">
+                            <button type="button" id="btn-fechar-edicao-horario" class="horario-btn-secundario">Concluir edição</button>
+                        </div>
+                    </div>
+
                     <div class="horario-table-wrapper">
                         <table id="scheduleTable">
                             <thead>
@@ -756,25 +792,22 @@ if (file_exists($arquivoMaterias)) {
                     </div>
 
                     <div class="horario-buttons">
-                        <button type="button" onclick="salvarEdicoes()">
-                            Salvar agora
-                        </button>
-
                         <button type="button" onclick="adicionarLinha()">
-                            Adicionar linha
-                        </button>
-
-                        <button type="button" onclick="removerLinha()">
-                            Remover linha
+                            <i class="fa-solid fa-plus"></i>
+                            Aula
                         </button>
 
                         <button type="button" onclick="adicionarIntervalo()">
-                            Adicionar intervalo
+                            <i class="fa-solid fa-mug-hot"></i>
+                            Intervalo
                         </button>
 
-                        <button type="button" onclick="salvarComoPDF()">
-                            Salvar como PDF
+                        <button type="button" id="btn-excluir-linha-horario" class="horario-btn-perigo horario-btn-desativado" aria-disabled="true">
+                            <i class="fa-solid fa-trash-can"></i>
+                            Excluir linha selecionada
                         </button>
+
+                    </div>
                     </div>
                 </div>
             </section>

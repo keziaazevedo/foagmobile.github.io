@@ -2142,6 +2142,27 @@ document.addEventListener('DOMContentLoaded', function () {
                 );
 
                 break;
+
+            case 'horario-linha':
+
+                if (
+                    dadosExclusao.linha &&
+                    corpoTabelaHorario?.contains(dadosExclusao.linha)
+                ) {
+                    dadosExclusao.linha.remove();
+                    linhaHorarioSelecionada = null;
+
+                    if (btnExcluirLinhaHorario) {
+                        btnExcluirLinhaHorario.classList.add('horario-btn-desativado');
+                btnExcluirLinhaHorario.setAttribute('aria-disabled', 'true');
+                    }
+
+                    esconderMaterias();
+                    agendarSalvamentoHorario();
+                    renderizarHorarioVisual();
+                }
+
+                break;
         }
 
         fecharModalExclusao();
@@ -2703,6 +2724,194 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     tornarHorarioEditavel();
+
+    // =================================================
+    // VISUALIZAÇÃO MODERNA DO HORÁRIO
+    // =================================================
+
+    const horarioVisual = document.getElementById('horario-visual');
+    const horarioEditor = document.getElementById('horario-editor');
+    const btnEditarHorario = document.getElementById('btn-editar-horario');
+    const btnFecharEdicaoHorario = document.getElementById('btn-fechar-edicao-horario');
+    const btnMenuHorario = document.getElementById('btn-menu-horario');
+    const horarioMenuOpcoes = document.getElementById('horario-menu-opcoes');
+    const proximaTitulo = document.getElementById('horario-proxima-titulo');
+    const proximaMeta = document.getElementById('horario-proxima-meta');
+
+    const nomesDiasHorario = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta'];
+
+    function textoLimpoCelula(celula) {
+        return String(celula?.innerText || celula?.textContent || '')
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+
+    function obterFaixaLinha(linha) {
+        const inicio = linha?.querySelector('.input-horario-inicio')?.value || '';
+        const fim = linha?.querySelector('.input-horario-fim')?.value || '';
+        return { inicio, fim };
+    }
+
+    function minutosDeHora(hora) {
+        const m = String(hora || '').match(/^(\d{2}):(\d{2})$/);
+        return m ? Number(m[1]) * 60 + Number(m[2]) : null;
+    }
+
+    function corMateriaPorNome(nome) {
+        const texto = String(nome || '').toLowerCase();
+        let hash = 0;
+        for (let i = 0; i < texto.length; i++) hash = ((hash << 5) - hash) + texto.charCodeAt(i);
+        const tons = ['#38a5ff', '#8b5cf6', '#f59e0b', '#10b981', '#ec4899', '#06b6d4', '#ef4444'];
+        return tons[Math.abs(hash) % tons.length];
+    }
+
+    function coletarHorarioVisual() {
+        const dias = nomesDiasHorario.map(() => []);
+        if (!corpoTabelaHorario) return dias;
+
+        Array.from(corpoTabelaHorario.rows).forEach((linha) => {
+            const { inicio, fim } = obterFaixaLinha(linha);
+            if (!inicio && !fim) return;
+
+            const celulas = Array.from(linha.cells || []);
+            const intervalo = celulas.some(c => Number(c.colSpan || 1) > 1);
+
+            if (intervalo) {
+                const texto = textoLimpoCelula(celulas.find(c => Number(c.colSpan || 1) > 1)) || 'Intervalo';
+                dias.forEach((lista) => lista.push({ inicio, fim, nome: texto, intervalo: true }));
+                return;
+            }
+
+            for (let i = 1; i <= 5; i++) {
+                const nome = textoLimpoCelula(celulas[i]);
+                if (!nome) continue;
+                dias[i - 1].push({ inicio, fim, nome, intervalo: false });
+            }
+        });
+
+        dias.forEach(lista => lista.sort((a, b) => (minutosDeHora(a.inicio) ?? 9999) - (minutosDeHora(b.inicio) ?? 9999)));
+        return dias;
+    }
+
+    function atualizarProximaAula(dias) {
+        if (!proximaTitulo || !proximaMeta) return;
+
+        const agora = new Date();
+        const jsDia = agora.getDay();
+        const indiceHoje = jsDia >= 1 && jsDia <= 5 ? jsDia - 1 : -1;
+        const minutosAgora = agora.getHours() * 60 + agora.getMinutes();
+        let escolhida = null;
+        let deslocamento = 0;
+
+        for (let passo = 0; passo < 7 && !escolhida; passo++) {
+            const dataTeste = new Date(agora);
+            dataTeste.setDate(agora.getDate() + passo);
+            const d = dataTeste.getDay();
+            if (d < 1 || d > 5) continue;
+            const idx = d - 1;
+            const candidatas = dias[idx].filter(item => !item.intervalo && item.inicio);
+            const validas = passo === 0 && idx === indiceHoje
+                ? candidatas.filter(item => (minutosDeHora(item.inicio) ?? -1) >= minutosAgora)
+                : candidatas;
+            if (validas.length) {
+                escolhida = validas[0];
+                deslocamento = passo;
+            }
+        }
+
+        if (!escolhida) {
+            proximaTitulo.textContent = 'Nenhuma aula encontrada';
+            proximaMeta.textContent = 'Cadastre ou edite seu horário.';
+            return;
+        }
+
+        proximaTitulo.textContent = escolhida.nome;
+        const quando = deslocamento === 0 ? 'Hoje' : deslocamento === 1 ? 'Amanhã' : nomesDiasHorario[(agora.getDay() + deslocamento + 6) % 7] || 'Próximo dia';
+        proximaMeta.textContent = `${quando} • ${escolhida.inicio}${escolhida.fim ? `–${escolhida.fim}` : ''}`;
+    }
+
+    function renderizarHorarioVisual() {
+        if (!horarioVisual) return;
+        const dias = coletarHorarioVisual();
+        atualizarProximaAula(dias);
+        horarioVisual.innerHTML = '';
+
+        dias.forEach((itens, indice) => {
+            const coluna = document.createElement('section');
+            coluna.className = 'horario-dia-card';
+
+            const titulo = document.createElement('div');
+            titulo.className = 'horario-dia-titulo';
+            titulo.textContent = nomesDiasHorario[indice];
+            coluna.appendChild(titulo);
+
+            if (!itens.length) {
+                const vazio = document.createElement('div');
+                vazio.className = 'horario-dia-vazio';
+                vazio.textContent = 'Sem aulas';
+                coluna.appendChild(vazio);
+            } else {
+                itens.forEach((item) => {
+                    const card = document.createElement('div');
+                    card.className = item.intervalo ? 'horario-aula-card horario-aula-intervalo' : 'horario-aula-card';
+                    if (!item.intervalo) card.style.setProperty('--materia-cor', corMateriaPorNome(item.nome));
+
+                    const hora = document.createElement('span');
+                    hora.className = 'horario-aula-hora';
+                    hora.textContent = `${item.inicio}${item.fim ? `–${item.fim}` : ''}`;
+
+                    const nome = document.createElement('strong');
+                    nome.textContent = item.nome;
+
+                    card.append(hora, nome);
+                    coluna.appendChild(card);
+                });
+            }
+
+            horarioVisual.appendChild(coluna);
+        });
+    }
+
+    function abrirEdicaoHorario() {
+        if (horarioEditor) horarioEditor.hidden = false;
+        if (horarioVisual) horarioVisual.hidden = true;
+        btnEditarHorario?.classList.add('is-active');
+    }
+
+    function fecharEdicaoHorario() {
+        if (horarioEditor) horarioEditor.hidden = true;
+        if (horarioVisual) horarioVisual.hidden = false;
+        btnEditarHorario?.classList.remove('is-active');
+        renderizarHorarioVisual();
+        if (typeof salvarHorarioNoServidor === 'function') salvarHorarioNoServidor(false);
+    }
+
+    btnEditarHorario?.addEventListener('click', abrirEdicaoHorario);
+    btnFecharEdicaoHorario?.addEventListener('click', fecharEdicaoHorario);
+    btnMenuHorario?.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (horarioMenuOpcoes) horarioMenuOpcoes.hidden = !horarioMenuOpcoes.hidden;
+    });
+    document.addEventListener('click', function (e) {
+        if (horarioMenuOpcoes && !horarioMenuOpcoes.hidden && !horarioMenuOpcoes.contains(e.target) && e.target !== btnMenuHorario) {
+            horarioMenuOpcoes.hidden = true;
+        }
+    });
+
+    corpoTabelaHorario?.addEventListener('input', function () {
+        window.clearTimeout(window.__foagHorarioPreviewTimer);
+        window.__foagHorarioPreviewTimer = window.setTimeout(renderizarHorarioVisual, 120);
+    });
+
+    renderizarHorarioVisual();
+
+    if (corpoTabelaHorario && typeof MutationObserver !== 'undefined') {
+        const observadorHorario = new MutationObserver(function () {
+            window.clearTimeout(window.__foagHorarioMutationTimer);
+            window.__foagHorarioMutationTimer = window.setTimeout(renderizarHorarioVisual, 80);
+        });
+        observadorHorario.observe(corpoTabelaHorario, { childList: true, subtree: true, characterData: true });
+    }
 
     // =================================================
     // AUTOCOMPLETE DAS MATÉRIAS
@@ -3676,42 +3885,61 @@ document.addEventListener('DOMContentLoaded', function () {
                 ?.focus();
 
             agendarSalvamentoHorario();
+            renderizarHorarioVisual();
         };
 
-    window.removerLinha =
-        function () {
-            if (
-                !corpoTabelaHorario
-            ) {
-                return;
+    // Exclusão de uma linha específica do horário.
+    const btnExcluirLinhaHorario = document.getElementById('btn-excluir-linha-horario');
+    let linhaHorarioSelecionada = null;
+
+    function selecionarLinhaHorario(linha) {
+        if (!linha || !corpoTabelaHorario || !corpoTabelaHorario.contains(linha)) return;
+
+        if (linhaHorarioSelecionada && linhaHorarioSelecionada !== linha) {
+            linhaHorarioSelecionada.classList.remove('horario-linha-selecionada');
+        }
+
+        linhaHorarioSelecionada = linha;
+        linhaHorarioSelecionada.classList.add('horario-linha-selecionada');
+
+        if (btnExcluirLinhaHorario) {
+            btnExcluirLinhaHorario.classList.remove('horario-btn-desativado');
+            btnExcluirLinhaHorario.setAttribute('aria-disabled', 'false');
+        }
+    }
+
+    if (corpoTabelaHorario) {
+        corpoTabelaHorario.addEventListener('click', function (event) {
+            const linha = event.target.closest('tr');
+            if (linha) selecionarLinhaHorario(linha);
+        });
+    }
+
+    btnExcluirLinhaHorario?.addEventListener('click', function () {
+        const indisponivel = btnExcluirLinhaHorario.classList.contains('horario-btn-desativado');
+        if (indisponivel || !linhaHorarioSelecionada || !corpoTabelaHorario?.contains(linhaHorarioSelecionada)) {
+            return;
+        }
+
+        const ehIntervalo = Array.from(linhaHorarioSelecionada.cells || [])
+            .some((celula) => Number(celula.colSpan || 1) > 1);
+
+        const primeiraCelula = linhaHorarioSelecionada.cells?.[0];
+        const inicio = primeiraCelula?.querySelector('.input-horario-inicio')?.value || '';
+        const fim = primeiraCelula?.querySelector('.input-horario-fim')?.value || '';
+        const faixa = inicio && fim ? ` (${inicio} às ${fim})` : '';
+
+        abrirModalExclusao(
+            ehIntervalo ? 'Excluir intervalo?' : 'Excluir aula?',
+            ehIntervalo
+                ? `Tem certeza que deseja excluir este intervalo${faixa}? Essa ação não pode ser desfeita.`
+                : `Tem certeza que deseja excluir esta linha de aula${faixa}? Essa ação não pode ser desfeita.`,
+            'horario-linha',
+            {
+                linha: linhaHorarioSelecionada
             }
-
-            const quantidadeLinhas =
-                corpoTabelaHorario
-                    .rows
-                    .length;
-
-            if (
-                quantidadeLinhas ===
-                0
-            ) {
-                alert(
-                    'Não existem linhas para remover.'
-                );
-
-                return;
-            }
-
-            corpoTabelaHorario
-                .deleteRow(
-                    quantidadeLinhas -
-                        1
-                );
-
-            esconderMaterias();
-
-            agendarSalvamentoHorario();
-        };
+        );
+    });
 
     window.adicionarIntervalo =
         function () {
@@ -3741,6 +3969,7 @@ document.addEventListener('DOMContentLoaded', function () {
             celula.focus();
 
             agendarSalvamentoHorario();
+            renderizarHorarioVisual();
         };
 
     // =================================================

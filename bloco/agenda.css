@@ -3047,3 +3047,500 @@ body.dark-mode .agenda-expandir-toggle {
         padding: 0 8px !important;
     }
 }
+
+/* =========================================================
+   FOAG — HORÁRIO SEMANAL V2
+   Visualização separada da edição
+========================================================= */
+.horario-resumo-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 16px;
+}
+
+.horario-proxima-aula {
+    display: grid;
+    gap: 3px;
+    min-width: 0;
+}
+
+.horario-proxima-label {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: #38a5ff;
+}
+
+.horario-proxima-aula strong {
+    font-size: 15px;
+    color: #263445;
+    line-height: 1.25;
+}
+
+.horario-proxima-aula > span:last-child {
+    color: #98a2b3;
+    font-size: 11px;
+}
+
+.horario-acoes-topo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    flex: 0 0 auto;
+}
+
+.horario-btn-secundario,
+.horario-btn-icone {
+    border: 1px solid #dce7f1 !important;
+    background: #fff !important;
+    color: #475467 !important;
+    box-shadow: none !important;
+}
+
+.horario-btn-secundario {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 34px;
+    padding: 0 11px !important;
+    border-radius: 9px !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+}
+
+.horario-btn-secundario:hover,
+.horario-btn-icone:hover,
+.horario-btn-secundario.is-active {
+    border-color: #b9dcf8 !important;
+    background: #f3f9ff !important;
+    color: #2389db !important;
+    transform: none !important;
+}
+
+.horario-btn-icone {
+    width: 34px !important;
+    min-width: 34px !important;
+    height: 34px !important;
+    min-height: 34px !important;
+    padding: 0 !important;
+    border-radius: 9px !important;
+}
+
+.horario-menu-opcoes {
+    position: absolute;
+    top: calc(100% + 7px);
+    right: 0;
+    z-index: 20;
+    min-width: 150px;
+    padding: 6px;
+    border: 1px solid #e3ebf3;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 12px 28px rgba(16,24,40,.12);
+}
+
+.horario-menu-opcoes[hidden] { display: none !important; }
+
+.horario-menu-opcoes button {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 10px !important;
+    border: 0 !important;
+    border-radius: 8px !important;
+    background: transparent !important;
+    color: #475467 !important;
+    font-size: 11px !important;
+    text-align: left;
+}
+
+.horario-menu-opcoes button:hover {
+    background: #f5f9fd !important;
+    transform: none !important;
+}
+
+.horario-visual {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.horario-visual[hidden] { display: none !important; }
+
+.horario-dia-card {
+    min-width: 0;
+    padding: 10px;
+    border: 1px solid #e8eef5;
+    border-radius: 12px;
+    background: #fbfdff;
+}
+
+.horario-dia-titulo {
+    margin-bottom: 8px;
+    padding-bottom: 7px;
+    border-bottom: 1px solid #edf1f5;
+    color: #344054;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.horario-dia-vazio {
+    padding: 12px 4px;
+    color: #b0bac7;
+    font-size: 10px;
+    text-align: center;
+}
+
+.horario-aula-card {
+    position: relative;
+    display: grid;
+    gap: 2px;
+    margin-top: 6px;
+    padding: 8px 8px 8px 11px;
+    border: 1px solid #e7edf4;
+    border-radius: 9px;
+    background: #fff;
+    overflow: hidden;
+}
+
+.horario-aula-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--materia-cor, #38a5ff);
+}
+
+.horario-aula-hora {
+    color: #98a2b3;
+    font-size: 9px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.horario-aula-card strong {
+    display: block;
+    min-width: 0;
+    color: #344054;
+    font-size: 11px;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.horario-aula-intervalo {
+    background: #f8fafc;
+    border-style: dashed;
+}
+
+.horario-aula-intervalo::before { background: #cbd5e1; }
+.horario-aula-intervalo strong { color: #667085; font-weight: 600; }
+
+.horario-editor[hidden] { display: none !important; }
+
+.horario-editor {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid #edf1f5;
+}
+
+.horario-editor-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.horario-editor-bar strong {
+    color: #344054;
+    font-size: 12px;
+}
+
+.horario-buttons {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 8px !important;
+}
+
+.horario-buttons button {
+    width: auto !important;
+    flex: 0 0 auto !important;
+}
+
+.horario-btn-perigo {
+    background: #fff !important;
+    color: #d92d20 !important;
+    border: 1px solid #fecaca !important;
+}
+
+.horario-btn-perigo:hover {
+    background: #fff7f7 !important;
+    transform: none !important;
+}
+
+body.dark-mode .horario-proxima-aula strong,
+body.dark-mode .horario-dia-titulo,
+body.dark-mode .horario-aula-card strong,
+body.dark-mode .horario-editor-bar strong {
+    color: #e5e7eb;
+}
+
+body.dark-mode .horario-btn-secundario,
+body.dark-mode .horario-btn-icone,
+body.dark-mode .horario-menu-opcoes,
+body.dark-mode .horario-aula-card {
+    background: #171a21 !important;
+    border-color: #343b47 !important;
+    color: #cbd5e1 !important;
+}
+
+body.dark-mode .horario-dia-card {
+    background: #12151b;
+    border-color: #2b313b;
+}
+
+body.dark-mode .horario-dia-titulo,
+body.dark-mode .horario-editor {
+    border-color: #2b313b;
+}
+
+body.dark-mode .horario-aula-intervalo {
+    background: #151922 !important;
+}
+
+@media (max-width: 1000px) {
+    .horario-visual { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 700px) {
+    .horario-resumo-topo,
+    .horario-editor-bar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .horario-acoes-topo { width: 100%; }
+    .horario-btn-secundario { flex: 1; }
+    .horario-visual { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 470px) {
+    .horario-visual { grid-template-columns: 1fr; }
+}
+
+
+/* =========================================================
+   FOAG — SELEÇÃO E EXCLUSÃO DE LINHA DO HORÁRIO
+========================================================= */
+#scheduleTable tbody tr {
+    cursor: pointer;
+    transition: box-shadow .16s ease, background-color .16s ease, outline-color .16s ease;
+}
+
+#scheduleTable tbody tr.horario-linha-selecionada td {
+    background: rgba(56, 165, 255, .08) !important;
+    box-shadow: inset 0 0 0 1px rgba(56, 165, 255, .22);
+}
+
+#scheduleTable tbody tr.horario-linha-selecionada td:first-child {
+    box-shadow: inset 3px 0 0 #38a5ff, inset 0 0 0 1px rgba(56, 165, 255, .22);
+}
+
+#btn-excluir-linha-horario:disabled {
+    opacity: .45 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+}
+
+body.dark-mode #scheduleTable tbody tr.horario-linha-selecionada td {
+    background: rgba(56, 165, 255, .13) !important;
+}
+
+
+/* FOAG — excluir linha visível no topo do editor */
+.horario-editor-acoes {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex-wrap: wrap !important;
+}
+#btn-excluir-linha-horario {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 7px !important;
+    width: auto !important;
+    min-height: 36px !important;
+    padding: 8px 12px !important;
+    visibility: visible !important;
+}
+#btn-excluir-linha-horario:disabled {
+    display: inline-flex !important;
+    opacity: .45 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+}
+#scheduleTable tbody tr { cursor: pointer; }
+#scheduleTable tbody tr.horario-linha-selecionada > td {
+    background: rgba(56,165,255,.10) !important;
+    box-shadow: inset 0 0 0 2px rgba(56,165,255,.35) !important;
+}
+@media (max-width: 700px) {
+    .horario-editor-bar { align-items: flex-start !important; }
+    .horario-editor-acoes { width: 100% !important; }
+}
+
+
+/* FOAG — confirmação de exclusão do horário */
+#modal-excluir .modal-content {
+    width: min(420px, calc(100vw - 32px)) !important;
+    padding: 28px 26px 24px !important;
+    border-radius: 18px !important;
+    border: 1px solid #e7edf4 !important;
+    box-shadow: 0 24px 60px rgba(31, 41, 55, .18) !important;
+    text-align: center !important;
+}
+
+#modal-excluir .excluir-icon {
+    width: 48px !important;
+    height: 48px !important;
+    margin: 0 auto 14px !important;
+    border-radius: 14px !important;
+    display: grid !important;
+    place-items: center !important;
+    background: #fff1f2 !important;
+    color: #e5484d !important;
+    font-size: 18px !important;
+}
+
+#modal-excluir #excluir-titulo {
+    margin: 0 0 8px !important;
+    color: #1f2937 !important;
+    font-size: 19px !important;
+    font-weight: 700 !important;
+}
+
+#modal-excluir #excluir-mensagem {
+    margin: 0 auto 22px !important;
+    max-width: 330px !important;
+    color: #667085 !important;
+    font-size: 13px !important;
+    line-height: 1.55 !important;
+}
+
+#modal-excluir .modal-buttons {
+    display: flex !important;
+    gap: 10px !important;
+    justify-content: center !important;
+}
+
+#modal-excluir .modal-buttons button {
+    min-width: 118px !important;
+    height: 40px !important;
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+}
+
+#modal-excluir .btn-excluir-confirmar {
+    background: #e5484d !important;
+    color: #fff !important;
+    border: 1px solid #e5484d !important;
+}
+
+#modal-excluir .btn-cancelar {
+    background: #fff !important;
+    color: #344054 !important;
+    border: 1px solid #dfe7f0 !important;
+}
+
+body.dark-mode #modal-excluir .modal-content {
+    background: #171a21 !important;
+    border-color: #343b47 !important;
+}
+
+body.dark-mode #modal-excluir #excluir-titulo {
+    color: #f3f4f6 !important;
+}
+
+body.dark-mode #modal-excluir #excluir-mensagem {
+    color: #a7b0be !important;
+}
+
+body.dark-mode #modal-excluir .btn-cancelar {
+    background: #20242d !important;
+    color: #e5e7eb !important;
+    border-color: #3a414d !important;
+}
+
+
+/* FOAG — botão excluir linha sempre visível na barra inferior */
+.horario-buttons {
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    overflow: visible !important;
+}
+
+#btn-excluir-linha-horario {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 7px !important;
+    width: auto !important;
+    min-width: 190px !important;
+    min-height: 36px !important;
+    padding: 9px 12px !important;
+    margin: 0 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    flex: 0 0 auto !important;
+    position: static !important;
+}
+
+#btn-excluir-linha-horario.horario-btn-desativado {
+    background: #f8fafc !important;
+    color: #98a2b3 !important;
+    border: 1px solid #e5e7eb !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+#btn-excluir-linha-horario:not(.horario-btn-desativado) {
+    background: #fff !important;
+    color: #d92d20 !important;
+    border: 1px solid #fecaca !important;
+}
+
+#btn-excluir-linha-horario:not(.horario-btn-desativado):hover {
+    background: #fff7f7 !important;
+    transform: none !important;
+}
+
+body.dark-mode #btn-excluir-linha-horario.horario-btn-desativado {
+    background: #1d2129 !important;
+    color: #6b7280 !important;
+    border-color: #343b47 !important;
+}
+
+@media (max-width: 700px) {
+    .horario-buttons > button {
+        width: 100% !important;
+    }
+
+    #btn-excluir-linha-horario {
+        min-width: 0 !important;
+    }
+}
