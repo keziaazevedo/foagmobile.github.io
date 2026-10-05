@@ -246,9 +246,9 @@ if (file_exists($arquivoMaterias)) {
     <title>Agenda e Horário - FOAG</title>
 
     <link rel="stylesheet" href="bloco.css">
-    <link rel="stylesheet" href="agenda.css">
+    <link rel="stylesheet" href="agenda.css?v=20261004-2">
     <link rel="stylesheet" href="../m.escuro/dark_basee.css">
-    <link rel="stylesheet" href="dark_agend.css">
+    <link rel="stylesheet" href="dark_agend.css?v=20261004-2">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -504,18 +504,134 @@ if (file_exists($arquivoMaterias)) {
             <div class="agenda-page-header">
                 <div class="agenda-page-title">
                     <h1>Agenda</h1>
-                    <p>Organize suas tarefas, lembretes, notas e horário semanal.</p>
+                    <p>Veja o que precisa fazer hoje e organize seus próximos estudos.</p>
                 </div>
 
-                <div class="agenda-auto-save" id="status-salvamento" data-status="salvo">
+                <div class="agenda-header-actions">
+                    <button type="button" class="agenda-novo-btn" id="agenda-novo-btn">
+                        <i class="fa-solid fa-plus"></i> Novo
+                    </button>
+                    <div class="agenda-auto-save" id="status-salvamento" data-status="salvo">
                     <i class="fa-solid fa-circle-check"></i>
                     <span>Salvo</span>
+                    </div>
                 </div>
             </div>
+
+            <div class="agenda-novo-menu" id="agenda-novo-menu" hidden>
+                <button type="button" data-agenda-action="tarefa"><i class="fa-solid fa-list-check"></i> Tarefa</button>
+                <button type="button" data-agenda-action="lembrete"><i class="fa-solid fa-bell"></i> Lembrete</button>
+                <button type="button" data-agenda-action="anotacao"><i class="fa-solid fa-note-sticky"></i> Anotação</button>
+            </div>
+
+            <section class="agenda-resumo" aria-label="Resumo da agenda">
+                <article class="agenda-resumo-card">
+                    <span class="agenda-resumo-icone"><i class="fa-solid fa-list-check"></i></span>
+                    <div><strong id="resumo-pendentes">0</strong><span>Tarefas pendentes</span></div>
+                </article>
+                <article class="agenda-resumo-card">
+                    <span class="agenda-resumo-icone"><i class="fa-solid fa-calendar-day"></i></span>
+                    <div><strong id="resumo-hoje">0</strong><span>Para hoje</span></div>
+                </article>
+                <article class="agenda-resumo-card">
+                    <span class="agenda-resumo-icone alerta"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                    <div><strong id="resumo-atrasadas">0</strong><span>Atrasadas</span></div>
+                </article>
+                <article class="agenda-resumo-card">
+                    <span class="agenda-resumo-icone"><i class="fa-solid fa-note-sticky"></i></span>
+                    <div><strong id="resumo-notas"><?= $totalNotas ?></strong><span>Anotações</span></div>
+                </article>
+            </section>
+
+            <section class="agenda-hoje-card">
+                <div class="agenda-section-header">
+                    <div>
+                        <span class="agenda-eyebrow">Seu dia</span>
+                        <h2>Hoje</h2>
+                    </div>
+                    <span class="agenda-hoje-data" id="agenda-hoje-data"></span>
+                </div>
+                <div class="agenda-hoje-lista" id="agenda-hoje-lista">
+                    <div class="agenda-vazio">Nada para hoje. Aproveite para adiantar alguma coisa ✨</div>
+                </div>
+            </section>
 
             <!-- ==================================
                  HORÁRIO RECOLHÍVEL
             =================================== -->
+
+            <!-- ==================================
+                 TAREFAS + LEMBRETES
+            =================================== -->
+
+            <div class="agenda-paineis">
+
+                <section class="agenda-painel" id="tarefas">
+                    <div class="agenda-painel-header">
+                        <div class="agenda-painel-titulo">
+                            <i class="fa-solid fa-list-check"></i>
+                            Tarefas
+                        </div>
+
+                        <span class="agenda-painel-contador" id="contador-tarefas">
+                            <?= $totalTarefas ?>
+                        </span>
+                    </div>
+
+                    <div class="agenda-tabela-wrapper">
+                        <table id="tabela-tarefas">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Tarefa</th>
+                                    <th>Data</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="lista-tarefas"></tbody>
+                        </table>
+                    </div>
+
+                    <button type="button" id="add-tarefa">
+                        <i class="fa-solid fa-plus"></i>
+                        Adicionar tarefa
+                    </button>
+                </section>
+
+                <section class="agenda-painel" id="lembretes">
+                    <div class="agenda-painel-header">
+                        <div class="agenda-painel-titulo">
+                            <i class="fa-solid fa-bell"></i>
+                            Lembretes
+                        </div>
+
+                        <span class="agenda-painel-contador" id="contador-lembretes">
+                            <?= $totalLembretes ?>
+                        </span>
+                    </div>
+
+                    <div class="agenda-tabela-wrapper">
+                        <table id="tabela-nao-esquecer">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Lembrete</th>
+                                    <th>Data</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="lista-nao-esquecer"></tbody>
+                        </table>
+                    </div>
+
+                    <button type="button" id="add-nao-esquecer">
+                        <i class="fa-solid fa-plus"></i>
+                        Adicionar lembrete
+                    </button>
+                </section>
+            </div>
 
             <section class="horario-agenda-card">
 
@@ -629,78 +745,6 @@ if (file_exists($arquivoMaterias)) {
                 </div>
             </section>
 
-            <!-- ==================================
-                 TAREFAS + LEMBRETES
-            =================================== -->
-
-            <div class="agenda-paineis">
-
-                <section class="agenda-painel" id="tarefas">
-                    <div class="agenda-painel-header">
-                        <div class="agenda-painel-titulo">
-                            <i class="fa-solid fa-list-check"></i>
-                            Tarefas
-                        </div>
-
-                        <span class="agenda-painel-contador" id="contador-tarefas">
-                            <?= $totalTarefas ?>
-                        </span>
-                    </div>
-
-                    <div class="agenda-tabela-wrapper">
-                        <table id="tabela-tarefas">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Tarefa</th>
-                                    <th>Data</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-
-                            <tbody id="lista-tarefas"></tbody>
-                        </table>
-                    </div>
-
-                    <button type="button" id="add-tarefa">
-                        <i class="fa-solid fa-plus"></i>
-                        Adicionar tarefa
-                    </button>
-                </section>
-
-                <section class="agenda-painel" id="lembretes">
-                    <div class="agenda-painel-header">
-                        <div class="agenda-painel-titulo">
-                            <i class="fa-solid fa-bell"></i>
-                            Lembretes
-                        </div>
-
-                        <span class="agenda-painel-contador" id="contador-lembretes">
-                            <?= $totalLembretes ?>
-                        </span>
-                    </div>
-
-                    <div class="agenda-tabela-wrapper">
-                        <table id="tabela-nao-esquecer">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Lembrete</th>
-                                    <th>Data</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-
-                            <tbody id="lista-nao-esquecer"></tbody>
-                        </table>
-                    </div>
-
-                    <button type="button" id="add-nao-esquecer">
-                        <i class="fa-solid fa-plus"></i>
-                        Adicionar lembrete
-                    </button>
-                </section>
-            </div>
 
             <!-- ==================================
                  NOTAS
@@ -710,14 +754,20 @@ if (file_exists($arquivoMaterias)) {
                 <div class="agenda-notas-header">
                     <h2>
                         <i class="fa-solid fa-note-sticky"></i>
-                        Minhas notas
+                        Anotações
                     </h2>
 
-                    <span class="agenda-painel-contador" id="contador-notas">
-                        <?= $totalNotas ?>
-                    </span>
+                    <div class="agenda-notas-actions">
+                        <span class="agenda-painel-contador" id="contador-notas">
+                            <?= $totalNotas ?>
+                        </span>
+                        <button type="button" class="btn-nova-anotacao" id="btn-nova-anotacao">
+                            <i class="fa-solid fa-plus"></i> Nova anotação
+                        </button>
+                    </div>
                 </div>
 
+                <div class="nota-editor" id="nota-editor" hidden>
                 <label for="nota-texto" class="sr-only">
                     Escreva sua nota
                 </label>
@@ -728,11 +778,12 @@ if (file_exists($arquivoMaterias)) {
                     wrap="soft"></textarea>
 
                 <button type="button" id="btn-salvar-nota">
-                    Salvar Nota
+                    Salvar anotação
                 </button>
+                </div>
 
                 <div id="saved-notes">
-                    <h2>Notas Salvas</h2>
+                    <h2>Suas anotações</h2>
 
                     <div class="notas-container" id="noteList">
                         <!-- Notas inseridas pelo JavaScript -->

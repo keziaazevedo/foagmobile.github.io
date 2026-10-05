@@ -4024,3 +4024,165 @@ document.addEventListener('DOMContentLoaded', function () {
         'Tudo pronto: Agenda + Horário + Matérias ✅'
     );
 });
+// =====================================================
+// FOAG Agenda — painel do dia + ações rápidas
+// =====================================================
+document.addEventListener('DOMContentLoaded', function () {
+    const novoBtn = document.getElementById('agenda-novo-btn');
+    const novoMenu = document.getElementById('agenda-novo-menu');
+    const novaAnotacaoBtn = document.getElementById('btn-nova-anotacao');
+    const notaEditor = document.getElementById('nota-editor');
+    const hojeLista = document.getElementById('agenda-hoje-lista');
+    const hojeData = document.getElementById('agenda-hoje-data');
+    const resumoPendentes = document.getElementById('resumo-pendentes');
+    const resumoHoje = document.getElementById('resumo-hoje');
+    const resumoAtrasadas = document.getElementById('resumo-atrasadas');
+    const resumoNotas = document.getElementById('resumo-notas');
+
+    const hoje = new Date();
+    const isoHoje = [
+        hoje.getFullYear(),
+        String(hoje.getMonth() + 1).padStart(2, '0'),
+        String(hoje.getDate()).padStart(2, '0')
+    ].join('-');
+
+    if (hojeData) {
+        hojeData.textContent = hoje.toLocaleDateString('pt-BR', {
+            weekday: 'long',
+            day: '2-digit',
+            month: 'long'
+        });
+    }
+
+    function valorTextoDaLinha(linha) {
+        if (!linha) return '';
+        const textoTarefa = linha.querySelector('.tarefa-texto');
+        if (textoTarefa) return textoTarefa.textContent.trim();
+        return (linha.cells?.[1]?.textContent || '').trim();
+    }
+
+    function valorDataDaLinha(linha) {
+        return linha?.querySelector('input[type="date"]')?.value || '';
+    }
+
+    function tarefaConcluida(linha) {
+        return Boolean(linha?.querySelector('.tarefa-checkbox')?.checked);
+    }
+
+    function renderPainelHoje() {
+        const linhasTarefas = Array.from(document.querySelectorAll('#lista-tarefas tr'));
+        const linhasLembretes = Array.from(document.querySelectorAll('#lista-nao-esquecer tr'));
+
+        const pendentes = linhasTarefas.filter(l => !tarefaConcluida(l) && valorTextoDaLinha(l));
+        const atrasadas = pendentes.filter(l => {
+            const data = valorDataDaLinha(l);
+            return data && data < isoHoje;
+        });
+        const tarefasHoje = pendentes.filter(l => valorDataDaLinha(l) === isoHoje);
+        const lembretesHoje = linhasLembretes.filter(l => valorDataDaLinha(l) === isoHoje && valorTextoDaLinha(l));
+
+        if (resumoPendentes) resumoPendentes.textContent = pendentes.length;
+        if (resumoHoje) resumoHoje.textContent = tarefasHoje.length + lembretesHoje.length;
+        if (resumoAtrasadas) resumoAtrasadas.textContent = atrasadas.length;
+        if (resumoNotas) resumoNotas.textContent = document.querySelectorAll('#noteList .nota-item').length;
+
+        if (!hojeLista) return;
+        hojeLista.innerHTML = '';
+
+        const itens = [
+            ...atrasadas.map(l => ({
+                tipo: 'atrasada',
+                texto: valorTextoDaLinha(l),
+                meta: 'Tarefa atrasada',
+                icone: 'fa-triangle-exclamation'
+            })),
+            ...tarefasHoje.map(l => ({
+                tipo: 'tarefa',
+                texto: valorTextoDaLinha(l),
+                meta: 'Tarefa de hoje',
+                icone: 'fa-list-check'
+            })),
+            ...lembretesHoje.map(l => ({
+                tipo: 'lembrete',
+                texto: valorTextoDaLinha(l),
+                meta: 'Lembrete de hoje',
+                icone: 'fa-bell'
+            }))
+        ].slice(0, 6);
+
+        if (!itens.length) {
+            hojeLista.innerHTML = '<div class="agenda-vazio">Nada para hoje. Aproveite para adiantar alguma coisa ✨</div>';
+            return;
+        }
+
+        itens.forEach(item => {
+            const el = document.createElement('div');
+            el.className = 'agenda-hoje-item';
+            el.innerHTML = `
+                <span class="agenda-hoje-icon"><i class="fa-solid ${item.icone}"></i></span>
+                <div>
+                    <strong></strong>
+                    <small>${item.meta}</small>
+                </div>
+            `;
+            el.querySelector('strong').textContent = item.texto;
+            hojeLista.appendChild(el);
+        });
+    }
+
+    function abrirEditorNota() {
+        if (!notaEditor) return;
+        notaEditor.hidden = false;
+        document.getElementById('nota-texto')?.focus();
+    }
+
+    novoBtn?.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (novoMenu) novoMenu.hidden = !novoMenu.hidden;
+    });
+
+    document.addEventListener('click', function (e) {
+        if (novoMenu && !novoMenu.hidden && !novoMenu.contains(e.target) && e.target !== novoBtn) {
+            novoMenu.hidden = true;
+        }
+    });
+
+    novoMenu?.addEventListener('click', function (e) {
+        const botao = e.target.closest('[data-agenda-action]');
+        if (!botao) return;
+        const acao = botao.dataset.agendaAction;
+        novoMenu.hidden = true;
+
+        if (acao === 'tarefa') {
+            document.getElementById('tarefas')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            document.getElementById('add-tarefa')?.click();
+        } else if (acao === 'lembrete') {
+            document.getElementById('lembretes')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            document.getElementById('add-nao-esquecer')?.click();
+        } else if (acao === 'anotacao') {
+            document.getElementById('notas')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            abrirEditorNota();
+        }
+    });
+
+    novaAnotacaoBtn?.addEventListener('click', abrirEditorNota);
+
+    document.getElementById('noteList')?.addEventListener('click', function (e) {
+        if (e.target.closest('.btn-editar')) abrirEditorNota();
+    });
+
+    const observar = new MutationObserver(renderPainelHoje);
+    ['lista-tarefas', 'lista-nao-esquecer', 'noteList'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) observar.observe(el, { childList: true, subtree: true, characterData: true });
+    });
+
+    document.addEventListener('change', function (e) {
+        if (e.target.matches('#lista-tarefas input, #lista-nao-esquecer input')) renderPainelHoje();
+    });
+    document.addEventListener('input', function (e) {
+        if (e.target.closest('#lista-tarefas, #lista-nao-esquecer')) renderPainelHoje();
+    });
+
+    setTimeout(renderPainelHoje, 0);
+});

@@ -2148,3 +2148,401 @@ body.dark-mode .horario-autocomplete-item.ativo {
 }
 
 
+
+/* =====================================================
+   FOAG AGENDA — REDESIGN 2026-10
+===================================================== */
+
+.main-content {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 34px 38px 48px;
+    gap: 24px;
+}
+
+.agenda-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.agenda-page-title h1 {
+    font-size: clamp(30px, 3vw, 42px);
+    line-height: 1.1;
+    margin: 0 0 7px;
+    color: #182230;
+}
+
+.agenda-page-title p {
+    margin: 0;
+    color: #667085;
+    font-size: 14px;
+}
+
+.agenda-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.agenda-novo-btn,
+.btn-nova-anotacao,
+#add-tarefa,
+#add-nao-esquecer {
+    border: 0;
+    border-radius: 11px;
+    background: #38a5ff;
+    color: #fff;
+    font-weight: 600;
+    padding: 11px 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(56, 165, 255, .18);
+}
+
+.agenda-auto-save {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 12px;
+    border: 1px solid #e7edf4;
+    border-radius: 999px;
+    background: #fff;
+    color: #667085;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.agenda-novo-menu {
+    position: absolute;
+    right: 38px;
+    top: 92px;
+    z-index: 250;
+    width: 190px;
+    padding: 8px;
+    background: #fff;
+    border: 1px solid #e6edf5;
+    border-radius: 14px;
+    box-shadow: 0 18px 42px rgba(16, 24, 40, .15);
+}
+
+.agenda-novo-menu button {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    color: #344054;
+    padding: 10px 11px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font: inherit;
+    font-size: 13px;
+}
+
+.agenda-novo-menu button:hover { background: #f4f8fc; }
+
+.agenda-resumo {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.agenda-resumo-card {
+    min-height: 104px;
+    padding: 18px;
+    border: 1px solid #e7edf4;
+    border-radius: 16px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 4px 14px rgba(16, 24, 40, .035);
+}
+
+.agenda-resumo-icone {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 42px;
+    background: #eaf6ff;
+    color: #38a5ff;
+}
+
+.agenda-resumo-icone.alerta { background: #fff4e8; color: #e57a11; }
+
+.agenda-resumo-card strong {
+    display: block;
+    color: #182230;
+    font-size: 25px;
+    line-height: 1;
+    margin-bottom: 6px;
+}
+
+.agenda-resumo-card span:not(.agenda-resumo-icone) {
+    color: #7b8794;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.agenda-hoje-card,
+.agenda-painel,
+.agenda-notas-card,
+.horario-agenda-card {
+    border: 1px solid #e6edf5 !important;
+    border-radius: 18px !important;
+    background: #fff !important;
+    box-shadow: 0 6px 22px rgba(16, 24, 40, .045) !important;
+}
+
+.agenda-hoje-card { padding: 22px; }
+
+.agenda-section-header,
+.agenda-painel-header,
+.agenda-notas-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.agenda-eyebrow {
+    display: block;
+    color: #38a5ff;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: 2px;
+}
+
+.agenda-section-header h2,
+.agenda-notas-header h2 {
+    margin: 0;
+    color: #1f2937;
+    font-size: 20px;
+}
+
+.agenda-hoje-data {
+    color: #667085;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.agenda-hoje-lista {
+    margin-top: 16px;
+    display: grid;
+    gap: 9px;
+}
+
+.agenda-hoje-item {
+    padding: 13px 14px;
+    border: 1px solid #e9eef5;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #fbfdff;
+}
+
+.agenda-hoje-item .agenda-hoje-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    color: #38a5ff;
+    background: #edf7ff;
+}
+
+.agenda-hoje-item strong { font-size: 13px; color: #273444; }
+.agenda-hoje-item small { display: block; margin-top: 2px; color: #98a2b3; font-size: 11px; }
+.agenda-vazio { color: #98a2b3; font-size: 13px; padding: 18px 4px; }
+
+.agenda-paineis {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.2fr) minmax(340px, .8fr) !important;
+    gap: 18px !important;
+}
+
+.agenda-painel { padding: 20px !important; min-width: 0; }
+.agenda-painel-titulo { font-size: 18px !important; color: #1f2937 !important; }
+.agenda-painel-titulo i { color: #38a5ff; }
+
+.agenda-painel-contador {
+    min-width: 28px;
+    height: 28px;
+    padding: 0 8px;
+    border-radius: 999px;
+    display: inline-grid;
+    place-items: center;
+    background: #eef7ff;
+    color: #2389db;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+/* Mantém a estrutura de tabela usada pelo JS, mas com aparência de lista/card. */
+.agenda-tabela-wrapper { overflow: visible !important; margin: 14px 0 12px; }
+#tabela-tarefas,
+#tabela-nao-esquecer,
+#tabela-tarefas tbody,
+#tabela-nao-esquecer tbody {
+    display: block !important;
+    width: 100% !important;
+}
+
+#tabela-tarefas thead,
+#tabela-nao-esquecer thead { display: none !important; }
+
+#tabela-tarefas tbody,
+#tabela-nao-esquecer tbody { display: grid !important; gap: 9px; }
+
+#tabela-tarefas tbody tr,
+#tabela-nao-esquecer tbody tr {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 132px 72px;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 12px 12px 12px 14px;
+    border: 1px solid #e9eef5;
+    border-radius: 12px;
+    background: #fbfdff;
+    transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+
+#tabela-tarefas tbody tr:hover,
+#tabela-nao-esquecer tbody tr:hover {
+    border-color: #cfe7fb;
+    box-shadow: 0 5px 16px rgba(56,165,255,.07);
+}
+
+#tabela-tarefas td,
+#tabela-nao-esquecer td {
+    display: block !important;
+    border: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    min-width: 0;
+}
+
+#tabela-tarefas td:first-child,
+#tabela-nao-esquecer td:first-child { display: none !important; }
+
+.tarefa-conteudo-wrapper { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.tarefa-checkbox { width: 17px; height: 17px; accent-color: #38a5ff; flex: 0 0 auto; }
+.tarefa-texto,
+#tabela-nao-esquecer td:nth-child(2) {
+    color: #344054;
+    font-size: 13px;
+    font-weight: 500;
+    outline: none;
+}
+
+#tabela-tarefas input[type="date"],
+#tabela-nao-esquecer input[type="date"] {
+    width: 100%;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #fff;
+    color: #667085;
+    padding: 7px 8px;
+    font-size: 11px;
+}
+
+.btn-excluir {
+    width: 34px !important;
+    height: 34px !important;
+    padding: 0 !important;
+    border-radius: 9px !important;
+    font-size: 0 !important;
+    background: transparent !important;
+    color: #98a2b3 !important;
+    border: 1px solid #e7edf4 !important;
+}
+.btn-excluir::before { content: "\f1f8"; font-family: "Font Awesome 6 Free"; font-weight: 900; font-size: 12px; }
+.btn-excluir:hover { color: #d92d20 !important; border-color: #fecaca !important; background: #fff7f7 !important; }
+
+/* Horário passa a ser secundário e compacto. */
+.horario-agenda-card { padding: 0 !important; overflow: hidden; border-left: 1px solid #e6edf5 !important; }
+.horario-agenda-header { margin: 0 !important; }
+.horario-toggle { padding: 18px 20px !important; min-height: 76px; }
+.horario-toggle-icone { background: #edf7ff !important; color: #38a5ff !important; }
+.horario-toggle-copy strong { color: #263445 !important; font-size: 15px !important; }
+.horario-toggle-copy span { color: #98a2b3 !important; font-size: 11px !important; }
+.horario-conteudo { padding: 0 20px 20px; }
+.horario-buttons { gap: 8px !important; }
+.horario-buttons button { border-radius: 9px !important; font-size: 11px !important; padding: 9px 11px !important; box-shadow: none !important; }
+
+/* Anotações em cards e editor recolhível. */
+.agenda-notas-card { padding: 22px !important; }
+.agenda-notas-actions { display: flex; align-items: center; gap: 10px; }
+.btn-nova-anotacao { padding: 9px 12px; font-size: 12px; box-shadow: none; }
+.nota-editor {
+    margin-top: 16px;
+    padding: 16px;
+    border: 1px solid #e7edf4;
+    border-radius: 14px;
+    background: #f9fbfd;
+}
+#nota-texto {
+    width: 100% !important;
+    min-height: 150px !important;
+    border: 1px solid #dfe7ef !important;
+    border-radius: 12px !important;
+    padding: 14px !important;
+    background: #fff !important;
+    color: #344054 !important;
+    resize: vertical;
+}
+#btn-salvar-nota { margin-top: 10px; border-radius: 10px !important; padding: 10px 14px !important; }
+#saved-notes > h2 { font-size: 13px !important; color: #667085 !important; margin: 20px 0 10px !important; font-weight: 600 !important; }
+.notas-container { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px !important; }
+.nota-item {
+    display: flex !important;
+    flex-direction: column;
+    min-height: 185px;
+    padding: 16px !important;
+    border: 1px solid #e7edf4 !important;
+    border-radius: 14px !important;
+    background: #fff !important;
+    box-shadow: none !important;
+}
+.nota-titulo { color: #243244 !important; font-size: 14px !important; font-weight: 700 !important; }
+.nota-data { color: #98a2b3 !important; font-size: 10px !important; margin-top: 3px; }
+.nota-conteudo { color: #667085 !important; font-size: 12px !important; line-height: 1.6; margin: 12px 0 !important; flex: 1; max-height: 88px; overflow: hidden; }
+.nota-acoes { display: flex !important; gap: 6px !important; flex-wrap: wrap; }
+.nota-acoes .btn-nota { padding: 7px 9px !important; font-size: 10px !important; border-radius: 8px !important; }
+
+@media (max-width: 1100px) {
+    .agenda-resumo { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .agenda-paineis { grid-template-columns: 1fr !important; }
+    .notas-container { grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
+
+@media (max-width: 720px) {
+    .main-content { padding: 22px 14px 36px; }
+    .agenda-page-header { align-items: flex-start; }
+    .agenda-page-title p { max-width: 240px; }
+    .agenda-auto-save { display: none; }
+    .agenda-novo-menu { right: 14px; top: 82px; }
+    .agenda-resumo { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+    .agenda-resumo-card { min-height: 88px; padding: 13px; }
+    .agenda-resumo-card strong { font-size: 21px; }
+    #tabela-tarefas tbody tr,
+    #tabela-nao-esquecer tbody tr { grid-template-columns: minmax(0,1fr) 34px; }
+    #tabela-tarefas td:nth-child(3),
+    #tabela-nao-esquecer td:nth-child(3) { grid-column: 1 / -1; grid-row: 2; }
+    #tabela-tarefas td:nth-child(4),
+    #tabela-nao-esquecer td:nth-child(4) { grid-column: 2; grid-row: 1; }
+    .notas-container { grid-template-columns: 1fr; }
+    .agenda-notas-header { align-items: flex-start; }
+    .agenda-notas-actions { flex-direction: column-reverse; align-items: flex-end; }
+}
