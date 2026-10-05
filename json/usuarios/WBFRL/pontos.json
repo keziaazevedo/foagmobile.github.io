@@ -1,5 +1,5 @@
 {
-    "estrelas": 150,
+    "estrelas": 165,
     "historico": [
         {
             "id": "estrela_d63d0474bd6e",
@@ -288,6 +288,33 @@
             "data": "2026-10-03 22:42:06",
             "timestamp": 1791081726,
             "chave": "compra_loja_moldura_rei"
+        },
+        {
+            "id": "estrela_1b7ff5ca6985",
+            "tipo": "nota",
+            "descricao": "Nota 7,50 em geografia — 3º Bimestre",
+            "estrelas": 3,
+            "data": "2026-10-04 23:10:29",
+            "timestamp": 1791169829,
+            "chave": "nota_mat_23a836c9da28_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_efbebe2ee09e",
+            "tipo": "nota",
+            "descricao": "Nota 9,00 em Quimica — 3º Bimestre",
+            "estrelas": 7,
+            "data": "2026-10-04 23:10:29",
+            "timestamp": 1791169829,
+            "chave": "nota_mat_47a8b822652c_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_64ec681fce48",
+            "tipo": "evolucao_nota",
+            "descricao": "Evolução em Quimica: nota maior que na avaliação anterior",
+            "estrelas": 5,
+            "data": "2026-10-04 23:10:29",
+            "timestamp": 1791169829,
+            "chave": "evolucao_nota_mat_47a8b822652c_0758c00e6ea0_avaliacao_3"
         }
     ],
     "controle": {
@@ -315,7 +342,10 @@
                 "evolucao_nota_MAT_ADEFFDD5_0758c00e6ea0_avaliacao_3",
                 "nota_mat_d2031fa95c05_0758c00e6ea0_avaliacao_3",
                 "nota_mat_d7201e4e39f9_0758c00e6ea0_avaliacao_3",
-                "nota_mat_a9102dddebde_0758c00e6ea0_avaliacao_3"
+                "nota_mat_a9102dddebde_0758c00e6ea0_avaliacao_3",
+                "nota_mat_23a836c9da28_0758c00e6ea0_avaliacao_3",
+                "nota_mat_47a8b822652c_0758c00e6ea0_avaliacao_3",
+                "evolucao_nota_mat_47a8b822652c_0758c00e6ea0_avaliacao_3"
             ]
         },
         "sequencia_estudo": {
@@ -337,7 +367,10 @@
             "sequencia_presenca_2026-10",
             "nota_mat_d2031fa95c05_0758c00e6ea0_avaliacao_3",
             "nota_mat_d7201e4e39f9_0758c00e6ea0_avaliacao_3",
-            "nota_mat_a9102dddebde_0758c00e6ea0_avaliacao_3"
+            "nota_mat_a9102dddebde_0758c00e6ea0_avaliacao_3",
+            "nota_mat_23a836c9da28_0758c00e6ea0_avaliacao_3",
+            "nota_mat_47a8b822652c_0758c00e6ea0_avaliacao_3",
+            "evolucao_nota_mat_47a8b822652c_0758c00e6ea0_avaliacao_3"
         ]
     }
 }
