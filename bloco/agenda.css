@@ -2388,87 +2388,337 @@ body.dark-mode .horario-autocomplete-item.ativo {
     font-weight: 700;
 }
 
-/* Mantém a estrutura de tabela usada pelo JS, mas com aparência de lista/card. */
-.agenda-tabela-wrapper { overflow: visible !important; margin: 14px 0 12px; }
+/* =========================================================
+   TAREFAS E LEMBRETES — BLOCO LIMPO E ISOLADO
+========================================================= */
+.agenda-tabela-wrapper {
+    overflow: visible !important;
+    margin: 14px 0 12px !important;
+}
+
 #tabela-tarefas,
 #tabela-nao-esquecer,
 #tabela-tarefas tbody,
 #tabela-nao-esquecer tbody {
     display: block !important;
     width: 100% !important;
+    max-width: 100% !important;
+    border: 0 !important;
 }
 
 #tabela-tarefas thead,
-#tabela-nao-esquecer thead { display: none !important; }
+#tabela-nao-esquecer thead {
+    display: none !important;
+}
 
 #tabela-tarefas tbody,
-#tabela-nao-esquecer tbody { display: grid !important; gap: 9px; }
+#tabela-nao-esquecer tbody {
+    display: grid !important;
+    gap: 8px !important;
+}
 
 #tabela-tarefas tbody tr,
 #tabela-nao-esquecer tbody tr {
     display: grid !important;
-    grid-template-columns: minmax(0, 1fr) 132px 72px;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    padding: 12px 12px 12px 14px;
-    border: 1px solid #e9eef5;
-    border-radius: 12px;
-    background: #fbfdff;
-    transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+    grid-template-columns: minmax(0, 1fr) 124px !important;
+    grid-template-rows: auto auto !important;
+    column-gap: 12px !important;
+    row-gap: 7px !important;
+    align-items: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    padding: 10px 12px !important;
+    box-sizing: border-box !important;
+    border: 1px solid #e6edf5 !important;
+    border-radius: 12px !important;
+    background: #fbfdff !important;
+    overflow: hidden !important;
+    transition: border-color .18s ease, box-shadow .18s ease !important;
 }
 
 #tabela-tarefas tbody tr:hover,
 #tabela-nao-esquecer tbody tr:hover {
-    border-color: #cfe7fb;
-    box-shadow: 0 5px 16px rgba(56,165,255,.07);
+    border-color: #cfe7fb !important;
+    box-shadow: 0 4px 14px rgba(56, 165, 255, .06) !important;
 }
 
 #tabela-tarefas td,
 #tabela-nao-esquecer td {
+    position: static !important;
     display: block !important;
-    border: 0 !important;
+    min-width: 0 !important;
+    width: auto !important;
+    height: auto !important;
+    margin: 0 !important;
     padding: 0 !important;
+    border: 0 !important;
     background: transparent !important;
-    min-width: 0;
+    transform: none !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
 }
 
 #tabela-tarefas td:first-child,
-#tabela-nao-esquecer td:first-child { display: none !important; }
+#tabela-nao-esquecer td:first-child {
+    display: none !important;
+}
 
-.tarefa-conteudo-wrapper { display: flex; align-items: center; gap: 10px; min-width: 0; }
-.tarefa-checkbox { width: 17px; height: 17px; accent-color: #38a5ff; flex: 0 0 auto; }
-.tarefa-texto,
+#tabela-tarefas td:nth-child(2),
 #tabela-nao-esquecer td:nth-child(2) {
-    color: #344054;
-    font-size: 13px;
-    font-weight: 500;
-    outline: none;
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    min-width: 0 !important;
+    color: #344054 !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    line-height: 1.35 !important;
+    text-align: left !important;
+    outline: none !important;
 }
 
-#tabela-tarefas input[type="date"],
-#tabela-nao-esquecer input[type="date"] {
-    width: 100%;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    background: #fff;
-    color: #667085;
-    padding: 7px 8px;
-    font-size: 11px;
+.tarefa-conteudo-wrapper {
+    display: flex !important;
+    align-items: center !important;
+    gap: 9px !important;
+    min-width: 0 !important;
 }
 
-.btn-excluir {
-    width: 34px !important;
-    height: 34px !important;
-    padding: 0 !important;
+.tarefa-checkbox {
+    width: 16px !important;
+    height: 16px !important;
+    flex: 0 0 16px !important;
+    accent-color: #38a5ff !important;
+}
+
+.tarefa-texto {
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+    color: #344054 !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    line-height: 1.35 !important;
+    outline: none !important;
+    overflow-wrap: anywhere !important;
+}
+
+#tabela-tarefas td:nth-child(3),
+#tabela-nao-esquecer td:nth-child(3) {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-end !important;
+    justify-content: center !important;
+    width: 124px !important;
+    min-width: 124px !important;
+    max-width: 124px !important;
+}
+
+.agenda-date-iso {
+    display: none !important;
+}
+
+#tabela-tarefas .agenda-date-fields,
+#tabela-nao-esquecer .agenda-date-fields {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 2px !important;
+    width: 124px !important;
+    min-width: 124px !important;
+    max-width: 124px !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    padding: 0 7px !important;
+    box-sizing: border-box !important;
+    border: 1px solid #dde6ef !important;
     border-radius: 9px !important;
-    font-size: 0 !important;
-    background: transparent !important;
-    color: #98a2b3 !important;
-    border: 1px solid #e7edf4 !important;
+    background: #fff !important;
+    box-shadow: none !important;
 }
-.btn-excluir::before { content: "\f1f8"; font-family: "Font Awesome 6 Free"; font-weight: 900; font-size: 12px; }
-.btn-excluir:hover { color: #d92d20 !important; border-color: #fecaca !important; background: #fff7f7 !important; }
+
+#tabela-tarefas .agenda-date-fields:focus-within,
+#tabela-nao-esquecer .agenda-date-fields:focus-within {
+    border-color: #38a5ff !important;
+    box-shadow: 0 0 0 3px rgba(56, 165, 255, .10) !important;
+}
+
+#tabela-tarefas .agenda-date-fields.is-invalid,
+#tabela-nao-esquecer .agenda-date-fields.is-invalid {
+    border-color: #ef8b8b !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, .07) !important;
+}
+
+#tabela-tarefas .agenda-date-part,
+#tabela-nao-esquecer .agenda-date-part {
+    display: inline-block !important;
+    flex: 0 0 auto !important;
+    height: 28px !important;
+    min-height: 28px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    outline: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: #344054 !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    line-height: 28px !important;
+    text-align: center !important;
+    font-variant-numeric: tabular-nums !important;
+}
+
+#tabela-tarefas .agenda-date-day,
+#tabela-tarefas .agenda-date-month,
+#tabela-nao-esquecer .agenda-date-day,
+#tabela-nao-esquecer .agenda-date-month {
+    width: 18px !important;
+}
+
+#tabela-tarefas .agenda-date-year,
+#tabela-nao-esquecer .agenda-date-year {
+    width: 34px !important;
+}
+
+#tabela-tarefas .agenda-date-separator,
+#tabela-nao-esquecer .agenda-date-separator {
+    width: 7px !important;
+    color: #98a2b3 !important;
+    font-size: 11px !important;
+    line-height: 1 !important;
+    text-align: center !important;
+    user-select: none !important;
+}
+
+#tabela-tarefas .agenda-date-part::placeholder,
+#tabela-nao-esquecer .agenda-date-part::placeholder {
+    color: #98a2b3 !important;
+    opacity: 1 !important;
+    font-weight: 500 !important;
+}
+
+#tabela-tarefas .agenda-date-error,
+#tabela-nao-esquecer .agenda-date-error {
+    display: block !important;
+    width: 124px !important;
+    margin: 4px 0 0 !important;
+    color: #d92d20 !important;
+    font-size: 9px !important;
+    line-height: 1.2 !important;
+    text-align: right !important;
+}
+
+#tabela-tarefas td:nth-child(4),
+#tabela-nao-esquecer td:nth-child(4) {
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding-top: 1px !important;
+}
+
+#tabela-tarefas .btn-excluir,
+#tabela-nao-esquecer .btn-excluir {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: 26px !important;
+    min-height: 26px !important;
+    padding: 0 8px !important;
+    margin: 0 !important;
+    border: 1px solid #f2cccc !important;
+    border-radius: 8px !important;
+    background: #fffafa !important;
+    color: #d84a4a !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    line-height: 1 !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+#tabela-tarefas .btn-excluir i,
+#tabela-nao-esquecer .btn-excluir i {
+    font-size: 9px !important;
+}
+
+#tabela-tarefas .btn-excluir:hover,
+#tabela-nao-esquecer .btn-excluir:hover {
+    border-color: #efaaaa !important;
+    background: #fff3f3 !important;
+    color: #c93636 !important;
+    transform: none !important;
+}
+
+body.dark-mode #tabela-tarefas tbody tr,
+body.dark-mode #tabela-nao-esquecer tbody tr {
+    background: #171b22 !important;
+    border-color: #2c3440 !important;
+}
+
+body.dark-mode #tabela-tarefas td:nth-child(2),
+body.dark-mode #tabela-nao-esquecer td:nth-child(2),
+body.dark-mode #tabela-tarefas .tarefa-texto,
+body.dark-mode #tabela-nao-esquecer .tarefa-texto {
+    color: #dce5ef !important;
+}
+
+body.dark-mode #tabela-tarefas .agenda-date-fields,
+body.dark-mode #tabela-nao-esquecer .agenda-date-fields {
+    background: #12161d !important;
+    border-color: #343d49 !important;
+}
+
+body.dark-mode #tabela-tarefas .agenda-date-part,
+body.dark-mode #tabela-nao-esquecer .agenda-date-part {
+    color: #e5e7eb !important;
+}
+
+body.dark-mode #tabela-tarefas .btn-excluir,
+body.dark-mode #tabela-nao-esquecer .btn-excluir {
+    background: rgba(217, 72, 72, .08) !important;
+    border-color: rgba(239, 123, 123, .20) !important;
+    color: #ef8f8f !important;
+}
+
+@media (max-width: 720px) {
+    #tabela-tarefas tbody tr,
+    #tabela-nao-esquecer tbody tr {
+        grid-template-columns: minmax(0, 1fr) !important;
+        grid-template-rows: auto auto auto !important;
+    }
+
+    #tabela-tarefas td:nth-child(2),
+    #tabela-nao-esquecer td:nth-child(2) {
+        grid-column: 1 !important;
+        grid-row: 1 !important;
+    }
+
+    #tabela-tarefas td:nth-child(3),
+    #tabela-nao-esquecer td:nth-child(3) {
+        grid-column: 1 !important;
+        grid-row: 2 !important;
+        align-items: flex-start !important;
+        width: 124px !important;
+    }
+
+    #tabela-tarefas td:nth-child(4),
+    #tabela-nao-esquecer td:nth-child(4) {
+        grid-column: 1 !important;
+        grid-row: 3 !important;
+    }
+}
 
 /* Horário passa a ser secundário e compacto. */
 .horario-agenda-card { padding: 0 !important; overflow: hidden; border-left: 1px solid #e6edf5 !important; }
@@ -2545,4 +2795,255 @@ body.dark-mode .horario-autocomplete-item.ativo {
     .notas-container { grid-template-columns: 1fr; }
     .agenda-notas-header { align-items: flex-start; }
     .agenda-notas-actions { flex-direction: column-reverse; align-items: flex-end; }
+}
+
+
+/* =========================================================
+   FOAG — EXCLUSÃO EM LOTE + LAYOUT SEM OVERFLOW
+========================================================= */
+.agenda-paineis {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+.agenda-painel {
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+}
+.agenda-painel-header {
+    gap: 12px !important;
+}
+.agenda-painel-acoes {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex: 0 0 auto !important;
+}
+.agenda-excluir-toggle {
+    width: auto !important;
+    height: 30px !important;
+    margin: 0 !important;
+    padding: 0 10px !important;
+    border-radius: 8px !important;
+    border: 1px solid #f0d6d6 !important;
+    background: #fff !important;
+    color: #d84a4a !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+.agenda-excluir-toggle:hover {
+    background: #fff6f6 !important;
+    border-color: #efb5b5 !important;
+    transform: none !important;
+}
+.agenda-tabela-wrapper,
+#tabela-tarefas,
+#tabela-nao-esquecer,
+#tabela-tarefas tbody,
+#tabela-nao-esquecer tbody {
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+#tabela-tarefas tbody tr,
+#tabela-nao-esquecer tbody tr {
+    grid-template-columns: minmax(0, 1fr) minmax(112px, 124px) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+}
+#tabela-tarefas td:nth-child(2),
+#tabela-nao-esquecer td:nth-child(2) {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow-wrap: anywhere !important;
+}
+#tabela-tarefas td:nth-child(3),
+#tabela-nao-esquecer td:nth-child(3) {
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 124px !important;
+}
+#tabela-tarefas .agenda-date-fields,
+#tabela-nao-esquecer .agenda-date-fields {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 124px !important;
+}
+#tabela-tarefas td:nth-child(4),
+#tabela-nao-esquecer td:nth-child(4) {
+    display: none !important;
+}
+.agenda-painel.modo-selecao #tabela-tarefas tbody tr,
+.agenda-painel.modo-selecao #tabela-nao-esquecer tbody tr {
+    grid-template-columns: minmax(0, 1fr) minmax(112px, 124px) 28px !important;
+}
+.agenda-painel.modo-selecao #tabela-tarefas td:nth-child(4),
+.agenda-painel.modo-selecao #tabela-nao-esquecer td:nth-child(4) {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 28px !important;
+    min-width: 28px !important;
+    max-width: 28px !important;
+    height: 32px !important;
+    padding: 0 !important;
+}
+.agenda-selecao-checkbox {
+    width: 17px !important;
+    height: 17px !important;
+    margin: 0 !important;
+    accent-color: #38a5ff !important;
+    cursor: pointer !important;
+}
+.agenda-selecao-acoes {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin: 8px 0 10px;
+}
+.agenda-selecao-acoes[hidden] { display: none !important; }
+.agenda-selecao-acoes button {
+    width: auto !important;
+    height: 32px !important;
+    margin: 0 !important;
+    padding: 0 11px !important;
+    border-radius: 8px !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+.agenda-selecao-cancelar {
+    background: #f6f8fb !important;
+    color: #667085 !important;
+    border: 1px solid #e4e9f0 !important;
+}
+.agenda-selecao-confirmar {
+    background: #fff4f4 !important;
+    color: #d64545 !important;
+    border: 1px solid #f0caca !important;
+}
+body.dark-mode .agenda-excluir-toggle,
+body.dark-mode .agenda-selecao-confirmar {
+    background: rgba(217,72,72,.08) !important;
+    border-color: rgba(239,123,123,.22) !important;
+    color: #ef8f8f !important;
+}
+body.dark-mode .agenda-selecao-cancelar {
+    background: #20252d !important;
+    border-color: #343b47 !important;
+    color: #c3cad5 !important;
+}
+@media (max-width: 1180px) {
+    .agenda-paineis { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 560px) {
+    .agenda-painel-header { align-items: flex-start !important; }
+    .agenda-painel-acoes { gap: 5px !important; }
+    .agenda-excluir-toggle { padding: 0 8px !important; }
+    #tabela-tarefas tbody tr,
+    #tabela-nao-esquecer tbody tr,
+    .agenda-painel.modo-selecao #tabela-tarefas tbody tr,
+    .agenda-painel.modo-selecao #tabela-nao-esquecer tbody tr {
+        grid-template-columns: minmax(0, 1fr) 28px !important;
+    }
+    #tabela-tarefas td:nth-child(3),
+    #tabela-nao-esquecer td:nth-child(3) {
+        grid-column: 1 !important;
+        grid-row: 2 !important;
+        max-width: 124px !important;
+    }
+    .agenda-painel.modo-selecao #tabela-tarefas td:nth-child(4),
+    .agenda-painel.modo-selecao #tabela-nao-esquecer td:nth-child(4) {
+        grid-column: 2 !important;
+        grid-row: 1 / span 2 !important;
+        align-self: start !important;
+    }
+}
+
+
+/* =========================================================
+   FOAG — EXPANDIR/RECOLHER REFEITO
+   Normal: até 3 itens. Expandido: todos em área rolável.
+========================================================= */
+.agenda-painel-acoes {
+    display: flex !important;
+    align-items: center !important;
+    gap: 7px !important;
+    flex-wrap: wrap !important;
+    justify-content: flex-end !important;
+}
+
+.agenda-expandir-toggle {
+    height: 32px !important;
+    padding: 0 10px !important;
+    border: 1px solid #dbe8f4 !important;
+    border-radius: 9px !important;
+    background: #f7fbff !important;
+    color: #2389db !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    margin: 0 !important;
+    width: auto !important;
+    white-space: nowrap !important;
+}
+.agenda-expandir-toggle[hidden] { display: none !important; }
+.agenda-expandir-toggle:hover {
+    background: #eef7ff !important;
+    transform: none !important;
+}
+
+#lista-tarefas .agenda-item-oculto,
+#lista-nao-esquecer .agenda-item-oculto {
+    display: none !important;
+}
+
+#tarefas .agenda-tabela-wrapper,
+#lembretes .agenda-tabela-wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+#tarefas.agenda-painel-expandido .agenda-tabela-wrapper,
+#lembretes.agenda-painel-expandido .agenda-tabela-wrapper,
+#tarefas.modo-selecao .agenda-tabela-wrapper,
+#lembretes.modo-selecao .agenda-tabela-wrapper {
+    max-height: 430px !important;
+    overflow-y: auto !important;
+    padding-right: 4px !important;
+    scrollbar-width: thin;
+}
+
+#tarefas.agenda-painel-expandido,
+#lembretes.agenda-painel-expandido {
+    align-self: start !important;
+}
+
+body.dark-mode .agenda-expandir-toggle {
+    background: #171a21 !important;
+    border-color: #343b47 !important;
+    color: #77beff !important;
+}
+
+@media (max-width: 760px) {
+    .agenda-painel-acoes {
+        gap: 5px !important;
+    }
+    .agenda-expandir-toggle,
+    .agenda-excluir-toggle {
+        padding: 0 8px !important;
+    }
 }

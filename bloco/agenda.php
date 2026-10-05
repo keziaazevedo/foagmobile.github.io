@@ -246,7 +246,7 @@ if (file_exists($arquivoMaterias)) {
     <title>Agenda e Horário - FOAG</title>
 
     <link rel="stylesheet" href="bloco.css">
-    <link rel="stylesheet" href="agenda.css?v=20261004-2">
+    <link rel="stylesheet" href="agenda.css?v=20261005-expandredo">
     <link rel="stylesheet" href="../m.escuro/dark_basee.css">
     <link rel="stylesheet" href="dark_agend.css?v=20261004-2">
 
@@ -573,9 +573,19 @@ if (file_exists($arquivoMaterias)) {
                             Tarefas
                         </div>
 
-                        <span class="agenda-painel-contador" id="contador-tarefas">
-                            <?= $totalTarefas ?>
-                        </span>
+                        <div class="agenda-painel-acoes">
+                            <span class="agenda-painel-contador" id="contador-tarefas">
+                                <?= $totalTarefas ?>
+                            </span>
+                            <button type="button" class="agenda-excluir-toggle" id="excluir-tarefas-toggle">
+                                <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+                                Excluir
+                            </button>
+                            <button type="button" class="agenda-expandir-toggle" id="expandir-tarefas" hidden aria-expanded="false">
+                                <i class="fa-solid fa-up-right-and-down-left-from-center" aria-hidden="true"></i>
+                                Expandir
+                            </button>
+                        </div>
                     </div>
 
                     <div class="agenda-tabela-wrapper">
@@ -593,6 +603,13 @@ if (file_exists($arquivoMaterias)) {
                         </table>
                     </div>
 
+                    <div class="agenda-selecao-acoes" id="acoes-excluir-tarefas" hidden>
+                        <button type="button" class="agenda-selecao-cancelar" id="cancelar-excluir-tarefas">Cancelar</button>
+                        <button type="button" class="agenda-selecao-confirmar" id="confirmar-excluir-tarefas">
+                            <i class="fa-solid fa-trash-can"></i> Excluir selecionadas
+                        </button>
+                    </div>
+
                     <button type="button" id="add-tarefa">
                         <i class="fa-solid fa-plus"></i>
                         Adicionar tarefa
@@ -606,9 +623,19 @@ if (file_exists($arquivoMaterias)) {
                             Lembretes
                         </div>
 
-                        <span class="agenda-painel-contador" id="contador-lembretes">
-                            <?= $totalLembretes ?>
-                        </span>
+                        <div class="agenda-painel-acoes">
+                            <span class="agenda-painel-contador" id="contador-lembretes">
+                                <?= $totalLembretes ?>
+                            </span>
+                            <button type="button" class="agenda-excluir-toggle" id="excluir-lembretes-toggle">
+                                <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+                                Excluir
+                            </button>
+                            <button type="button" class="agenda-expandir-toggle" id="expandir-lembretes" hidden aria-expanded="false">
+                                <i class="fa-solid fa-up-right-and-down-left-from-center" aria-hidden="true"></i>
+                                Expandir
+                            </button>
+                        </div>
                     </div>
 
                     <div class="agenda-tabela-wrapper">
@@ -624,6 +651,13 @@ if (file_exists($arquivoMaterias)) {
 
                             <tbody id="lista-nao-esquecer"></tbody>
                         </table>
+                    </div>
+
+                    <div class="agenda-selecao-acoes" id="acoes-excluir-lembretes" hidden>
+                        <button type="button" class="agenda-selecao-cancelar" id="cancelar-excluir-lembretes">Cancelar</button>
+                        <button type="button" class="agenda-selecao-confirmar" id="confirmar-excluir-lembretes">
+                            <i class="fa-solid fa-trash-can"></i> Excluir selecionados
+                        </button>
                     </div>
 
                     <button type="button" id="add-nao-esquecer">
