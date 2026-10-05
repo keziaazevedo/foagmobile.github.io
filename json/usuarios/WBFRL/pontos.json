@@ -1,5 +1,5 @@
 {
-    "estrelas": 250,
+    "estrelas": 288,
     "historico": [
         {
             "id": "estrela_d63d0474bd6e",
@@ -387,6 +387,60 @@
             "data": "2026-10-04 23:46:08",
             "timestamp": 1791171968,
             "chave": "nota_MAT_40202A17_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_4c24561df560",
+            "tipo": "nota",
+            "descricao": "Nota 8,00 em Português — 3º Bimestre",
+            "estrelas": 5,
+            "data": "2026-10-05 18:55:15",
+            "timestamp": 1791240915,
+            "chave": "nota_mat_5319622704c4_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_619c61c30b0f",
+            "tipo": "nota",
+            "descricao": "Nota 10,00 em Sociologia — 3º Bimestre",
+            "estrelas": 10,
+            "data": "2026-10-05 18:56:30",
+            "timestamp": 1791240990,
+            "chave": "nota_mat_10e8872c7f32_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_78fde628f275",
+            "tipo": "evolucao_nota",
+            "descricao": "Evolução em Sociologia: nota maior que na avaliação anterior",
+            "estrelas": 5,
+            "data": "2026-10-05 18:56:30",
+            "timestamp": 1791240990,
+            "chave": "evolucao_nota_mat_10e8872c7f32_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_18ffc4f7b0a4",
+            "tipo": "nota",
+            "descricao": "Nota 7,50 em Fisica — 3º Bimestre",
+            "estrelas": 3,
+            "data": "2026-10-05 18:56:38",
+            "timestamp": 1791240998,
+            "chave": "nota_mat_c17180db2e01_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_748c4b3c17bd",
+            "tipo": "nota",
+            "descricao": "Nota 10,00 em Historia — 3º Bimestre",
+            "estrelas": 10,
+            "data": "2026-10-05 18:57:46",
+            "timestamp": 1791241066,
+            "chave": "nota_mat_68f00281c995_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_7fdf23e8cef8",
+            "tipo": "evolucao_nota",
+            "descricao": "Evolução em Historia: nota maior que na avaliação anterior",
+            "estrelas": 5,
+            "data": "2026-10-05 18:57:46",
+            "timestamp": 1791241066,
+            "chave": "evolucao_nota_mat_68f00281c995_0758c00e6ea0_avaliacao_3"
         }
     ],
     "controle": {
@@ -425,7 +479,13 @@
                 "nota_MAT_40202A17_0758c00e6ea0_avaliacao_2",
                 "boletim_completo_0758c00e6ea0_avaliacao_2",
                 "boletim_aprovado_0758c00e6ea0_avaliacao_2",
-                "nota_MAT_40202A17_0758c00e6ea0_avaliacao_3"
+                "nota_MAT_40202A17_0758c00e6ea0_avaliacao_3",
+                "nota_mat_5319622704c4_0758c00e6ea0_avaliacao_3",
+                "nota_mat_10e8872c7f32_0758c00e6ea0_avaliacao_3",
+                "evolucao_nota_mat_10e8872c7f32_0758c00e6ea0_avaliacao_3",
+                "nota_mat_c17180db2e01_0758c00e6ea0_avaliacao_3",
+                "nota_mat_68f00281c995_0758c00e6ea0_avaliacao_3",
+                "evolucao_nota_mat_68f00281c995_0758c00e6ea0_avaliacao_3"
             ]
         },
         "sequencia_estudo": {
@@ -458,7 +518,13 @@
             "nota_MAT_40202A17_0758c00e6ea0_avaliacao_2",
             "boletim_completo_0758c00e6ea0_avaliacao_2",
             "boletim_aprovado_0758c00e6ea0_avaliacao_2",
-            "nota_MAT_40202A17_0758c00e6ea0_avaliacao_3"
+            "nota_MAT_40202A17_0758c00e6ea0_avaliacao_3",
+            "nota_mat_5319622704c4_0758c00e6ea0_avaliacao_3",
+            "nota_mat_10e8872c7f32_0758c00e6ea0_avaliacao_3",
+            "evolucao_nota_mat_10e8872c7f32_0758c00e6ea0_avaliacao_3",
+            "nota_mat_c17180db2e01_0758c00e6ea0_avaliacao_3",
+            "nota_mat_68f00281c995_0758c00e6ea0_avaliacao_3",
+            "evolucao_nota_mat_68f00281c995_0758c00e6ea0_avaliacao_3"
         ]
     }
 }
