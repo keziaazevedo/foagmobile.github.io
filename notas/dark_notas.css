@@ -725,3 +725,20 @@ body.dark-mode .empty-sucesso span { color: #86a797 !important; }
 
 body.dark-mode .desempenho-barra { background: #263547 !important; }
 body.dark-mode .desempenho-linha > strong { color: #aeb9c7 !important; }
+
+/* Modos do boletim */
+body.dark-mode .btn-view-toggle {
+  background: #172033;
+  border-color: #334155;
+  color: #dbeafe;
+}
+body.dark-mode .btn-view-toggle:hover,
+body.dark-mode .btn-view-toggle[aria-pressed="true"] {
+  background: #16324c;
+  border-color: #38a5ff;
+  color: #8fd0ff;
+}
+body.dark-mode .media-atual-resumida,
+body.dark-mode .falta-numero {
+  color: #f8fafc;
+}

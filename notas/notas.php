@@ -742,6 +742,54 @@ function calcularMediaEStatus(
     ];
 }
 
+
+function calcularProgressoAnualEscola(
+    $notas,
+    $mediaAprovacao,
+    $notaMaxima
+) {
+    $totalPontos = 0.0;
+    $preenchidas = 0;
+    $totalPeriodos = 4;
+
+    for ($i = 1; $i <= $totalPeriodos; $i++) {
+        $valor = $notas[$i] ?? $notas[(string)$i] ?? null;
+        if ($valor === null || $valor === '') {
+            continue;
+        }
+        $totalPontos += (float)$valor;
+        $preenchidas++;
+    }
+
+    $metaTotal = (float)$mediaAprovacao * $totalPeriodos;
+    $restantes = $totalPeriodos - $preenchidas;
+    $faltam = max(0, $metaTotal - $totalPontos);
+    $mediaAtual = $preenchidas > 0 ? $totalPontos / $preenchidas : 0;
+    $mediaNecessaria = $restantes > 0 ? $faltam / $restantes : null;
+    $impossivel = $restantes > 0 && $faltam > ((float)$notaMaxima * $restantes);
+
+    if ($preenchidas === 0) {
+        $status = 'Sem notas';
+    } elseif ($preenchidas < $totalPeriodos) {
+        $status = $totalPontos >= $metaTotal ? 'Meta alcançada' : 'Em andamento';
+    } else {
+        $status = $totalPontos >= $metaTotal ? 'Aprovado' : 'Não atingiu a média';
+    }
+
+    return [
+        'total' => $totalPontos,
+        'meta_total' => $metaTotal,
+        'preenchidas' => $preenchidas,
+        'restantes' => $restantes,
+        'faltam' => $faltam,
+        'media_atual' => $mediaAtual,
+        'media_necessaria' => $mediaNecessaria,
+        'impossivel' => $impossivel,
+        'completo' => $preenchidas === $totalPeriodos,
+        'status' => $status
+    ];
+}
+
 function calcularQuantoPrecisa(
     $notas,
     $mediaAlvo,
@@ -2038,14 +2086,25 @@ foreach ($materias as $i => $materiaResumo) {
 
     $totalMaterias++;
     $notasResumo = $notasAll[$i] ?? notasVazias();
-    $dadosResumo = calcularMediaEStatus($notasResumo, $mediaAprovacao, $pesos);
-    $mediaResumo = (float)$dadosResumo['media'];
-    $statusResumo = (string)$dadosResumo['status'];
-    $precisaResumo = calcularQuantoPrecisa($notasResumo, $mediaAprovacao, $notaMaxima, $pesos);
+    if ($tipoCurso === 'escola') {
+        $progressoResumo = calcularProgressoAnualEscola($notasResumo, $mediaAprovacao, $notaMaxima);
+        $mediaResumo = (float)$progressoResumo['media_atual'];
+        $statusResumo = (string)$progressoResumo['status'];
+        $precisaResumo = $progressoResumo['media_necessaria'];
 
-    if ($statusResumo === 'Aprovado') $aprovadas++;
-    if ($statusResumo === 'Recuperação') $recuperacao++;
-    if ($statusResumo === 'Reprovado') $reprovadas++;
+        if ($statusResumo === 'Aprovado') $aprovadas++;
+        if ($statusResumo === 'Meta alcançada') $recuperacao++; // reaproveitado abaixo como contador de meta atingida em andamento
+        if (in_array($statusResumo, ['Em andamento', 'Não atingiu a média'], true) && $progressoResumo['preenchidas'] > 0) $reprovadas++;
+    } else {
+        $dadosResumo = calcularMediaEStatus($notasResumo, $mediaAprovacao, $pesos);
+        $mediaResumo = (float)$dadosResumo['media'];
+        $statusResumo = (string)$dadosResumo['status'];
+        $precisaResumo = calcularQuantoPrecisa($notasResumo, $mediaAprovacao, $notaMaxima, $pesos);
+
+        if ($statusResumo === 'Aprovado') $aprovadas++;
+        if ($statusResumo === 'Recuperação') $recuperacao++;
+        if ($statusResumo === 'Reprovado') $reprovadas++;
+    }
 
     if ($mediaResumo > 0) {
         $somaMedias += $mediaResumo;
@@ -2059,14 +2118,19 @@ foreach ($materias as $i => $materiaResumo) {
         }
     }
 
-    if ($statusResumo !== 'Aprovado') {
+    $deveEntrarAtencao = $tipoCurso === 'escola'
+        ? (isset($progressoResumo) && $progressoResumo['preenchidas'] > 0 && $progressoResumo['faltam'] > 0)
+        : ($statusResumo !== 'Aprovado');
+
+    if ($deveEntrarAtencao) {
         $materiasAtencao[] = [
             'indice' => $i,
             'nome' => $nomeResumo,
             'media' => $mediaResumo,
             'status' => $statusResumo,
             'precisa' => $precisaResumo,
-            'id' => (string)($materiaIds[$i] ?? '')
+            'id' => (string)($materiaIds[$i] ?? ''),
+            'progresso' => $tipoCurso === 'escola' ? $progressoResumo : null
         ];
     }
 }
@@ -2076,7 +2140,9 @@ usort($materiasAtencao, function ($a, $b) {
 });
 
 $mediaGeral = $contMedias > 0 ? $somaMedias / $contMedias : 0;
-$emAtencao = $recuperacao + $reprovadas;
+$emAtencao = count($materiasAtencao);
+$metaAnual = $tipoCurso === 'escola' ? ((float)$mediaAprovacao * 4) : (float)$mediaAprovacao;
+$metasAlcancadas = $tipoCurso === 'escola' ? $recuperacao : $aprovadas;
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -2369,17 +2435,17 @@ $emAtencao = $recuperacao + $reprovadas;
         <article class="resumo-kpi aprovado">
           <span class="kpi-icone"><i class="fa-solid fa-circle-check"></i></span>
           <div>
-            <span class="resumo-label">Aprovadas</span>
-            <strong class="resumo-valor" id="kpi-aprovadas"><?= $aprovadas; ?></strong>
-            <small>de <?= $totalMaterias; ?> matérias</small>
+            <span class="resumo-label"><?= $tipoCurso === 'escola' ? 'Meta anual' : 'Aprovadas'; ?></span>
+            <strong class="resumo-valor" id="kpi-aprovadas"><?= $tipoCurso === 'escola' ? number_format($metaAnual, 0, ',', '.') : $aprovadas; ?></strong>
+            <small><?= $tipoCurso === 'escola' ? 'pontos por matéria' : 'de ' . $totalMaterias . ' matérias'; ?></small>
           </div>
         </article>
         <article class="resumo-kpi atencao">
           <span class="kpi-icone"><i class="fa-solid fa-bolt"></i></span>
           <div>
-            <span class="resumo-label">Precisam de atenção</span>
-            <strong class="resumo-valor" id="kpi-atencao"><?= $emAtencao; ?></strong>
-            <small>priorize primeiro</small>
+            <span class="resumo-label"><?= $tipoCurso === 'escola' ? 'Meta já alcançada' : 'Precisam de atenção'; ?></span>
+            <strong class="resumo-valor" id="kpi-atencao"><?= $tipoCurso === 'escola' ? $metasAlcancadas : $emAtencao; ?></strong>
+            <small><?= $tipoCurso === 'escola' ? 'antes do fechamento' : 'priorize primeiro'; ?></small>
           </div>
         </article>
         <article class="resumo-kpi materias">
@@ -2398,10 +2464,14 @@ $emAtencao = $recuperacao + $reprovadas;
           <div>
             <span class="section-eyebrow">Seu desempenho</span>
             <h2 class="titulo-tabela">Suas notas</h2>
-            <p class="sub-notas">Digite suas notas. O FOAG salva automaticamente e recalcula sua situação.</p>
+            <p class="sub-notas">Digite suas notas. O FOAG acompanha os pontos acumulados e só define aprovação após o fechamento de todos os bimestres.</p>
           </div>
           <div class="acoes-topo-notas">
             <span class="autosave-status" id="autosave-status"><i class="fa-solid fa-cloud"></i> Tudo salvo</span>
+            <button type="button" class="btn-view-toggle" id="btn-view-toggle" aria-pressed="false">
+              <i class="fa-solid fa-table-list"></i>
+              <span class="view-toggle-label">Ver modo resumido</span>
+            </button>
             <button type="button" class="btn-config-toggle" id="btn-config-toggle" aria-expanded="false" aria-controls="config-panel">
               <i class="fa-solid fa-sliders"></i> Configurar boletim
             </button>
@@ -2427,10 +2497,10 @@ $emAtencao = $recuperacao + $reprovadas;
           </form>
         </div>
 
-        <form method="POST" id="notas-form" data-media-aprovacao="<?= htmlspecialchars($mediaAprovacao); ?>" data-nota-maxima="<?= htmlspecialchars($notaMaxima); ?>" data-pesos="<?= htmlspecialchars(json_encode(array_values($pesos))); ?>">
+        <form method="POST" id="notas-form" data-media-aprovacao="<?= htmlspecialchars($mediaAprovacao); ?>" data-nota-maxima="<?= htmlspecialchars($notaMaxima); ?>" data-pesos="<?= htmlspecialchars(json_encode(array_values($pesos))); ?>" data-tipo-curso="<?= htmlspecialchars($tipoCurso); ?>" data-meta-anual="<?= htmlspecialchars($metaAnual); ?>">
           <input type="hidden" name="periodo_atual_form" value="<?= htmlspecialchars($periodoAtual); ?>">
           <div class="table-scroll">
-            <table class="tabela-notas tabela-notas-nova">
+            <table class="tabela-notas tabela-notas-nova" id="tabela-boletim">
               <thead>
                 <tr>
                   <th>Matéria</th>
@@ -2438,9 +2508,17 @@ $emAtencao = $recuperacao + $reprovadas;
                   <th><?= htmlspecialchars($labelsAval[1]); ?></th>
                   <th><?= htmlspecialchars($labelsAval[2]); ?></th>
                   <th><?= htmlspecialchars($labelsAval[3]); ?></th>
-                  <th>Média</th>
-                  <th>Situação</th>
-                  <th>Próxima meta</th>
+                  <th class="col-media">
+                    <?php if ($tipoCurso === 'escola'): ?>
+                      <span class="view-detalhado">Pontos</span><span class="view-resumido">Média atual</span>
+                    <?php else: ?>Média<?php endif; ?>
+                  </th>
+                  <th class="col-status">Situação</th>
+                  <th class="col-falta">
+                    <?php if ($tipoCurso === 'escola'): ?>
+                      <span class="view-detalhado">O que falta</span><span class="view-resumido">Falta</span>
+                    <?php else: ?>Próxima meta<?php endif; ?>
+                  </th>
                   <th><span class="sr-only">Ações</span></th>
                 </tr>
               </thead>
@@ -2450,13 +2528,21 @@ $emAtencao = $recuperacao + $reprovadas;
               <?php else: foreach ($materias as $i => $materia):
                   $materiaNomeRaw = (string)$materia;
                   $notas = $notasAll[$i] ?? notasVazias();
-                  $dados = calcularMediaEStatus($notas, $mediaAprovacao, $pesos);
-                  $media = (float)$dados['media'];
-                  $status = (string)$dados['status'];
-                  $precisa = calcularQuantoPrecisa($notas, $mediaAprovacao, $notaMaxima, $pesos);
+                  if ($tipoCurso === 'escola') {
+                      $progresso = calcularProgressoAnualEscola($notas, $mediaAprovacao, $notaMaxima);
+                      $media = (float)$progresso['media_atual'];
+                      $status = (string)$progresso['status'];
+                      $precisa = $progresso['media_necessaria'];
+                  } else {
+                      $dados = calcularMediaEStatus($notas, $mediaAprovacao, $pesos);
+                      $media = (float)$dados['media'];
+                      $status = (string)$dados['status'];
+                      $precisa = calcularQuantoPrecisa($notas, $mediaAprovacao, $notaMaxima, $pesos);
+                      $progresso = null;
+                  }
                   $materiaIdRaw = (string)($materiaIds[$i] ?? '');
                   $meta = $metaMaterias[$materiaIdRaw] ?? ['cor' => '#94a3b8', 'icone' => 'fa-book'];
-                  $statusClass = $status === 'Aprovado' ? 'status-aprovado' : ($status === 'Recuperação' ? 'status-recuperacao' : 'status-reprovado');
+                  $statusClass = in_array($status, ['Aprovado', 'Meta alcançada'], true) ? 'status-aprovado' : (in_array($status, ['Em andamento', 'Recuperação', 'Sem notas'], true) ? 'status-recuperacao' : 'status-reprovado');
               ?>
                 <tr class="nota-row" data-row="<?= (int)$i; ?>">
                   <td class="materia-cell">
@@ -2471,10 +2557,41 @@ $emAtencao = $recuperacao + $reprovadas;
                   ?>
                     <td><input type="number" step="0.01" min="0" max="<?= htmlspecialchars($notaMaxima); ?>" name="nota_<?= (int)$i; ?>_<?= $a; ?>" value="<?= htmlspecialchars($notaStr); ?>" placeholder="—" class="input-nota" data-avaliacao="<?= $a; ?>"></td>
                   <?php endfor; ?>
-                  <td class="celula-media"><strong class="media-valor"><?= number_format($media, 2, ',', '.'); ?></strong><span class="media-referencia">/ <?= number_format((float)$notaMaxima, 0, ',', '.'); ?></span></td>
-                  <td class="celula-status"><span class="badge-status <?= $statusClass; ?>"><?= htmlspecialchars($status); ?></span></td>
-                  <td class="celula-precisa">
-                    <?php if ($status === 'Aprovado'): ?>
+                  <td class="celula-media">
+                    <?php if ($tipoCurso === 'escola'): ?>
+                      <span class="view-detalhado media-detalhada">
+                        <strong class="media-valor pontos-valor"><?= number_format((float)$progresso['total'], 1, ',', '.'); ?></strong><span class="media-referencia">/ <?= number_format((float)$progresso['meta_total'], 0, ',', '.'); ?> pts</span>
+                        <small class="media-parcial">média atual <?= number_format($media, 1, ',', '.'); ?></small>
+                      </span>
+                      <span class="view-resumido media-resumida">
+                        <strong class="media-atual-resumida"><?= number_format($media, 1, ',', '.'); ?></strong><span>/ <?= number_format((float)$notaMaxima, 0, ',', '.'); ?></span>
+                      </span>
+                    <?php else: ?>
+                      <strong class="media-valor"><?= number_format($media, 2, ',', '.'); ?></strong><span class="media-referencia">/ <?= number_format((float)$notaMaxima, 0, ',', '.'); ?></span>
+                    <?php endif; ?>
+                  </td>
+                  <td class="celula-status col-status"><span class="badge-status <?= $statusClass; ?>"><?= htmlspecialchars($status); ?></span></td>
+                  <td class="celula-precisa col-falta">
+                    <?php if ($tipoCurso === 'escola'): ?>
+                      <span class="view-detalhado falta-detalhada">
+                      <?php if ($progresso['preenchidas'] === 0): ?>
+                        <span class="proxima-meta"><small>Meta anual</small><strong><?= number_format($progresso['meta_total'], 0, ',', '.'); ?> pts</strong></span>
+                      <?php elseif (!$progresso['completo'] && $progresso['faltam'] <= 0): ?>
+                        <span class="meta-ok"><i class="fa-solid fa-check"></i> Meta anual alcançada</span>
+                      <?php elseif ($progresso['impossivel']): ?>
+                        <span class="badge-precisa impossivel">Meta não alcançável só com os bimestres restantes</span>
+                      <?php elseif (!$progresso['completo']): ?>
+                        <span class="proxima-meta"><small>Faltam <?= number_format($progresso['faltam'], 1, ',', '.'); ?> pts</small><strong><?= $progresso['restantes'] === 1 ? 'precisa de ' . number_format($progresso['faltam'], 1, ',', '.') : 'média ' . number_format($progresso['media_necessaria'], 1, ',', '.') . ' nos ' . $progresso['restantes'] . ' restantes'; ?></strong></span>
+                      <?php elseif ($status === 'Aprovado'): ?>
+                        <span class="meta-ok"><i class="fa-solid fa-check"></i> Aprovado no ano</span>
+                      <?php else: ?>
+                        <span class="badge-precisa impossivel">Faltaram <?= number_format($progresso['faltam'], 1, ',', '.'); ?> pts</span>
+                      <?php endif; ?>
+                      </span>
+                      <span class="view-resumido falta-resumida" title="Pontos que ainda faltam para a meta anual">
+                        <strong class="falta-numero"><?= number_format((float)$progresso['faltam'], 1, ',', '.'); ?></strong><span> pts</span>
+                      </span>
+                    <?php elseif ($status === 'Aprovado'): ?>
                       <span class="meta-ok"><i class="fa-solid fa-check"></i> Meta atingida</span>
                     <?php elseif ($precisa === 'Impossível'): ?>
                       <span class="badge-precisa impossivel">Requer recuperação</span>
@@ -2509,10 +2626,13 @@ $emAtencao = $recuperacao + $reprovadas;
               <article class="atencao-item">
                 <div class="atencao-materia">
                   <span class="materia-dot" style="--materia-cor: <?= htmlspecialchars($meta['cor']); ?>"><i class="fa-solid <?= htmlspecialchars($meta['icone']); ?>"></i></span>
-                  <div><strong><?= htmlspecialchars($item['nome']); ?></strong><span>Média atual <?= number_format($item['media'], 1, ',', '.'); ?> · meta <?= number_format((float)$mediaAprovacao, 1, ',', '.'); ?></span></div>
+                  <div><strong><?= htmlspecialchars($item['nome']); ?></strong><span><?php if ($tipoCurso === 'escola' && !empty($item['progresso'])): ?><?= number_format($item['progresso']['total'], 1, ',', '.'); ?> de <?= number_format($item['progresso']['meta_total'], 0, ',', '.'); ?> pontos acumulados<?php else: ?>Média atual <?= number_format($item['media'], 1, ',', '.'); ?> · meta <?= number_format((float)$mediaAprovacao, 1, ',', '.'); ?><?php endif; ?></span></div>
                 </div>
                 <div class="atencao-meta">
-                  <?php if ($item['precisa'] === 'Impossível'): ?><strong>Recuperação necessária</strong>
+                  <?php if ($tipoCurso === 'escola' && !empty($item['progresso'])): ?>
+                    <span>Para a meta anual</span><strong>faltam <?= number_format($item['progresso']['faltam'], 1, ',', '.'); ?> pontos</strong>
+                    <?php if ($item['progresso']['restantes'] > 1 && !$item['progresso']['impossivel']): ?><small>média <?= number_format($item['progresso']['media_necessaria'], 1, ',', '.'); ?> nos <?= $item['progresso']['restantes']; ?> bimestres restantes</small><?php elseif ($item['progresso']['restantes'] === 1 && !$item['progresso']['impossivel']): ?><small>precisa de <?= number_format($item['progresso']['faltam'], 1, ',', '.'); ?> no último bimestre</small><?php endif; ?>
+                  <?php elseif ($item['precisa'] === 'Impossível'): ?><strong>Recuperação necessária</strong>
                   <?php elseif ($item['precisa'] !== null): ?><span>Próxima avaliação</span><strong>precisa de <?= number_format((float)$item['precisa'], 1, ',', '.'); ?></strong>
                   <?php else: ?><strong>Continue acompanhando</strong><?php endif; ?>
                 </div>
@@ -2524,7 +2644,7 @@ $emAtencao = $recuperacao + $reprovadas;
             <?php endforeach; ?>
           </div>
         <?php else: ?>
-          <div class="empty-sucesso"><i class="fa-solid fa-circle-check"></i><div><strong>Está tudo em dia.</strong><span>Quando alguma matéria ficar abaixo da sua média, ela aparecerá aqui.</span></div></div>
+          <div class="empty-sucesso"><i class="fa-solid fa-circle-check"></i><div><strong>Está tudo em dia.</strong><span>Quando alguma matéria ainda precisar de pontos para atingir a meta anual, ela aparecerá aqui.</span></div></div>
         <?php endif; ?>
       </section>
 

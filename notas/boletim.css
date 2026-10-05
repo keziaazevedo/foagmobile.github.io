@@ -2318,3 +2318,116 @@ body {
 @media (max-width:430px){
   .main-content > .resumo-hero{grid-template-columns:1fr !important;}
 }
+
+/* Meta anual — boletim escolar */
+.media-parcial {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #8491a6;
+  white-space: nowrap;
+}
+
+.pontos-valor {
+  min-width: 34px;
+}
+
+.proxima-meta strong {
+  line-height: 1.25;
+}
+
+/* ==========================================
+   BOLETIM — MODOS RESUMIDO / DETALHADO
+   ========================================== */
+.view-resumido { display: none; }
+
+.btn-view-toggle {
+  min-height: 40px;
+  border: 1px solid #d9e4ef;
+  background: #f8fbff;
+  color: #334155;
+  border-radius: 10px;
+  padding: 9px 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: .2s ease;
+  white-space: nowrap;
+}
+
+.btn-view-toggle:hover {
+  background: #edf7ff;
+  border-color: #9fd3ff;
+  color: #0877d1;
+}
+
+.btn-view-toggle[aria-pressed="true"] {
+  background: #eaf6ff;
+  border-color: #82c7ff;
+  color: #0877d1;
+}
+
+.media-detalhada {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 3px;
+  flex-wrap: wrap;
+}
+
+.media-detalhada .media-parcial {
+  width: 100%;
+}
+
+.media-resumida {
+  align-items: baseline;
+  justify-content: center;
+  gap: 3px;
+  color: #64748b;
+}
+
+.media-atual-resumida,
+.falta-numero {
+  font-size: 1.25rem;
+  line-height: 1;
+  font-weight: 700;
+  color: #172033;
+}
+
+.falta-resumida {
+  align-items: baseline;
+  justify-content: center;
+  gap: 3px;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+body.boletim-resumido .view-detalhado { display: none !important; }
+body.boletim-resumido .view-resumido { display: inline-flex; }
+body.boletim-resumido .tabela-notas .col-status { display: none; }
+body.boletim-resumido .tabela-notas-nova th.col-media,
+body.boletim-resumido .tabela-notas-nova td.celula-media {
+  min-width: 108px;
+}
+body.boletim-resumido .tabela-notas-nova th.col-falta,
+body.boletim-resumido .tabela-notas-nova td.col-falta {
+  min-width: 100px;
+}
+body.boletim-resumido .tabela-notas-nova .celula-media,
+body.boletim-resumido .tabela-notas-nova .celula-precisa {
+  text-align: center;
+}
+body.boletim-resumido .sub-notas {
+  max-width: 680px;
+}
+
+@media (max-width: 780px) {
+  .btn-view-toggle {
+    width: 100%;
+    justify-content: center;
+  }
+}

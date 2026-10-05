@@ -149,10 +149,73 @@ function recalcularLinha(row) {
   if (!notasForm || !row) return;
   const alvo = Number(notasForm.dataset.mediaAprovacao || 6);
   const maxima = Number(notasForm.dataset.notaMaxima || 10);
+  const tipoCurso = notasForm.dataset.tipoCurso || 'escola';
   let pesos = [1,1,1,1];
   try { pesos = JSON.parse(notasForm.dataset.pesos || '[1,1,1,1]').map(Number); } catch (_) {}
 
   const inputs = [...row.querySelectorAll('.input-nota')];
+
+  if (tipoCurso === 'escola') {
+    const valores = inputs
+      .map((input) => input.value.trim() === '' ? null : Number(input.value))
+      .filter((valor) => valor !== null && Number.isFinite(valor));
+
+    const preenchidas = valores.length;
+    const total = valores.reduce((acc, valor) => acc + valor, 0);
+    const metaTotal = alvo * inputs.length;
+    const restantes = inputs.length - preenchidas;
+    const faltam = Math.max(0, metaTotal - total);
+    const mediaAtual = preenchidas > 0 ? total / preenchidas : 0;
+    const mediaNecessaria = restantes > 0 ? faltam / restantes : null;
+    const impossivel = restantes > 0 && faltam > maxima * restantes;
+
+    let status = 'Sem notas';
+    if (preenchidas > 0 && preenchidas < inputs.length) {
+      status = total >= metaTotal ? 'Meta alcançada' : 'Em andamento';
+    } else if (preenchidas === inputs.length) {
+      status = total >= metaTotal ? 'Aprovado' : 'Não atingiu a média';
+    }
+
+    const mediaEl = row.querySelector('.media-valor');
+    if (mediaEl) mediaEl.textContent = numeroBR(total, 1);
+    const mediaParcial = row.querySelector('.media-parcial');
+    if (mediaParcial) mediaParcial.textContent = `média atual ${numeroBR(mediaAtual, 1)}`;
+    const mediaResumida = row.querySelector('.media-atual-resumida');
+    if (mediaResumida) mediaResumida.textContent = numeroBR(mediaAtual, 1);
+    const faltaResumida = row.querySelector('.falta-numero');
+    if (faltaResumida) faltaResumida.textContent = numeroBR(faltam, 1);
+
+    const badge = row.querySelector('.badge-status');
+    if (badge) {
+      badge.textContent = status;
+      badge.classList.remove('status-aprovado','status-recuperacao','status-reprovado');
+      if (status === 'Aprovado' || status === 'Meta alcançada') badge.classList.add('status-aprovado');
+      else if (status === 'Em andamento' || status === 'Sem notas') badge.classList.add('status-recuperacao');
+      else badge.classList.add('status-reprovado');
+    }
+
+    const meta = row.querySelector('.falta-detalhada') || row.querySelector('.celula-precisa');
+    if (meta) {
+      if (preenchidas === 0) {
+        meta.innerHTML = `<span class="proxima-meta"><small>Meta anual</small><strong>${numeroBR(metaTotal, 0)} pts</strong></span>`;
+      } else if (preenchidas < inputs.length && faltam <= 0) {
+        meta.innerHTML = '<span class="meta-ok"><i class="fa-solid fa-check"></i> Meta anual alcançada</span>';
+      } else if (impossivel) {
+        meta.innerHTML = '<span class="badge-precisa impossivel">Meta não alcançável só com os bimestres restantes</span>';
+      } else if (preenchidas < inputs.length) {
+        const detalhe = restantes === 1
+          ? `precisa de ${numeroBR(faltam, 1)}`
+          : `média ${numeroBR(mediaNecessaria, 1)} nos ${restantes} restantes`;
+        meta.innerHTML = `<span class="proxima-meta"><small>Faltam ${numeroBR(faltam, 1)} pts</small><strong>${detalhe}</strong></span>`;
+      } else if (status === 'Aprovado') {
+        meta.innerHTML = '<span class="meta-ok"><i class="fa-solid fa-check"></i> Aprovado no ano</span>';
+      } else {
+        meta.innerHTML = `<span class="badge-precisa impossivel">Faltaram ${numeroBR(faltam, 1)} pts</span>`;
+      }
+    }
+    return;
+  }
+
   let soma = 0, somaPesos = 0, somaFeitas = 0, proxima = -1;
   inputs.forEach((input, idx) => {
     const peso = Number(pesos[idx] ?? 1);
@@ -204,5 +267,49 @@ function recalcularLinha(row) {
 if (notasForm) {
   notasForm.querySelectorAll('.input-nota').forEach((input) => {
     input.addEventListener('input', () => recalcularLinha(input.closest('.nota-row')));
+  });
+}
+
+// ==========================================
+// BOLETIM — MODO RESUMIDO / DETALHADO
+// ==========================================
+const viewToggle = document.getElementById('btn-view-toggle');
+const viewToggleLabel = viewToggle?.querySelector('.view-toggle-label');
+const viewStorageKey = 'foag_boletim_view_mode';
+
+function aplicarModoBoletim(modo) {
+  const resumido = modo === 'resumido';
+  document.body.classList.toggle('boletim-resumido', resumido);
+
+  if (viewToggle) {
+    viewToggle.setAttribute('aria-pressed', String(resumido));
+    const icon = viewToggle.querySelector('i');
+    if (icon) {
+      icon.className = resumido
+        ? 'fa-solid fa-table-columns'
+        : 'fa-solid fa-table-list';
+    }
+  }
+
+  if (viewToggleLabel) {
+    viewToggleLabel.textContent = resumido
+      ? 'Ver modo detalhado'
+      : 'Ver modo resumido';
+  }
+}
+
+if (viewToggle) {
+  let modoSalvo = 'detalhado';
+  try {
+    modoSalvo = localStorage.getItem(viewStorageKey) || 'detalhado';
+  } catch (_) {}
+  aplicarModoBoletim(modoSalvo);
+
+  viewToggle.addEventListener('click', () => {
+    const novoModo = document.body.classList.contains('boletim-resumido')
+      ? 'detalhado'
+      : 'resumido';
+    aplicarModoBoletim(novoModo);
+    try { localStorage.setItem(viewStorageKey, novoModo); } catch (_) {}
   });
 }
