@@ -142,6 +142,11 @@ foreach ($itensCatalogoLoja as $produtoLoja) {
         'imagem' => $imagemMoldura,
         'ajuste_perfil' => normalizarAjusteMolduraRanking(
             $produtoLoja['ajuste_perfil'] ?? []
+        ),
+        'ajuste_share' => normalizarAjusteMolduraRanking(
+            $produtoLoja['ajuste_share']
+                ?? $produtoLoja['ajuste_perfil']
+                ?? []
         )
     ];
 }
@@ -1322,7 +1327,7 @@ function renderAvatarRankingHtml($jogador, $classeExtra = '')
 
     <link
         rel="stylesheet"
-        href="rank.css?v=5"
+        href="rank.css?v=6"
     >
 
     <link
@@ -2245,41 +2250,163 @@ document.addEventListener('DOMContentLoaded', function () {
         return (numero / 132) * 100;
     }
 
-    function renderAvatarCompartilhar(jogador) {
+    function carregarImagemCompartilhamento(src) {
+        return new Promise((resolve, reject) => {
+            if (!src) {
+                reject(new Error('Imagem sem caminho.'));
+                return;
+            }
+
+            const imagem = new Image();
+            imagem.decoding = 'async';
+
+            imagem.onload = () => resolve(imagem);
+            imagem.onerror = () => reject(new Error(`Não foi possível carregar: ${src}`));
+            imagem.src = src;
+        });
+    }
+
+    function desenharImagemCover(ctx, imagem, x, y, largura, altura) {
+        const proporcaoDestino = largura / altura;
+        const proporcaoOrigem = imagem.naturalWidth / imagem.naturalHeight;
+
+        let sx = 0;
+        let sy = 0;
+        let sw = imagem.naturalWidth;
+        let sh = imagem.naturalHeight;
+
+        if (proporcaoOrigem > proporcaoDestino) {
+            sw = imagem.naturalHeight * proporcaoDestino;
+            sx = (imagem.naturalWidth - sw) / 2;
+        } else {
+            sh = imagem.naturalWidth / proporcaoDestino;
+            sy = (imagem.naturalHeight - sh) / 2;
+        }
+
+        ctx.drawImage(
+            imagem,
+            sx,
+            sy,
+            sw,
+            sh,
+            x,
+            y,
+            largura,
+            altura
+        );
+    }
+
+    async function gerarAvatarCompartilhamentoDataUrl(jogador) {
+        const tamanhoCanvas = 360;
+        const centro = tamanhoCanvas / 2;
+        const baseAvatar = 180;
+
+        const canvas = document.createElement('canvas');
+        canvas.width = tamanhoCanvas;
+        canvas.height = tamanhoCanvas;
+
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, tamanhoCanvas, tamanhoCanvas);
+
         if (!jogador) {
-            return '<div class="avatar avatar-foto share-avatar"><div class="avatar-stage"><div class="avatar-foto-recorte"><span class="avatar-fallback" style="display:flex"><i class="fa-solid fa-user"></i></span></div></div></div>';
+            ctx.fillStyle = '#eef4fa';
+            ctx.beginPath();
+            ctx.arc(centro, centro, baseAvatar / 2, 0, Math.PI * 2);
+            ctx.fill();
+            return canvas.toDataURL('image/png');
         }
 
         const moldura = jogador.moldura && typeof jogador.moldura === 'object'
             ? jogador.moldura
             : null;
 
-        const ajuste = normalizarAjusteMolduraRankingJs(moldura?.ajuste_perfil || {});
-        const temMoldura = !!(moldura && moldura.imagem);
-        const style = `
-            --rank-moldura-escala: ${ajuste.moldura_escala};
-            --rank-moldura-x: ${deslocamentoRankingPercentualJs(ajuste.moldura_x)}%;
-            --rank-moldura-y: ${deslocamentoRankingPercentualJs(ajuste.moldura_y)}%;
-            --rank-foto-escala: ${ajuste.foto_escala};
-            --rank-foto-x: ${deslocamentoRankingPercentualJs(ajuste.foto_x)}%;
-            --rank-foto-y: ${deslocamentoRankingPercentualJs(ajuste.foto_y)}%;
-        `;
+        const ajuste = normalizarAjusteMolduraRankingJs(
+            moldura?.ajuste_share
+            || moldura?.ajuste_perfil
+            || {}
+        );
 
-        const foto = jogador.foto || '';
-        const nome = jogador.nome || 'Estudante';
+        const temMoldura = !!(moldura && moldura.imagem);
+
+        const fotoEscala = Number(ajuste.foto_escala || 1);
+        const fotoTamanho = baseAvatar * fotoEscala;
+        const fotoX = centro + ((Number(ajuste.foto_x || 0) / 132) * baseAvatar);
+        const fotoY = centro + ((Number(ajuste.foto_y || 0) / 132) * baseAvatar);
+
+        // Fundo neutro do círculo para evitar qualquer "buraco" branco estranho.
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(fotoX, fotoY, fotoTamanho / 2, 0, Math.PI * 2);
+        ctx.clip();
+        ctx.fillStyle = '#eef4fa';
+        ctx.fillRect(
+            fotoX - fotoTamanho / 2,
+            fotoY - fotoTamanho / 2,
+            fotoTamanho,
+            fotoTamanho
+        );
+
+        try {
+            const foto = await carregarImagemCompartilhamento(jogador.foto || '');
+            desenharImagemCover(
+                ctx,
+                foto,
+                fotoX - fotoTamanho / 2,
+                fotoY - fotoTamanho / 2,
+                fotoTamanho,
+                fotoTamanho
+            );
+        } catch (erro) {
+            // Mantém somente o fundo neutro caso a foto falhe.
+            console.warn('Foto do avatar não carregou no card de compartilhamento.', erro);
+        }
+        ctx.restore();
+
+        // Sem moldura: adiciona apenas um contorno sutil.
+        if (!temMoldura) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(fotoX, fotoY, fotoTamanho / 2 - 2, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(255,255,255,.95)';
+            ctx.lineWidth = 5;
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        // Moldura desenhada POR CIMA da foto, já no mesmo canvas.
+        if (temMoldura) {
+            try {
+                const imagemMoldura = await carregarImagemCompartilhamento(moldura.imagem);
+                const molduraEscala = Number(ajuste.moldura_escala || 1.28);
+                const molduraTamanho = baseAvatar * molduraEscala;
+                const molduraX = centro + ((Number(ajuste.moldura_x || 0) / 132) * baseAvatar);
+                const molduraY = centro + ((Number(ajuste.moldura_y || 0) / 132) * baseAvatar);
+
+                ctx.drawImage(
+                    imagemMoldura,
+                    molduraX - molduraTamanho / 2,
+                    molduraY - molduraTamanho / 2,
+                    molduraTamanho,
+                    molduraTamanho
+                );
+            } catch (erro) {
+                console.warn('Moldura não carregou no card de compartilhamento.', erro);
+            }
+        }
+
+        return canvas.toDataURL('image/png');
+    }
+
+    async function renderAvatarCompartilhar(jogador) {
+        const dataUrl = await gerarAvatarCompartilhamentoDataUrl(jogador);
+        const nome = jogador?.nome || 'Estudante';
 
         return `
-            <div class="avatar avatar-foto ${temMoldura ? 'com-moldura' : ''} share-avatar">
-                <div class="avatar-stage ${temMoldura ? 'tem-moldura' : ''}" style="${style}">
-                    <div class="avatar-foto-recorte">
-                        <img class="avatar-foto-img" src="${foto}" alt="Foto de perfil de ${nome}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <span class="avatar-fallback" aria-hidden="true">
-                            <i class="fa-solid fa-user"></i>
-                        </span>
-                    </div>
-                    ${temMoldura ? `<img class="avatar-moldura-img" src="${moldura.imagem}" alt="" aria-hidden="true">` : ''}
-                </div>
-            </div>
+            <img
+                class="share-avatar-composta"
+                src="${dataUrl}"
+                alt="Foto de perfil de ${nome}"
+            >
         `;
     }
 
@@ -2293,7 +2420,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return `🏆 Estou em ${atual.posicao}º lugar no Ranking FOAG — ${nomeCategoria} / ${nomeNivel}! Minha marca atual é ${atual.jogador.valor}.`;
     }
 
-    function abrirModalCompartilhar(categoria, nivel, atual) {
+    async function abrirModalCompartilhar(categoria, nivel, atual) {
         if (!shareModal || !atual || !atual.jogador) return;
 
         const configResumo = resumoCategoria[categoria] || resumoCategoria.estrelas;
@@ -2317,7 +2444,14 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (shareCardAvatar) {
-            shareCardAvatar.innerHTML = renderAvatarCompartilhar(jogador);
+            shareCardAvatar.innerHTML = '<div class="share-avatar-loading"><i class="fa-solid fa-spinner fa-spin"></i></div>';
+
+            try {
+                shareCardAvatar.innerHTML = await renderAvatarCompartilhar(jogador);
+            } catch (erro) {
+                console.warn('Não foi possível montar o avatar do compartilhamento.', erro);
+                shareCardAvatar.innerHTML = '<div class="share-avatar-fallback"><i class="fa-solid fa-user"></i></div>';
+            }
         }
 
         if (shareCardNome) {
