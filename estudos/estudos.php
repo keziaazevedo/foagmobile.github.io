@@ -381,119 +381,120 @@ if (
         <div>
           <span class="page-eyebrow">Área de estudos</span>
           <h1>Estudos</h1>
-          <p>Organize suas matérias, escolha como estudar e acompanhe seu progresso.</p>
+          <p>Organize seus estudos, retome de onde parou e acompanhe sua evolução.</p>
         </div>
         <button class="btn" id="open-subject-modal">
           <i class="fa-solid fa-plus"></i> Nova matéria
         </button>
       </section>
 
-      <section class="stats-grid" aria-label="Estatísticas gerais">
-        <article class="stat-card">
-          <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
-          <div>
-            <span class="stat-label">Tempo estudado</span>
-            <strong id="stat-study-time">0h 00min</strong>
-            <small>Total acumulado</small>
+      <section class="study-overview" aria-label="Resumo de estudos">
+        <article class="continue-card" id="continue-card">
+          <div class="continue-main">
+            <span class="overview-kicker"><i class="fa-solid fa-bolt"></i> Continue estudando</span>
+            <div class="continue-subject-row">
+              <div class="continue-icon" id="continue-icon"><i class="fa-solid fa-book-open"></i></div>
+              <div>
+                <h2 id="continue-subject">Comece sua primeira sessão</h2>
+                <p id="continue-detail">Escolha uma matéria e use o Pomodoro para registrar seu progresso.</p>
+              </div>
+            </div>
+            <a class="btn continue-btn" id="continue-action" href="pomodoro/pomodoro.php">
+              <i class="fa-solid fa-play"></i> Estudar agora
+            </a>
           </div>
-        </article>
 
-        <article class="stat-card">
-          <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
-          <div>
-            <span class="stat-label">Sessões</span>
-            <strong id="stat-sessions">0</strong>
-            <small>Sessões concluídas</small>
-          </div>
-        </article>
-
-        <article class="stat-card">
-          <div class="stat-icon"><i class="fa-solid fa-book-open"></i></div>
-          <div>
-            <span class="stat-label">Matérias</span>
-            <strong id="stat-subjects">0</strong>
-            <small>Matérias cadastradas</small>
-          </div>
-        </article>
-
-        <article class="stat-card">
-          <div class="stat-icon"><i class="fa-solid fa-fire"></i></div>
-          <div>
-            <span class="stat-label">Sequência</span>
-            <strong id="stat-streak">0 dias</strong>
-            <small>Continue estudando</small>
+          <div class="weekly-goal-card">
+            <div class="goal-header">
+              <div>
+                <span>Meta semanal</span>
+                <strong id="weekly-goal-label">0h de 5h</strong>
+              </div>
+              <button type="button" class="goal-edit-btn" id="edit-weekly-goal" title="Editar meta semanal" aria-label="Editar meta semanal">
+                <i class="fa-regular fa-pen-to-square"></i>
+              </button>
+            </div>
+            <div class="goal-progress" aria-hidden="true"><span id="weekly-goal-progress"></span></div>
+            <div class="goal-footer">
+              <span id="weekly-goal-percent">0% concluído</span>
+              <span id="weekly-study-days"><i class="fa-solid fa-fire"></i> 0 dias ativos</span>
+            </div>
           </div>
         </article>
       </section>
 
-      <section class="content-section">
-        <div class="section-heading">
-          <div>
-            <h2>Métodos de estudo</h2>
-            <p>Escolha a ferramenta que combina com o que você quer estudar agora.</p>
-          </div>
-        </div>
+      <section class="stats-grid" aria-label="Estatísticas da semana">
+        <article class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
+          <div><span class="stat-label">Tempo estudado</span><strong id="stat-study-time">0h 00min</strong><small>Esta semana</small></div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+          <div><span class="stat-label">Sessões</span><strong id="stat-sessions">0</strong><small>Esta semana</small></div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-book-open"></i></div>
+          <div><span class="stat-label">Matérias</span><strong id="stat-subjects">0</strong><small>Matérias cadastradas</small></div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-fire"></i></div>
+          <div><span class="stat-label">Sequência</span><strong id="stat-streak">0 dias</strong><small>Dias seguidos estudando</small></div>
+        </article>
+      </section>
 
+      <section class="content-section methods-section">
+        <div class="section-heading">
+          <div><h2>Métodos de estudo</h2><p>Escolha uma ferramenta e comece sem perder tempo.</p></div>
+        </div>
         <div class="methods-grid">
           <a class="method-card" href="flashcards/flashcards.php">
             <div class="method-icon"><i class="fa-solid fa-layer-group"></i></div>
-            <div class="method-info">
-              <h3>Flashcards</h3>
-              <p>Crie cartões de perguntas e respostas para revisar conteúdos.</p>
-              <span class="method-link">Abrir <i class="fa-solid fa-arrow-right"></i></span>
-            </div>
+            <div class="method-info"><h3>Flashcards</h3><p id="method-flashcards-info">Revise conteúdos com cartões.</p><span class="method-link">Abrir <i class="fa-solid fa-arrow-right"></i></span></div>
           </a>
-
           <a class="method-card" href="pomodoro/pomodoro.php">
             <div class="method-icon"><i class="fa-solid fa-stopwatch"></i></div>
-            <div class="method-info">
-              <h3>Pomodoro</h3>
-              <p>Organize períodos de foco, pausas e acompanhe suas sessões.</p>
-              <span class="method-link">Abrir <i class="fa-solid fa-arrow-right"></i></span>
-            </div>
+            <div class="method-info"><h3>Pomodoro</h3><p id="method-pomodoro-info">Organize seus períodos de foco.</p><span class="method-link">Abrir <i class="fa-solid fa-arrow-right"></i></span></div>
           </a>
-
-          <a class="method-card" href="#" data-coming-soon="Quiz">
-            <div class="method-icon"><i class="fa-solid fa-circle-question"></i></div>
-            <div class="method-info">
-              <h3>Quiz</h3>
-              <p>Teste seus conhecimentos com perguntas sobre suas matérias.</p>
-              <span class="method-link">Em breve <i class="fa-solid fa-arrow-right"></i></span>
-            </div>
+          <a class="method-card coming-soon" href="#" data-coming-soon="Quiz">
+            <span class="soon-badge">Em breve</span><div class="method-icon"><i class="fa-solid fa-circle-question"></i></div>
+            <div class="method-info"><h3>Quiz</h3><p>Teste seus conhecimentos.</p><span class="method-link">Conhecer <i class="fa-solid fa-arrow-right"></i></span></div>
           </a>
-
-          <a class="method-card" href="#" data-coming-soon="Revisão">
-            <div class="method-icon"><i class="fa-solid fa-arrows-rotate"></i></div>
-            <div class="method-info">
-              <h3>Revisão</h3>
-              <p>Centralize conteúdos que precisam ser retomados e revisados.</p>
-              <span class="method-link">Em breve <i class="fa-solid fa-arrow-right"></i></span>
-            </div>
+          <a class="method-card coming-soon" href="#" data-coming-soon="Revisão">
+            <span class="soon-badge">Em breve</span><div class="method-icon"><i class="fa-solid fa-arrows-rotate"></i></div>
+            <div class="method-info"><h3>Revisão</h3><p>Retome conteúdos importantes.</p><span class="method-link">Conhecer <i class="fa-solid fa-arrow-right"></i></span></div>
           </a>
         </div>
       </section>
 
       <section class="content-section subjects-section">
         <div class="section-heading subjects-heading">
-          <div>
-            <h2>Minhas matérias</h2>
-            <p>Cadastre as matérias que você está estudando para organizar seus métodos e estatísticas.</p>
+          <div><h2>Minhas matérias</h2><p>Veja seu progresso e acesse rapidamente o que quer estudar.</p></div>
+          <div class="subjects-tools">
+            <label class="subject-search"><i class="fa-solid fa-magnifying-glass"></i><input id="subject-search" type="search" placeholder="Buscar matéria" aria-label="Buscar matéria"></label>
+            <select id="subject-sort" class="subject-sort" aria-label="Ordenar matérias">
+              <option value="recent">Recentes</option><option value="studied">Mais estudadas</option><option value="az">A–Z</option>
+            </select>
+            <button class="btn secondary-outline" id="open-subject-modal-secondary"><i class="fa-solid fa-plus"></i> Adicionar</button>
           </div>
-          <button class="btn secondary-outline" id="open-subject-modal-secondary">
-            <i class="fa-solid fa-plus"></i> Adicionar matéria
-          </button>
         </div>
-
         <div id="subjects-empty" class="empty-state">
-          <div class="empty-icon"><i class="fa-solid fa-book-open-reader"></i></div>
-          <h3>Nenhuma matéria cadastrada ainda</h3>
+          <div class="empty-icon"><i class="fa-solid fa-book-open-reader"></i></div><h3>Nenhuma matéria cadastrada ainda</h3>
           <p>Adicione sua primeira matéria para começar a organizar seus estudos.</p>
-          <button class="btn" id="open-subject-modal-empty">
-            <i class="fa-solid fa-plus"></i> Adicionar primeira matéria
-          </button>
+          <button class="btn" id="open-subject-modal-empty"><i class="fa-solid fa-plus"></i> Adicionar primeira matéria</button>
         </div>
-
         <div id="subjects-grid" class="subjects-grid" hidden></div>
+        <div id="subjects-no-results" class="subjects-no-results" hidden><i class="fa-solid fa-magnifying-glass"></i><span>Nenhuma matéria encontrada.</span></div>
+      </section>
+
+      <section class="study-bottom-grid">
+        <section class="content-section review-section">
+          <div class="section-heading"><div><h2>Para revisar</h2><p>Baralhos que você pode retomar agora.</p></div><a href="flashcards/flashcards.php" class="text-link">Ver flashcards <i class="fa-solid fa-arrow-right"></i></a></div>
+          <div id="review-list" class="review-list"></div>
+        </section>
+        <section class="content-section activity-section">
+          <div class="section-heading"><div><h2>Atividade recente</h2><p>Seus últimos registros de estudo.</p></div></div>
+          <div id="activity-list" class="activity-list"></div>
+        </section>
       </section>
     </main>
     <footer class="footer">
