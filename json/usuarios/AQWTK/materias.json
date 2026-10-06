@@ -1,3 +1,11 @@
 {
-    "materias": []
+    "materias": [
+        {
+            "id": "MAT_AD2B4745",
+            "nome": "a",
+            "cor": "#38a5ff",
+            "icone": "fa-landmark",
+            "criado_em": "2026-10-06 13:50:03"
+        }
+    ]
 }
