@@ -312,6 +312,11 @@ $current = basename($_SERVER['PHP_SELF']);
     }
   }
 </style>
+    <link rel="stylesheet" href="../../global/css/base.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../../global/css/components.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../../global/css/forms.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../../global/css/tables.css?v=<?= time() ?>">
+
 
     <link rel="stylesheet" href="../../global/css/layout.css?v=<?= time() ?>">
 </head>

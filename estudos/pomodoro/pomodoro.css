@@ -2,10 +2,9 @@
    RESET + BASE
 ========================= */
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
 }
 
 :root {
@@ -175,10 +174,6 @@ main.conteudo > * + *,
 
 .row + .row {
   margin-top: 16px;
-}
-
-.row.between {
-  justify-content: space-between;
 }
 
 .grid-2 {
@@ -420,11 +415,6 @@ textarea:focus {
   overflow-x: auto;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
 }
 
 .table th,

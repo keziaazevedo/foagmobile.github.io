@@ -1,13 +1,4 @@
 {
     "dias": [],
-    "metas": [],
-    "configuracoes": {
-        "2026": {
-            "meta_anual": 80,
-            "inicio_ano_letivo": "2026-02-02",
-            "fim_ano_letivo": "2026-12-18",
-            "inicio_ferias_meio": "2026-06-01",
-            "fim_ferias_meio": "2026-06-16"
-        }
-    }
+    "metas": []
 }

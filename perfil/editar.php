@@ -898,6 +898,10 @@ $caminho_foto =
     <link rel="stylesheet" href="editr.css">
     <script src="../m.escuro/dark-mode.js"></script>
     <link rel="stylesheet" href="../global/css/cursor.css">
+    <link rel="stylesheet" href="../global/css/base.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../global/css/components.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../global/css/forms.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../global/css/tables.css?v=<?= time() ?>">
 </head>
 
 <body>

@@ -1,0 +1,5 @@
+/* FOAG — FORMULÁRIOS GLOBAIS */
+input,select,textarea,button{font-family:inherit;}
+input,select,textarea{box-sizing:border-box;}
+button{-webkit-tap-highlight-color:transparent;}
+label{box-sizing:border-box;}

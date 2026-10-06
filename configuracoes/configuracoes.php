@@ -154,6 +154,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao_perigo'])) {
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../global/css/cursor.css">
+    <link rel="stylesheet" href="../global/css/base.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../global/css/components.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../global/css/forms.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../global/css/tables.css?v=<?= time() ?>">
+
     <link rel="stylesheet" href="../global/css/layout.css?v=<?= time() ?>">
 </head>
 

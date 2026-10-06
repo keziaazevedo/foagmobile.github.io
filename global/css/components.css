@@ -1,0 +1,17 @@
+/* FOAG — COMPONENTES GLOBAIS */
+:root{--foag-primary:#38a5ff;--foag-radius-sm:8px;--foag-radius-md:12px;--foag-border:#e5edf5;--foag-text:#1f2937;--foag-muted:#667085;--foag-surface:#fff;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:var(--foag-radius-sm);cursor:pointer;text-decoration:none;font:inherit;}
+.btn:disabled,.btn[disabled]{cursor:not-allowed;opacity:.6;}
+.input,.select,textarea.input{width:100%;max-width:100%;font:inherit;box-sizing:border-box;}
+.field-group{min-width:0;}
+.card{box-sizing:border-box;}
+.row{display:flex;align-items:center;}
+.row.center{justify-content:center;}
+.row.between{justify-content:space-between;}
+.gap{gap:10px;}
+.modal{box-sizing:border-box;}
+.table{width:100%;border-collapse:collapse;}
+.badge,.pill{display:inline-flex;align-items:center;justify-content:center;}
+.progress{overflow:hidden;}
+.empty-state{text-align:center;}
+.toast{box-sizing:border-box;}
