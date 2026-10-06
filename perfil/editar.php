@@ -894,6 +894,7 @@ $caminho_foto =
     <link rel="stylesheet" href="../m.escuro/dark_basee.css">
     <link rel="stylesheet" href="editr.css">
     <script src="../m.escuro/dark-mode.js"></script>
+    <link rel="stylesheet" href="../global/css/cursor.css">
 </head>
 
 <body>
@@ -1321,5 +1322,8 @@ $caminho_foto =
             }
         });
     </script>
+    <script src="../global/js/cursor.js?v=<?= time() ?>"></script>
+
 </body>
+
 </html>

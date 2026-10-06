@@ -1,64 +1,50 @@
-/* =========================================
-   CURSORES PERSONALIZADOS — FOAG
-========================================= */
+/* =====================================================
+   FOAG — CURSOR PERSONALIZADO VISUAL
+===================================================== */
 
-body.cursor-foag-ativo,
-body.cursor-foag-ativo * {
-    cursor: var(--foag-cursor-normal) !important;
+html.foag-cursor-personalizado,
+html.foag-cursor-personalizado body,
+html.foag-cursor-personalizado body * {
+    cursor: none !important;
 }
 
-
-/* Clique */
-
-body.cursor-foag-ativo:active,
-body.cursor-foag-ativo *:active {
-    cursor: var(--foag-cursor-clique) !important;
+#foag-custom-cursor {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+    pointer-events: none;
+    user-select: none;
+    z-index: 2147483647;
+    opacity: 0;
+    margin-left: -4px;
+    margin-top: -4px;
+    transform: translate3d(-100px, -100px, 0);
+    transform-origin: top left;
+    transition: opacity .08s ease, width .06s ease, height .06s ease;
+    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .14));
+    will-change: transform;
 }
 
-
-/* Links */
-
-body.cursor-foag-ativo a {
-    cursor: var(--foag-cursor-normal) !important;
+#foag-custom-cursor.visivel {
+    opacity: 1;
 }
 
-body.cursor-foag-ativo a:active {
-    cursor: var(--foag-cursor-clique) !important;
+#foag-custom-cursor.clicando {
+    width: 40px;
+    height: 40px;
 }
 
+@media (hover: none), (pointer: coarse) {
+    html.foag-cursor-personalizado,
+    html.foag-cursor-personalizado body,
+    html.foag-cursor-personalizado body * {
+        cursor: auto !important;
+    }
 
-/* Botões */
-
-body.cursor-foag-ativo button {
-    cursor: var(--foag-cursor-normal) !important;
-}
-
-body.cursor-foag-ativo button:active {
-    cursor: var(--foag-cursor-clique) !important;
-}
-
-
-/* Elementos que funcionam como botão */
-
-body.cursor-foag-ativo [role="button"] {
-    cursor: var(--foag-cursor-normal) !important;
-}
-
-body.cursor-foag-ativo [role="button"]:active {
-    cursor: var(--foag-cursor-clique) !important;
-}
-
-
-/* Inputs clicáveis */
-
-body.cursor-foag-ativo input[type="button"],
-body.cursor-foag-ativo input[type="submit"],
-body.cursor-foag-ativo input[type="reset"] {
-    cursor: var(--foag-cursor-normal) !important;
-}
-
-body.cursor-foag-ativo input[type="button"]:active,
-body.cursor-foag-ativo input[type="submit"]:active,
-body.cursor-foag-ativo input[type="reset"]:active {
-    cursor: var(--foag-cursor-clique) !important;
+    #foag-custom-cursor {
+        display: none !important;
+    }
 }

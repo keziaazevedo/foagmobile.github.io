@@ -1,0 +1,30 @@
+{
+    "nota_maxima": 10,
+    "media_aprovacao": 6,
+    "tipo_curso": "escola",
+    "pesos": {
+        "1": 1,
+        "2": 1,
+        "3": 1,
+        "4": 1
+    },
+    "periodos": {
+        "Padrão": {
+            "materias": [
+                "a"
+            ],
+            "materia_ids": [
+                "MAT_AD2B4745"
+            ],
+            "notas": [
+                {
+                    "1": null,
+                    "2": null,
+                    "3": null,
+                    "4": null
+                }
+            ]
+        }
+    },
+    "periodo_atual": "Padrão"
+}

@@ -129,19 +129,19 @@ $current = basename($_SERVER['PHP_SELF']);
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FOAG – Flashcards</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"> 
-    <link  href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap">  
-<!-- Depois do flashcards.css -->
-<link rel="stylesheet" href="flashcards.css">
-<link rel="stylesheet" href="dark_flash.css">  <!-- LINHA NOVA -->
-<link rel="stylesheet" href="../../m.escuro/dark_basee.css">
-<script src="../../m.escuro/dark-mode.js"></script>
 
+    <link rel="stylesheet" href="flashcards.css">
+    <link rel="stylesheet" href="dark_flash.css">
+    <link rel="stylesheet" href="../../m.escuro/dark_basee.css">
+    <link rel="stylesheet" href="../../global/css/cursor.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
+    <script src="../../m.escuro/dark-mode.js"></script>
 
-    <script>
+<script>
 
         window.MATERIAS_DATA =
             <?= json_encode(
@@ -785,10 +785,9 @@ $current = basename($_SERVER['PHP_SELF']);
     id="toast"
     class="toast"
 ></div>
-<script
-    defer
-    src="flashcards.js?v=<?= time() ?>"
-></script>
+<script src="../../global/js/cursor.js?v=<?= time() ?>"></script>
+
+<script defer src="flashcards.js?v=<?= time() ?>"></script>
 
 <script src="../../configuracoes/aparencia.js?v=6"></script>
 <script src="../../configuracoes/acessibilidade.js?v=26" defer></script>

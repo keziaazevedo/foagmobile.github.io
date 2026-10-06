@@ -1496,6 +1496,7 @@ $progressoInsigniasPerfil =
     <!-- SCRIPTS (DEFER PARA CARREGAR DEPOIS) -->
     <script src="../acessibilidade/acessibilidade.js?v=4" defer></script>
     <script src="../m.escuro/dark-mode.js"></script>
+    <link rel="stylesheet" href="../global/css/cursor.css">
 </head>
 
 <body>
@@ -3831,5 +3832,8 @@ $progressoInsigniasPerfil =
         console.log('✅ Perfil pronto!');
     });
     </script>
+    <script src="../global/js/cursor.js?v=<?= time() ?>"></script>
+
 </body>
+
 </html>

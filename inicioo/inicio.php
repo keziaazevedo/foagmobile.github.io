@@ -660,7 +660,8 @@ $anotacoesImportantes =
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FOAG - Início</title>
     <link rel="stylesheet" href="inicioo.css?v=10">
-<link rel="stylesheet" href="dark_ini.css?v=11">
+    <link rel="stylesheet" href="dark_ini.css?v=11">
+    <link rel="stylesheet" href="../global/css/cursor.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -1637,6 +1638,8 @@ $anotacoesImportantes =
 window.INICIO_NOTE_SAVE_URL = 'salvar_anotacao.php';
 </script>
 <script src="inicio.js"></script>
+
+<script src="../global/js/cursor.js"></script>
 
 <!-- LIBRAS GLOBAL FOAG -->
 <script src="../configuracoes/acessibilidade.js?v=22"></script>

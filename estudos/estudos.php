@@ -144,18 +144,20 @@ if (
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FOAG – Estudos</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="estudos.css">
-  <link rel="stylesheet" href="../m.escuro/dark_basee.css">
-  <link rel="stylesheet" href="dark_estudos.css">
-  <script src="../m.escuro/dark-mode.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FOAG – Estudos</title>
 
+    <link rel="stylesheet" href="estudos.css">
+    <link rel="stylesheet" href="dark_estudos.css">
+    <link rel="stylesheet" href="../m.escuro/dark_basee.css">
+    <link rel="stylesheet" href="../global/css/cursor.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-  <script>
+    <script src="../m.escuro/dark-mode.js"></script>
+
+<script>
 
     window.MATERIAS_DATA =
         <?= json_encode(
@@ -630,8 +632,8 @@ if (
 </div>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script src="../global/js/cursor.js?v=<?= time() ?>"></script>
 <script defer src="estudos.js?v=<?= time() ?>"></script>
-
 <script src="../configuracoes/aparencia.js?v=5"></script>
 <script src="../configuracoes/acessibilidade.js?v=25" defer></script>
 </body>

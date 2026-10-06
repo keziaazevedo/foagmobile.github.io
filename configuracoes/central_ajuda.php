@@ -772,6 +772,7 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="../global/css/cursor.css">
 </head>
 
 <body>
@@ -1682,5 +1683,8 @@
             });
         });
     </script>
+    <script src="../global/js/cursor.js?v=<?= time() ?>"></script>
+
 </body>
+
 </html>

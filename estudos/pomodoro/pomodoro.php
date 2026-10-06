@@ -104,101 +104,23 @@ $current = basename($_SERVER['PHP_SELF']);
 
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-
-    <meta charset="UTF-8" />
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1"
-    />
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FOAG – Pomodoro</title>
 
+    <link rel="stylesheet" href="pomodoro.css">
+    <link rel="stylesheet" href="dark_pomo.css">
+    <link rel="stylesheet" href="../../m.escuro/dark_basee.css">
+    <link rel="stylesheet" href="../../estrelas/modal_estrelas.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../../global/css/cursor.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    <!-- ==========================================
-         FONT AWESOME
-    =========================================== -->
+    <script src="../../m.escuro/dark-mode.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    />
-
-
-    <!-- ==========================================
-         FONTES
-    =========================================== -->
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
-        rel="stylesheet"
-    >
-
-
-    <!-- ==========================================
-         CSS POMODORO
-    =========================================== -->
-
-    <link
-        rel="stylesheet"
-        href="pomodoro.css"
-    >
-
-
-    <!-- ==========================================
-         MODO ESCURO
-    =========================================== -->
-
-    <link
-        rel="stylesheet"
-        href="../../m.escuro/dark_basee.css"
-    >
-
-    <link
-        rel="stylesheet"
-        href="dark_pomo.css"
-    >
-
-
-    <!-- ==========================================
-         MODAL GLOBAL DE ESTRELAS
-    =========================================== -->
-
-    <link
-        rel="stylesheet"
-        href="../../estrelas/modal_estrelas.css?v=<?= time() ?>"
-    >
-
-
-    <!-- ==========================================
-         APARÊNCIA
-    =========================================== -->
-
-
-
-
-
-    <script
-        src="../../m.escuro/dark-mode.js"
-    ></script>
-
-
-    <!-- ==========================================
-         CHART.JS
-    =========================================== -->
-
-    <script
-        src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"
-    ></script>
-
-
-    <!-- ==========================================
-         DADOS DO PHP PARA O JS
-    =========================================== -->
-
-    <script>
+<script>
 
         window.POMODORO_DATA =
             <?= json_encode(
@@ -1214,22 +1136,19 @@ $current = basename($_SERVER['PHP_SELF']);
          MODAL GLOBAL DE ESTRELAS
     =========================================== -->
 
-    <script
-        src="../../estrelas/modal_estrelas.js?v=<?= time() ?>"
-    ></script>
+    <script src="../../estrelas/modal_estrelas.js?v=<?= time() ?>"></script>
 
 
     <!-- ==========================================
          LÓGICA DO POMODORO
     =========================================== -->
 
-    <script
-        defer
-        src="pomodoro.js?v=<?= time() ?>"
-    ></script>
+    <script defer src="pomodoro.js?v=<?= time() ?>"></script>
 
-<script src="../../configuracoes/aparencia.js?v=6"></script>
-<script src="../../configuracoes/acessibilidade.js?v=26" defer></script>
+    <script src="../../global/js/cursor.js?v=<?= time() ?>"></script>
+
+    <script src="../../configuracoes/aparencia.js?v=6"></script>
+    <script src="../../configuracoes/acessibilidade.js?v=26" defer></script>
 
 </body>
 

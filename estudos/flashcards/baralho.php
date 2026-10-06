@@ -257,17 +257,10 @@ $icone =
 $current = basename($_SERVER['PHP_SELF']);
 ?>
 <!DOCTYPE html>
-
 <html lang="pt-BR">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
         <?= htmlspecialchars(
@@ -276,25 +269,17 @@ $current = basename($_SERVER['PHP_SELF']);
         ) ?> – FOAG
     </title>
 
+    <link rel="stylesheet" href="baralho.css">
+    <link rel="stylesheet" href="dark_flash.css">
+    <link rel="stylesheet" href="../../m.escuro/dark_basee.css">
+    <link rel="stylesheet" href="../../estrelas/modal_estrelas.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../../global/css/cursor.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    >
+    <script src="../../m.escuro/dark-mode.js"></script>
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
-        rel="stylesheet"
-    >
-<!-- Ordem correta para baralho.php -->
-<link rel="stylesheet" href="baralho.css">
-<link rel="stylesheet" href="dark_flash.css">  <!-- Adicione esta linha -->
-<link rel="stylesheet" href="../../m.escuro/dark_basee.css">
-<link rel="stylesheet" href="../../estrelas/modal_estrelas.css?v=<?= time() ?>">
-<script src="../../m.escuro/dark-mode.js"></script>
-
-
-    <script>
+<script>
 
         window.BARALHO_DATA =
             <?= json_encode(
@@ -927,15 +912,11 @@ $current = basename($_SERVER['PHP_SELF']);
     id="toast"
     class="toast"
 ></div>
-<script
-    src="../../estrelas/modal_estrelas.js?v=<?= time() ?>"
-></script>
+<script src="../../estrelas/modal_estrelas.js?v=<?= time() ?>"></script>
 
 
-<script
-    defer
-    src="baralho.js?v=<?= time() ?>"
-></script>
+<script src="../../global/js/cursor.js?v=<?= time() ?>"></script>
+<script defer src="baralho.js?v=<?= time() ?>"></script>
 
 <script src="../../configuracoes/aparencia.js?v=6"></script>
 <script src="../../configuracoes/acessibilidade.js?v=26" defer></script>

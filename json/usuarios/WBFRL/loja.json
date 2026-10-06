@@ -6,7 +6,14 @@
         "moldura_sakura",
         "moldura_agua",
         "moldura_rei",
-        "cursor_sakura"
+        "cursor_sakura",
+        "cursor_dragao",
+        "cursor_galaxia",
+        "cursor_gato",
+        "cursor_serafim",
+        "cursor_natureza",
+        "cursor_neon",
+        "cursor_fogo"
     ],
     "itens_ativos": {
         "tema": "tema_verde",
