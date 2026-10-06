@@ -18,6 +18,51 @@ if (!is_dir($pastaUsuario)) {
     exit('Pasta do usuário não encontrada.');
 }
 
+
+// ==========================================
+// BOAS-VINDAS DO USUÁRIO
+// ==========================================
+
+$arquivoPerfil = $pastaUsuario . '/perfil.json';
+$nomeUsuario = 'Usuário';
+
+if (file_exists($arquivoPerfil)) {
+    $perfilUsuario = json_decode(
+        file_get_contents($arquivoPerfil),
+        true
+    );
+
+    if (
+        is_array($perfilUsuario) &&
+        !empty($perfilUsuario['nome'])
+    ) {
+        $nomeUsuario = trim(
+            (string)$perfilUsuario['nome']
+        );
+    }
+}
+
+$arquivoPrimeiroAcesso =
+    $pastaUsuario . '/inicio_visitado.json';
+
+$primeiroAcesso =
+    !file_exists($arquivoPrimeiroAcesso);
+
+if ($primeiroAcesso) {
+    file_put_contents(
+        $arquivoPrimeiroAcesso,
+        json_encode(
+            [
+                'primeiro_acesso_em' =>
+                    date('Y-m-d H:i:s')
+            ],
+            JSON_PRETTY_PRINT |
+            JSON_UNESCAPED_UNICODE
+        ),
+        LOCK_EX
+    );
+}
+
 // ==========================================
 // FUNÇÕES AUXILIARES
 // ==========================================
@@ -845,7 +890,11 @@ $anotacoesImportantes =
             <div class="welcome-header">
 
                 <h1>
-                    Bem-vindo de volta! 👋
+                    <?php if ($primeiroAcesso): ?>
+                        Bem-vindo, <?= htmlspecialchars($nomeUsuario, ENT_QUOTES, 'UTF-8') ?>! 👋
+                    <?php else: ?>
+                        Bem-vindo de volta, <?= htmlspecialchars($nomeUsuario, ENT_QUOTES, 'UTF-8') ?>! 👋
+                    <?php endif; ?>
                 </h1>
 
                 <p class="subtitle">

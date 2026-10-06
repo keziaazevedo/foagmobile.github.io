@@ -822,3 +822,33 @@ body.dark-mode .select {
   background: #142033;
   border-color: #334155;
 }
+
+/* =====================================================
+   CABEÇALHO E MENU ESCUROS — PADRÃO DO RANKING
+===================================================== */
+
+body.dark-mode header.cabecalho {
+    background: #0a1628 !important;
+    border-bottom: 1px solid #1e293b !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+}
+
+body.dark-mode nav.menu {
+    background: #0a1628 !important;
+    border-right: 1px solid #1e293b !important;
+}
+
+body.dark-mode nav.menu a {
+    color: #94a3b8 !important;
+}
+
+body.dark-mode nav.menu a:hover,
+body.dark-mode nav.menu a.active {
+    background: rgba(102, 154, 218, 0.12) !important;
+    color: #669ada !important;
+}
+
+body.dark-mode nav.menu a i {
+    color: inherit !important;
+}
+
