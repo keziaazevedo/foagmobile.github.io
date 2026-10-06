@@ -1,5 +1,5 @@
 {
-    "estrelas": 227,
+    "estrelas": 232,
     "historico": [
         {
             "id": "estrela_d4aa1f5181ba",
@@ -342,6 +342,15 @@
             "data": "2026-10-05 18:58:28",
             "timestamp": 1791241108,
             "chave": "evolucao_nota_mat_45eda0a19c17_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_74d8d2634a39",
+            "tipo": "evolucao_nota",
+            "descricao": "Evolução em biologia: nota maior que na avaliação anterior",
+            "estrelas": 5,
+            "data": "2026-10-05 19:34:29",
+            "timestamp": 1791243269,
+            "chave": "evolucao_nota_MAT_9196C6D0_0758c00e6ea0_avaliacao_3"
         }
     ],
     "controle": {
@@ -392,7 +401,8 @@
                 "nota_mat_cbde08cd25a3_0758c00e6ea0_avaliacao_3",
                 "nota_mat_45eda0a19c17_0758c00e6ea0_avaliacao_3",
                 "boletim_completo_0758c00e6ea0_avaliacao_3",
-                "evolucao_nota_mat_45eda0a19c17_0758c00e6ea0_avaliacao_3"
+                "evolucao_nota_mat_45eda0a19c17_0758c00e6ea0_avaliacao_3",
+                "evolucao_nota_MAT_9196C6D0_0758c00e6ea0_avaliacao_3"
             ]
         },
         "sequencia_estudo": {
@@ -433,7 +443,8 @@
             "nota_mat_cbde08cd25a3_0758c00e6ea0_avaliacao_3",
             "nota_mat_45eda0a19c17_0758c00e6ea0_avaliacao_3",
             "boletim_completo_0758c00e6ea0_avaliacao_3",
-            "evolucao_nota_mat_45eda0a19c17_0758c00e6ea0_avaliacao_3"
+            "evolucao_nota_mat_45eda0a19c17_0758c00e6ea0_avaliacao_3",
+            "evolucao_nota_MAT_9196C6D0_0758c00e6ea0_avaliacao_3"
         ]
     }
 }

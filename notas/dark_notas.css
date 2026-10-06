@@ -742,3 +742,102 @@ body.dark-mode .media-atual-resumida,
 body.dark-mode .falta-numero {
   color: #f8fafc;
 }
+
+/* ==========================================================
+   FOAG · BOLETIM — CORREÇÃO FINAL DOS ELEMENTOS CLAROS
+   ========================================================== */
+
+/* Cards superiores: Média geral, Meta anual, Meta já alcançada e Matérias */
+body.dark-mode .resumo-kpi,
+body.dark-mode .resumo-kpi.card-notas,
+body.dark-mode .resumo-kpi[class*="card"],
+body.dark-mode .card-notas {
+  background: #172231 !important;
+  color: #edf3f9 !important;
+  border: 1px solid #263547 !important;
+  box-shadow: none !important;
+}
+
+/* Textos dos cards superiores */
+body.dark-mode .resumo-kpi .resumo-label,
+body.dark-mode .resumo-kpi small,
+body.dark-mode .resumo-kpi .label,
+body.dark-mode .card-notas .resumo-label,
+body.dark-mode .card-notas small {
+  color: #91a0b2 !important;
+}
+
+body.dark-mode .resumo-kpi .resumo-valor,
+body.dark-mode .resumo-kpi .valor,
+body.dark-mode .card-notas .resumo-valor,
+body.dark-mode .card-notas .valor {
+  color: #edf3f9 !important;
+}
+
+/* Ícones dos cards superiores */
+body.dark-mode .resumo-kpi .icon,
+body.dark-mode .resumo-kpi .icone,
+body.dark-mode .card-notas .icon,
+body.dark-mode .card-notas .icone {
+  background: #1d3045 !important;
+}
+
+/* Círculos decorativos dos cards */
+body.dark-mode .resumo-kpi::after,
+body.dark-mode .resumo-kpi::before,
+body.dark-mode .card-notas::after,
+body.dark-mode .card-notas::before {
+  opacity: .08 !important;
+}
+
+/* Seletor de período */
+body.dark-mode .periodo-rapido {
+  background: #172231 !important;
+  color: #edf3f9 !important;
+  border: 1px solid #29394d !important;
+  box-shadow: none !important;
+}
+
+body.dark-mode .periodo-rapido label {
+  color: #91a0b2 !important;
+}
+
+body.dark-mode .periodo-rapido select {
+  background: #111c29 !important;
+  color: #dfe8f2 !important;
+  border: 1px solid #29394d !important;
+}
+
+body.dark-mode .periodo-rapido select option {
+  background: #111c29 !important;
+  color: #dfe8f2 !important;
+}
+
+body.dark-mode .periodo-rapido select:focus {
+  border-color: #5aaef0 !important;
+  box-shadow: 0 0 0 3px rgba(90, 174, 240, .15) !important;
+  outline: none !important;
+}
+
+/* Garante que containers internos dos cards não voltem ao branco */
+body.dark-mode .resumo-kpi > *,
+body.dark-mode .card-notas > *,
+body.dark-mode .periodo-rapido > * {
+  color: inherit;
+}
+
+/* Ícones/caixas coloridas dos cards continuam discretas no dark */
+body.dark-mode .resumo-kpi .icon-box,
+body.dark-mode .resumo-kpi .icone-box,
+body.dark-mode .resumo-kpi .card-icon {
+  background: #1d3045 !important;
+  border-color: #2b4056 !important;
+}
+
+/* Hover sem clarear o card */
+body.dark-mode .resumo-kpi:hover,
+body.dark-mode .card-notas:hover,
+body.dark-mode .periodo-rapido:hover {
+  background: #1a2939 !important;
+  border-color: #344b64 !important;
+}
