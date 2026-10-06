@@ -1,5 +1,5 @@
 {
-    "estrelas": 200,
+    "estrelas": 2000,
     "historico": [
         {
             "id": "estrela_8ec98c2bd601",
@@ -27,6 +27,582 @@
             "data": "2026-10-06 07:40:23",
             "timestamp": 1791286823,
             "chave": "compra_loja_cursor_dragao"
+        },
+        {
+            "id": "gasto_5edcd216e012",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Rei",
+            "estrelas": -100,
+            "data": "2026-10-06 07:41:48",
+            "timestamp": 1791286908,
+            "chave": "compra_loja_moldura_rei"
+        },
+        {
+            "id": "gasto_a5a37571e558",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Nuvens",
+            "estrelas": -75,
+            "data": "2026-10-06 07:41:59",
+            "timestamp": 1791286919,
+            "chave": "compra_loja_moldura_nuvens"
+        },
+        {
+            "id": "gasto_4427663c3cfb",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Água",
+            "estrelas": -80,
+            "data": "2026-10-06 07:42:34",
+            "timestamp": 1791286954,
+            "chave": "compra_loja_moldura_agua"
+        },
+        {
+            "id": "gasto_a91bb0ca562f",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Sakura",
+            "estrelas": -75,
+            "data": "2026-10-06 07:42:39",
+            "timestamp": 1791286959,
+            "chave": "compra_loja_moldura_sakura"
+        },
+        {
+            "id": "gasto_5e8c8408abdc",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Felizinho",
+            "estrelas": -20,
+            "data": "2026-10-06 07:42:43",
+            "timestamp": 1791286963,
+            "chave": "compra_loja_emoji_feliz"
+        },
+        {
+            "id": "gasto_d7e8521cd86a",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Explodindo",
+            "estrelas": -15,
+            "data": "2026-10-06 07:42:45",
+            "timestamp": 1791286965,
+            "chave": "compra_loja_emoji_explode"
+        },
+        {
+            "id": "gasto_7928117e7174",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Carinho",
+            "estrelas": -25,
+            "data": "2026-10-06 07:42:46",
+            "timestamp": 1791286966,
+            "chave": "compra_loja_emoji_coracao"
+        },
+        {
+            "id": "gasto_4ccfd6e2b7a4",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Olhinhos",
+            "estrelas": -22,
+            "data": "2026-10-06 07:42:47",
+            "timestamp": 1791286967,
+            "chave": "compra_loja_emoji_olhinho"
+        },
+        {
+            "id": "gasto_87d7bd13100f",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Tome uma flor",
+            "estrelas": -28,
+            "data": "2026-10-06 07:42:49",
+            "timestamp": 1791286969,
+            "chave": "compra_loja_emoji_flor"
+        },
+        {
+            "id": "gasto_845250a0c66f",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Risonho",
+            "estrelas": -30,
+            "data": "2026-10-06 07:42:50",
+            "timestamp": 1791286970,
+            "chave": "compra_loja_emoji_risada"
+        },
+        {
+            "id": "gasto_954705446f9b",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Nuquidito",
+            "estrelas": -35,
+            "data": "2026-10-06 07:42:52",
+            "timestamp": 1791286972,
+            "chave": "compra_loja_emoji_nuquiditu"
+        },
+        {
+            "id": "gasto_65b2cabcab80",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Vibes",
+            "estrelas": -15,
+            "data": "2026-10-06 07:42:54",
+            "timestamp": 1791286974,
+            "chave": "compra_loja_emoji_vibes"
+        },
+        {
+            "id": "gasto_fae402056e8e",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Eu sei a resposta",
+            "estrelas": -25,
+            "data": "2026-10-06 07:42:56",
+            "timestamp": 1791286976,
+            "chave": "compra_loja_emoji_nerd"
+        },
+        {
+            "id": "gasto_ce24db11dc8d",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Dumi",
+            "estrelas": -18,
+            "data": "2026-10-06 07:42:59",
+            "timestamp": 1791286979,
+            "chave": "compra_loja_emoji_nuvem"
+        },
+        {
+            "id": "gasto_1574ffc68dc7",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Sorriso",
+            "estrelas": -22,
+            "data": "2026-10-06 07:43:01",
+            "timestamp": 1791286981,
+            "chave": "compra_loja_emoji_sorriso"
+        },
+        {
+            "id": "gasto_aab740e11f20",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: cafe",
+            "estrelas": -22,
+            "data": "2026-10-06 07:43:11",
+            "timestamp": 1791286991,
+            "chave": "compra_loja_emoji_cafe"
+        },
+        {
+            "id": "gasto_dc877a41995d",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: beleza",
+            "estrelas": -22,
+            "data": "2026-10-06 07:43:14",
+            "timestamp": 1791286994,
+            "chave": "compra_loja_emoji_certo"
+        },
+        {
+            "id": "gasto_06ae62038d94",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: isso",
+            "estrelas": -22,
+            "data": "2026-10-06 07:43:16",
+            "timestamp": 1791286996,
+            "chave": "compra_loja_emoji_isso"
+        },
+        {
+            "id": "gasto_23219a023ba9",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: vergonha",
+            "estrelas": -22,
+            "data": "2026-10-06 07:43:17",
+            "timestamp": 1791286997,
+            "chave": "compra_loja_emoji_vergonha"
+        },
+        {
+            "id": "gasto_96574d9b2172",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Huu?",
+            "estrelas": -22,
+            "data": "2026-10-06 07:43:19",
+            "timestamp": 1791286999,
+            "chave": "compra_loja_emoji_hu"
+        },
+        {
+            "id": "gasto_290224139812",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: YIPPIE",
+            "estrelas": -22,
+            "data": "2026-10-06 07:43:20",
+            "timestamp": 1791287000,
+            "chave": "compra_loja_emoji_YIPPIE"
+        },
+        {
+            "id": "gasto_e7e3f5419309",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Foi mal",
+            "estrelas": -22,
+            "data": "2026-10-06 07:43:22",
+            "timestamp": 1791287002,
+            "chave": "compra_loja_emoji_huh"
+        },
+        {
+            "id": "gasto_ca66737a30a1",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: estrela",
+            "estrelas": -22,
+            "data": "2026-10-06 07:43:23",
+            "timestamp": 1791287003,
+            "chave": "compra_loja_emoji_estrela"
+        },
+        {
+            "id": "gasto_00ca1f2b6649",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Bravo",
+            "estrelas": -22,
+            "data": "2026-10-06 07:43:25",
+            "timestamp": 1791287005,
+            "chave": "compra_loja_emoji_raiva"
+        },
+        {
+            "id": "gasto_65513cf81b94",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Sorriso",
+            "estrelas": -22,
+            "data": "2026-10-06 07:43:26",
+            "timestamp": 1791287006,
+            "chave": "compra_loja_emoji_"
+        },
+        {
+            "id": "gasto_b818940701f6",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Gato Preto",
+            "estrelas": -98,
+            "data": "2026-10-06 07:43:45",
+            "timestamp": 1791287025,
+            "chave": "compra_loja_moldura_gato_preto"
+        },
+        {
+            "id": "gasto_f54dcbb51c82",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Cursor Galáxia",
+            "estrelas": -500,
+            "data": "2026-10-06 07:44:29",
+            "timestamp": 1791287069,
+            "chave": "compra_loja_cursor_galaxia"
+        },
+        {
+            "id": "gasto_2d8dc90cbced",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Cursor Gato Preto",
+            "estrelas": -500,
+            "data": "2026-10-06 07:44:31",
+            "timestamp": 1791287071,
+            "chave": "compra_loja_cursor_gato"
+        },
+        {
+            "id": "gasto_1c9d68489a09",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Cursor Serafim",
+            "estrelas": -500,
+            "data": "2026-10-06 07:44:32",
+            "timestamp": 1791287072,
+            "chave": "compra_loja_cursor_serafim"
+        },
+        {
+            "id": "gasto_cd894aa74983",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Cursor Natureza",
+            "estrelas": -500,
+            "data": "2026-10-06 07:44:33",
+            "timestamp": 1791287073,
+            "chave": "compra_loja_cursor_natureza"
+        },
+        {
+            "id": "gasto_358d3bcfb393",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Cursor Neon",
+            "estrelas": -500,
+            "data": "2026-10-06 07:44:34",
+            "timestamp": 1791287074,
+            "chave": "compra_loja_cursor_neon"
+        },
+        {
+            "id": "gasto_8aeef0cc2eff",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Cursor Fogo",
+            "estrelas": -500,
+            "data": "2026-10-06 07:44:35",
+            "timestamp": 1791287075,
+            "chave": "compra_loja_cursor_fogo"
+        },
+        {
+            "id": "gasto_5d40e3aed430",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Cursor Sakura",
+            "estrelas": -500,
+            "data": "2026-10-06 07:44:36",
+            "timestamp": 1791287076,
+            "chave": "compra_loja_cursor_sakura"
+        },
+        {
+            "id": "gasto_b739e41c86d8",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Natureza",
+            "estrelas": -70,
+            "data": "2026-10-06 07:44:42",
+            "timestamp": 1791287082,
+            "chave": "compra_loja_moldura_natureza"
+        },
+        {
+            "id": "gasto_046286b2cee5",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Estrelas",
+            "estrelas": -75,
+            "data": "2026-10-06 07:44:43",
+            "timestamp": 1791287083,
+            "chave": "compra_loja_moldura_estrelas"
+        },
+        {
+            "id": "gasto_beeca6790ec1",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Borboletas",
+            "estrelas": -85,
+            "data": "2026-10-06 07:44:44",
+            "timestamp": 1791287084,
+            "chave": "compra_loja_moldura_borboletas"
+        },
+        {
+            "id": "gasto_1f3d0d447eb4",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Cachorrinho",
+            "estrelas": -90,
+            "data": "2026-10-06 07:44:45",
+            "timestamp": 1791287085,
+            "chave": "compra_loja_moldura_cachorro"
+        },
+        {
+            "id": "gasto_9055baa46445",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Gato Laranja",
+            "estrelas": -90,
+            "data": "2026-10-06 07:44:46",
+            "timestamp": 1791287086,
+            "chave": "compra_loja_moldura_gato_laranja"
+        },
+        {
+            "id": "gasto_ab0481ba5a8e",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Neon",
+            "estrelas": -80,
+            "data": "2026-10-06 07:44:47",
+            "timestamp": 1791287087,
+            "chave": "compra_loja_moldura_neon"
+        },
+        {
+            "id": "gasto_7b79ee7f4735",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Campeão",
+            "estrelas": -92,
+            "data": "2026-10-06 07:44:49",
+            "timestamp": 1791287089,
+            "chave": "compra_loja_moldura_campeao"
+        },
+        {
+            "id": "gasto_b9299fad00ab",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Fogo",
+            "estrelas": -100,
+            "data": "2026-10-06 07:44:50",
+            "timestamp": 1791287090,
+            "chave": "compra_loja_moldura_fogo"
+        },
+        {
+            "id": "gasto_b6bcad20f0e6",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Galáxia",
+            "estrelas": -90,
+            "data": "2026-10-06 07:44:51",
+            "timestamp": 1791287091,
+            "chave": "compra_loja_moldura_galaxia"
+        },
+        {
+            "id": "gasto_6d66b4091973",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Livros",
+            "estrelas": -80,
+            "data": "2026-10-06 07:44:52",
+            "timestamp": 1791287092,
+            "chave": "compra_loja_moldura_livros"
+        },
+        {
+            "id": "gasto_9b1b13834b17",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Querubim",
+            "estrelas": -95,
+            "data": "2026-10-06 07:44:55",
+            "timestamp": 1791287095,
+            "chave": "compra_loja_moldura_querubim"
+        },
+        {
+            "id": "gasto_363b87750b7c",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Fundo Neon",
+            "estrelas": -100,
+            "data": "2026-10-06 07:45:00",
+            "timestamp": 1791287100,
+            "chave": "compra_loja_fundo_neon"
+        },
+        {
+            "id": "gasto_21a0fb6253ee",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Fundo Galáxia",
+            "estrelas": -120,
+            "data": "2026-10-06 07:45:01",
+            "timestamp": 1791287101,
+            "chave": "compra_loja_fundo_galaxia"
+        },
+        {
+            "id": "gasto_2c106fec13a2",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Fundo Pôr do Sol",
+            "estrelas": -130,
+            "data": "2026-10-06 07:45:02",
+            "timestamp": 1791287102,
+            "chave": "compra_loja_fundo_por_do_sol"
+        },
+        {
+            "id": "gasto_97fef8bd263d",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Fundo Oceano",
+            "estrelas": -110,
+            "data": "2026-10-06 07:45:03",
+            "timestamp": 1791287103,
+            "chave": "compra_loja_fundo_oceano"
+        },
+        {
+            "id": "gasto_fb49a4052c99",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Fundo Nebulosa",
+            "estrelas": -150,
+            "data": "2026-10-06 07:45:05",
+            "timestamp": 1791287105,
+            "chave": "compra_loja_fundo_nebulosa"
+        },
+        {
+            "id": "gasto_995095c1144e",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Fundo Montanha",
+            "estrelas": -100,
+            "data": "2026-10-06 07:45:06",
+            "timestamp": 1791287106,
+            "chave": "compra_loja_fundo_montanha"
+        },
+        {
+            "id": "gasto_50ec757ad7f4",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Fundo Floresta",
+            "estrelas": -110,
+            "data": "2026-10-06 07:45:07",
+            "timestamp": 1791287107,
+            "chave": "compra_loja_fundo_floresta"
+        },
+        {
+            "id": "gasto_0ed8642c37aa",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Fundo Cidade",
+            "estrelas": -105,
+            "data": "2026-10-06 07:45:08",
+            "timestamp": 1791287108,
+            "chave": "compra_loja_fundo_cidade"
+        },
+        {
+            "id": "gasto_747a707065a0",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Fundo Praia",
+            "estrelas": -115,
+            "data": "2026-10-06 07:45:10",
+            "timestamp": 1791287110,
+            "chave": "compra_loja_fundo_praia"
+        },
+        {
+            "id": "gasto_c23e6412d003",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Fundo Castelo",
+            "estrelas": -125,
+            "data": "2026-10-06 07:45:11",
+            "timestamp": 1791287111,
+            "chave": "compra_loja_fundo_castelo"
+        },
+        {
+            "id": "gasto_b95d4733df3d",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Fundo Jardim",
+            "estrelas": -105,
+            "data": "2026-10-06 07:45:12",
+            "timestamp": 1791287112,
+            "chave": "compra_loja_fundo_jardim"
+        },
+        {
+            "id": "gasto_0177c6fcac6d",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Tema Roxo",
+            "estrelas": -50,
+            "data": "2026-10-06 07:45:16",
+            "timestamp": 1791287116,
+            "chave": "compra_loja_tema_roxo"
+        },
+        {
+            "id": "gasto_7de3ac2146cc",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Tema Verde",
+            "estrelas": -50,
+            "data": "2026-10-06 07:45:17",
+            "timestamp": 1791287117,
+            "chave": "compra_loja_tema_verde"
+        },
+        {
+            "id": "gasto_105994cc8574",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Tema Vermelho",
+            "estrelas": -55,
+            "data": "2026-10-06 07:45:18",
+            "timestamp": 1791287118,
+            "chave": "compra_loja_tema_vermelho"
+        },
+        {
+            "id": "gasto_f7125fde6ffa",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Tema Amarelo",
+            "estrelas": -55,
+            "data": "2026-10-06 07:45:19",
+            "timestamp": 1791287119,
+            "chave": "compra_loja_tema_amarelo"
+        },
+        {
+            "id": "gasto_7a7ef73dd713",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Tema Rosa",
+            "estrelas": -60,
+            "data": "2026-10-06 07:45:21",
+            "timestamp": 1791287121,
+            "chave": "compra_loja_tema_rosa"
+        },
+        {
+            "id": "gasto_52a3659bedc0",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Tema Preto",
+            "estrelas": -65,
+            "data": "2026-10-06 07:45:22",
+            "timestamp": 1791287122,
+            "chave": "compra_loja_tema_preto"
+        },
+        {
+            "id": "gasto_8e7d4fd85e01",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Tema Laranja",
+            "estrelas": -55,
+            "data": "2026-10-06 07:45:23",
+            "timestamp": 1791287123,
+            "chave": "compra_loja_tema_laranja"
+        },
+        {
+            "id": "gasto_f9a146ddb006",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Tema Magenta",
+            "estrelas": -65,
+            "data": "2026-10-06 07:45:24",
+            "timestamp": 1791287124,
+            "chave": "compra_loja_tema_magenta"
+        },
+        {
+            "id": "gasto_3b6164bb64e0",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Freddy",
+            "estrelas": -20,
+            "data": "2026-10-06 07:45:30",
+            "timestamp": 1791287130,
+            "chave": "compra_loja_emoji_freddy"
         }
     ],
     "controle": {
