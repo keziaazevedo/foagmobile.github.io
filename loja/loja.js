@@ -1231,6 +1231,82 @@ document.addEventListener(
 
 
         // =================================================
+        // SINCRONIZAR CURSOR GLOBAL
+        // =================================================
+
+        function sincronizarCursorGlobal() {
+
+            const cursorAtivo =
+                lojaData?.itens_ativos?.cursor ||
+                null;
+
+
+            if (!cursorAtivo) {
+                return;
+            }
+
+
+            // Guarda localmente para as outras páginas
+            // conseguirem reaplicar o cursor.
+            try {
+                localStorage.setItem(
+                    'foag_cursor_ativo',
+                    cursorAtivo
+                );
+            } catch (erro) {
+                console.warn(
+                    'FOAG: não foi possível salvar o cursor localmente.',
+                    erro
+                );
+            }
+
+
+            // Aplica imediatamente, se o sistema global
+            // de cursores já estiver carregado.
+            if (
+                typeof window.ativarCursorFoag ===
+                'function'
+            ) {
+
+                window.ativarCursorFoag(
+                    cursorAtivo
+                );
+
+                return;
+            }
+
+
+            // Segundo caminho de compatibilidade.
+            if (
+                typeof window.aplicarCursorFoag ===
+                'function'
+            ) {
+
+                window.aplicarCursorFoag(
+                    cursorAtivo
+                );
+
+                return;
+            }
+
+
+            // Último fallback: avisa o sistema global
+            // através de um evento.
+            window.dispatchEvent(
+                new CustomEvent(
+                    'foag:cursor-alterado',
+                    {
+                        detail: {
+                            cursor: cursorAtivo
+                        }
+                    }
+                )
+            );
+
+        }
+
+
+        // =================================================
         // VERIFICAR SE ITEM ESTÁ ATIVO
         // =================================================
 
@@ -2238,6 +2314,8 @@ document.addEventListener(
 
             atualizarCompatibilidadePerfil();
 
+            sincronizarCursorGlobal();
+
         }
 
 
@@ -2444,97 +2522,13 @@ document.addEventListener(
 
             try {
 
-                const resposta =
-                    await enviarAcaoLoja(
-                        'ativar',
-                        item.id
-                    );
+                await enviarAcaoLoja(
+                    'ativar',
+                    item.id
+                );
 
 
-                // =============================================
-                // APLICAR CURSOR IMEDIATAMENTE
-                // =============================================
-                //
-                // Quando o item ativado for da categoria
-                // "especiais", ele representa um cursor.
-                // O servidor já salvou o item em
-                // itens_ativos.cursor; agora aplicamos no site
-                // sem precisar recarregar a página.
-                //
-                // =============================================
-
-                const tipoEquipavel =
-                    getTipoEquipavel(
-                        item
-                    );
-
-
-                if (
-                    tipoEquipavel ===
-                    'cursor'
-                ) {
-
-                    const cursorAtivo =
-                        resposta?.dados
-                            ?.itens_ativos
-                            ?.cursor ||
-                        item.id;
-
-
-                    if (
-                        typeof window
-                            .ativarCursorFoag ===
-                        'function'
-                    ) {
-
-                        window
-                            .ativarCursorFoag(
-                                cursorAtivo
-                            );
-
-                    } else {
-
-                        // Fallback:
-                        // guarda para o cursor.js aplicar
-                        // assim que estiver disponível.
-
-                        try {
-
-                            localStorage.setItem(
-                                'foag_cursor_ativo',
-                                cursorAtivo
-                            );
-
-                        } catch (
-                            erroStorage
-                        ) {
-
-                            console.warn(
-                                'Não foi possível salvar o cursor localmente:',
-                                erroStorage
-                            );
-
-                        }
-
-                    }
-
-
-                    // Evento global para outras partes do FOAG
-                    // que queiram reagir à troca do cursor.
-
-                    window.dispatchEvent(
-                        new CustomEvent(
-                            'foag:cursor-alterado',
-                            {
-                                detail: {
-                                    cursor:
-                                        cursorAtivo
-                                }
-                            }
-                        )
-                    );
-
-                }
+                sincronizarCursorGlobal();
 
 
                 mostrarSucesso(
@@ -3074,6 +3068,8 @@ document.addEventListener(
 
 
         atualizarCompatibilidadePerfil();
+
+        sincronizarCursorGlobal();
 
 
         console.log(

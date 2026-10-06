@@ -655,6 +655,7 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="../global/css/cursor.css">
 </head>
 
 <body>
@@ -1567,5 +1568,8 @@
         window.addEventListener("scroll", atualizarPagina);
         window.addEventListener("load", atualizarPagina);
     </script>
+    <script src="../global/js/cursor.js?v=<?= time() ?>"></script>
+
 </body>
+
 </html>

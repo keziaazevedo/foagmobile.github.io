@@ -626,6 +626,7 @@ if ($filtroBusca !== '') {
             JSON_HEX_QUOT
         ); ?>;
     </script>
+    <link rel="stylesheet" href="../global/css/cursor.css">
 </head>
 
 <body>
@@ -944,5 +945,8 @@ if ($filtroBusca !== '') {
 <script src="../configuracoes/aparencia.js?v=5"></script>
 <script src="../configuracoes/acessibilidade.js?v=25" defer></script>
 
+    <script src="../global/js/cursor.js?v=<?= time() ?>"></script>
+
 </body>
+
 </html>

@@ -1,5 +1,5 @@
 {
-    "estrelas": 300,
+    "estrelas": 7000,
     "historico": [
         {
             "id": "estrela_d63d0474bd6e",
@@ -450,6 +450,69 @@
             "data": "2026-10-05 19:28:22",
             "timestamp": 1791242902,
             "chave": "compra_loja_cursor_sakura"
+        },
+        {
+            "id": "gasto_4234c20e8056",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Cursor Dragão",
+            "estrelas": -500,
+            "data": "2026-10-05 20:14:52",
+            "timestamp": 1791245692,
+            "chave": "compra_loja_cursor_dragao"
+        },
+        {
+            "id": "gasto_cf1e9d36039c",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Cursor Galáxia",
+            "estrelas": -500,
+            "data": "2026-10-05 20:17:49",
+            "timestamp": 1791245869,
+            "chave": "compra_loja_cursor_galaxia"
+        },
+        {
+            "id": "gasto_f488e973ae16",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Cursor Gato Preto",
+            "estrelas": -500,
+            "data": "2026-10-05 20:17:50",
+            "timestamp": 1791245870,
+            "chave": "compra_loja_cursor_gato"
+        },
+        {
+            "id": "gasto_35758e979532",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Cursor Serafim",
+            "estrelas": -500,
+            "data": "2026-10-05 20:17:52",
+            "timestamp": 1791245872,
+            "chave": "compra_loja_cursor_serafim"
+        },
+        {
+            "id": "gasto_058c8544f1c5",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Cursor Natureza",
+            "estrelas": -500,
+            "data": "2026-10-05 20:17:54",
+            "timestamp": 1791245874,
+            "chave": "compra_loja_cursor_natureza"
+        },
+        {
+            "id": "gasto_eb421470d615",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Cursor Neon",
+            "estrelas": -500,
+            "data": "2026-10-05 20:17:55",
+            "timestamp": 1791245875,
+            "chave": "compra_loja_cursor_neon"
+        },
+        {
+            "id": "gasto_28f752cfada0",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Cursor Fogo",
+            "estrelas": -500,
+            "data": "2026-10-05 20:17:56",
+            "timestamp": 1791245876,
+            "chave": "compra_loja_cursor_fogo"
         }
     ],
     "controle": {

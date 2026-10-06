@@ -1,550 +1,429 @@
 /* =========================================================
-   FOAG — SISTEMA GLOBAL DE CURSORES
-   Arquivo: global/js/cursor.js
+   FOAG — CURSOR PERSONALIZADO GLOBAL
+   Versão visual: não depende do limite de cursor do navegador
 ========================================================= */
 
 (() => {
-
     "use strict";
-
-    /* =====================================================
-       CURSORES DISPONÍVEIS
-    ===================================================== */
-
-    const CURSORES_FOAG = {
-
-        cursor_galaxia: {
-            normal: "/foagmobile.github.io/img/loja/cursor/cursor_galaxia.png",
-            clique: "/foagmobile.github.io/img/loja/cursor/cursormao_galaxia.png"
-        },
-
-        cursor_gato: {
-            normal: "/foagmobile.github.io/img/loja/cursor/cursor_gato.png",
-            clique: "/foagmobile.github.io/img/loja/cursor/cursormao_gato.png"
-        },
-
-        cursor_dragao: {
-            normal: "/foagmobile.github.io/img/loja/cursor/cursor_dragao.png",
-            clique: "/foagmobile.github.io/img/loja/cursor/cursormao_dragao.png"
-        },
-
-        cursor_serafim: {
-            normal: "/foagmobile.github.io/img/loja/cursor/cursor_querubim.png",
-            clique: "/foagmobile.github.io/img/loja/cursor/cursormao_querubim.png"
-        },
-
-        cursor_natureza: {
-            normal: "/foagmobile.github.io/img/loja/cursor/cursor_natureza.png",
-            clique: "/foagmobile.github.io/img/loja/cursor/cursormao_natureza.png"
-        },
-
-        cursor_neon: {
-            normal: "/foagmobile.github.io/img/loja/cursor/cursor_neon.png",
-            clique: "/foagmobile.github.io/img/loja/cursor/cursormao_neon.png"
-        },
-
-        cursor_fogo: {
-            normal: "/foagmobile.github.io/img/loja/cursor/cursor_fogo.png",
-            clique: "/foagmobile.github.io/img/loja/cursor/cursormao_fogo.png"
-        },
-
-        cursor_sakura: {
-            normal: "/foagmobile.github.io/img/loja/cursor/cursor_sakura.png",
-            clique: "/foagmobile.github.io/img/loja/cursor/cursormao_sakura.png"
-        }
-
-    };
-
-    /* =====================================================
-       CONFIGURAÇÕES
-    ===================================================== */
 
     const STORAGE_KEY = "foag_cursor_ativo";
 
-    let cursorAtual = null;
+    /* =====================================================
+       DESCOBRIR A RAIZ DO PROJETO
+    ===================================================== */
 
+    function descobrirBaseProjeto() {
+        const script =
+            document.currentScript ||
+            [...document.scripts].find(script =>
+                script.src.includes("/global/js/cursor.js")
+            );
+
+        if (!script?.src) {
+            return "";
+        }
+
+        try {
+            const url = new URL(script.src, window.location.href);
+
+            return url.pathname
+                .replace(/\/global\/js\/cursor\.js$/, "")
+                .replace(/\/+$/, "");
+        } catch (erro) {
+            return "";
+        }
+    }
+
+    const BASE_PROJETO = descobrirBaseProjeto();
+
+    function caminho(nome) {
+        return `${BASE_PROJETO}/img/loja/cursor/${nome}`;
+    }
 
     /* =====================================================
-       SALVAR CURSOR NO NAVEGADOR
+       CURSORES
+    ===================================================== */
+
+    const CURSORES_FOAG = {
+        cursor_galaxia: {
+            normal: caminho("cursor_galaxia.png"),
+            clique: caminho("cursormao_galaxia.png")
+        },
+
+        cursor_gato: {
+            normal: caminho("cursor_gato.png"),
+            clique: caminho("cursormao_gato.png")
+        },
+
+        cursor_dragao: {
+            normal: caminho("cursor_dragao.png"),
+            clique: caminho("cursormao_dragao.png")
+        },
+
+        cursor_serafim: {
+            normal: caminho("cursor_querubim.png"),
+            clique: caminho("cursormao_querubim.png")
+        },
+
+        cursor_natureza: {
+            normal: caminho("cursor_natureza.png"),
+            clique: caminho("cursormao_natureza.png")
+        },
+
+        cursor_neon: {
+            normal: caminho("cursor_neon.png"),
+            clique: caminho("cursormao_neon.png")
+        },
+
+        cursor_fogo: {
+            normal: caminho("cursor_fogo.png"),
+            clique: caminho("cursormao_fogo.png")
+        },
+
+        cursor_sakura: {
+            normal: caminho("cursor_sakura.png"),
+            clique: caminho("cursormao_sakura.png")
+        }
+    };
+
+    let cursorAtual = null;
+    let elementoCursor = null;
+    let ultimoX = 0;
+    let ultimoY = 0;
+    let clicando = false;
+
+    /* =====================================================
+       STORAGE
     ===================================================== */
 
     function salvarCursorLocal(cursorId) {
-
-        if (!cursorId) {
-            localStorage.removeItem(STORAGE_KEY);
-            return;
+        try {
+            if (cursorId) {
+                localStorage.setItem(STORAGE_KEY, cursorId);
+            } else {
+                localStorage.removeItem(STORAGE_KEY);
+            }
+        } catch (erro) {
+            console.warn("FOAG Cursor: localStorage indisponível.", erro);
         }
+    }
 
-        localStorage.setItem(
-            STORAGE_KEY,
-            cursorId
+    function pegarCursorLocal() {
+        try {
+            const id = localStorage.getItem(STORAGE_KEY);
+
+            return id && CURSORES_FOAG[id]
+                ? id
+                : null;
+        } catch (erro) {
+            return null;
+        }
+    }
+
+    function pegarCursorDaLoja() {
+        const id =
+            window.LOJA_DATA?.itens_ativos?.cursor ||
+            null;
+
+        return (
+            typeof id === "string" &&
+            CURSORES_FOAG[id]
+        )
+            ? id
+            : null;
+    }
+
+    function pegarCursorDaSessao() {
+        try {
+            const dados = JSON.parse(
+                sessionStorage.getItem("itens_ativos_loja") || "{}"
+            );
+
+            const id = dados?.cursor;
+
+            return id && CURSORES_FOAG[id]
+                ? id
+                : null;
+        } catch (erro) {
+            return null;
+        }
+    }
+
+    function pegarCursorAtivo() {
+        return (
+            pegarCursorDaLoja() ||
+            pegarCursorLocal() ||
+            pegarCursorDaSessao() ||
+            null
         );
     }
 
-
     /* =====================================================
-       PEGAR CURSOR SALVO LOCALMENTE
+       ELEMENTO VISUAL
     ===================================================== */
 
-    function pegarCursorLocal() {
+    function criarElementoCursor() {
+        if (elementoCursor?.isConnected) {
+            return elementoCursor;
+        }
 
-        const cursorId =
-            localStorage.getItem(STORAGE_KEY);
+        const img = document.createElement("img");
 
+        img.id = "foag-custom-cursor";
+        img.alt = "";
+        img.setAttribute("aria-hidden", "true");
+        img.draggable = false;
+
+        document.body.appendChild(img);
+
+        elementoCursor = img;
+
+        return img;
+    }
+
+    function posicionarCursor(x, y) {
+        ultimoX = x;
+        ultimoY = y;
+
+        if (!elementoCursor) {
+            return;
+        }
+
+        elementoCursor.style.transform =
+            `translate3d(${x}px, ${y}px, 0)`;
+    }
+
+    function atualizarImagemCursor() {
         if (
-            cursorId &&
-            CURSORES_FOAG[cursorId]
+            !cursorAtual ||
+            !CURSORES_FOAG[cursorAtual] ||
+            !elementoCursor
         ) {
-            return cursorId;
+            return;
         }
 
-        return null;
+        const config =
+            CURSORES_FOAG[cursorAtual];
+
+        elementoCursor.src =
+            clicando
+                ? config.clique
+                : config.normal;
     }
 
-
     /* =====================================================
-       PEGAR CURSOR DA LOJA
-       window.LOJA_DATA vem da loja.php
+       APLICAR
     ===================================================== */
 
-    function pegarCursorDaLoja() {
-
-        try {
-
-            if (
-                window.LOJA_DATA &&
-                window.LOJA_DATA.itens_ativos &&
-                window.LOJA_DATA.itens_ativos.cursor
-            ) {
-
-                const cursorId =
-                    window.LOJA_DATA.itens_ativos.cursor;
-
-                if (
-                    typeof cursorId === "string" &&
-                    CURSORES_FOAG[cursorId]
-                ) {
-                    return cursorId;
-                }
-
-            }
-
-        } catch (erro) {
-
-            console.error(
-                "FOAG Cursor: erro ao ler LOJA_DATA.",
-                erro
-            );
-
-        }
-
-        return null;
-    }
-
-
-    /* =====================================================
-       COMPATIBILIDADE COM TESTES ANTIGOS
-       sessionStorage
-    ===================================================== */
-
-    function pegarCursorSessionStorage() {
-
-        try {
-
-            const dados = JSON.parse(
-                sessionStorage.getItem(
-                    "itens_ativos_loja"
-                ) || "{}"
-            );
-
-            if (
-                dados.cursor &&
-                CURSORES_FOAG[dados.cursor]
-            ) {
-                return dados.cursor;
-            }
-
-        } catch (erro) {
-
-            console.warn(
-                "FOAG Cursor: sessionStorage inválido."
-            );
-
-        }
-
-        return null;
-    }
-
-
-    /* =====================================================
-       DESCOBRIR CURSOR ATIVO
-
-       Prioridade:
-       1. Loja/PHP
-       2. LocalStorage
-       3. SessionStorage de teste
-    ===================================================== */
-
-    function pegarCursorAtivo() {
-
-        const cursorLoja =
-            pegarCursorDaLoja();
-
-        if (cursorLoja) {
-
-            salvarCursorLocal(cursorLoja);
-
-            return cursorLoja;
-        }
-
-
-        const cursorLocal =
-            pegarCursorLocal();
-
-        if (cursorLocal) {
-            return cursorLocal;
-        }
-
-
-        const cursorTeste =
-            pegarCursorSessionStorage();
-
-        if (cursorTeste) {
-
-            salvarCursorLocal(cursorTeste);
-
-            return cursorTeste;
-        }
-
-
-        return null;
-    }
-
-
-    /* =====================================================
-       REMOVER CURSOR PERSONALIZADO
-    ===================================================== */
-
-    function removerCursorFoag() {
-
-        cursorAtual = null;
-
-        document.documentElement
-            .style
-            .removeProperty(
-                "--foag-cursor-normal"
-            );
-
-        document.documentElement
-            .style
-            .removeProperty(
-                "--foag-cursor-clique"
-            );
-
-        if (document.body) {
-
-            document.body.classList.remove(
-                "cursor-foag-ativo"
-            );
-
-        }
-
-    }
-
-
-    /* =====================================================
-       APLICAR CURSOR
-    ===================================================== */
-
-    function aplicarCursorFoag(
-        cursorId = null
-    ) {
-
+    function aplicarCursorFoag(cursorId = null) {
         const id =
             cursorId ||
             pegarCursorAtivo();
 
-
-        if (
-            !id ||
-            !CURSORES_FOAG[id]
-        ) {
-
-            removerCursorFoag();
-
+        if (!id || !CURSORES_FOAG[id]) {
+            desativarCursorFoag();
             return false;
         }
-
-
-        const cursor =
-            CURSORES_FOAG[id];
-
-
-        document.documentElement
-            .style
-            .setProperty(
-                "--foag-cursor-normal",
-                `url("${cursor.normal}") 4 2, auto`
-            );
-
-
-        document.documentElement
-            .style
-            .setProperty(
-                "--foag-cursor-clique",
-                `url("${cursor.clique}") 4 2, pointer`
-            );
-
-
-        if (document.body) {
-
-            document.body.classList.add(
-                "cursor-foag-ativo"
-            );
-
-        }
-
 
         cursorAtual = id;
 
         salvarCursorLocal(id);
 
-        console.log(
-            `FOAG Cursor ativo: ${id}`
+        document.documentElement.classList.add(
+            "foag-cursor-personalizado"
         );
+
+        document.body?.classList.add(
+            "foag-cursor-personalizado"
+        );
+
+        criarElementoCursor();
+
+        clicando = false;
+        atualizarImagemCursor();
+        posicionarCursor(ultimoX, ultimoY);
+
+        console.log("FOAG Cursor ativo:", id);
 
         return true;
     }
 
-
-    /* =====================================================
-       TROCAR CURSOR MANUALMENTE
-
-       Essa função será útil para o botão "Ativar"
-       da Loja.
-    ===================================================== */
-
     function ativarCursorFoag(cursorId) {
-
         if (!CURSORES_FOAG[cursorId]) {
-
             console.warn(
-                `FOAG Cursor não encontrado: ${cursorId}`
+                "FOAG Cursor não encontrado:",
+                cursorId
             );
-
             return false;
         }
 
-
-        salvarCursorLocal(cursorId);
-
-        return aplicarCursorFoag(
-            cursorId
-        );
+        return aplicarCursorFoag(cursorId);
     }
 
-
-    /* =====================================================
-       DESATIVAR
-    ===================================================== */
-
     function desativarCursorFoag() {
+        cursorAtual = null;
+        clicando = false;
 
         salvarCursorLocal(null);
 
-        removerCursorFoag();
+        document.documentElement.classList.remove(
+            "foag-cursor-personalizado"
+        );
 
+        document.body?.classList.remove(
+            "foag-cursor-personalizado"
+        );
+
+        elementoCursor?.remove();
+        elementoCursor = null;
     }
 
-
-    /* =====================================================
-       SINCRONIZAR COM A LOJA
-
-       Pode ser chamada pelo loja.js depois de ativar
-       um item.
-    ===================================================== */
-
-    function atualizarCursorDaLoja(
-        cursorId
-    ) {
-
-        if (!cursorId) {
-
+    function atualizarCursorDaLoja(cursorId) {
+        if (cursorId) {
+            ativarCursorFoag(cursorId);
+        } else {
             desativarCursorFoag();
-
-            return;
         }
-
-
-        if (!CURSORES_FOAG[cursorId]) {
-
-            console.warn(
-                "FOAG Cursor: item inválido:",
-                cursorId
-            );
-
-            return;
-        }
-
-
-        ativarCursorFoag(
-            cursorId
-        );
-
     }
-
 
     /* =====================================================
-       PRÉ-CARREGAR AS IMAGENS
+       MOVIMENTO E CLIQUE
     ===================================================== */
 
-    function preloadCursor(cursorId) {
-
-        const cursor =
-            CURSORES_FOAG[cursorId];
-
-        if (!cursor) {
-            return;
-        }
-
-
-        const normal =
-            new Image();
-
-        normal.src =
-            cursor.normal;
-
-
-        const clique =
-            new Image();
-
-        clique.src =
-            cursor.clique;
-
-    }
-
-
-    function preloadCursores() {
-
-        Object.keys(
-            CURSORES_FOAG
-        ).forEach(
-            preloadCursor
-        );
-
-    }
-
-
-    /* =====================================================
-       CARREGAMENTO DA PÁGINA
-    ===================================================== */
-
-    function iniciarCursorFoag() {
-
-        preloadCursores();
-
-        aplicarCursorFoag();
-
-    }
-
-
-    if (
-        document.readyState ===
-        "loading"
-    ) {
-
-        document.addEventListener(
-            "DOMContentLoaded",
-            iniciarCursorFoag
-        );
-
-    } else {
-
-        iniciarCursorFoag();
-
-    }
-
-
-    /* =====================================================
-       SINCRONIZAÇÃO ENTRE ABAS
-    ===================================================== */
-
-    window.addEventListener(
-        "storage",
-        event => {
-
-            if (
-                event.key ===
-                STORAGE_KEY
-            ) {
-
-                if (
-                    event.newValue &&
-                    CURSORES_FOAG[
-                        event.newValue
-                    ]
-                ) {
-
-                    aplicarCursorFoag(
-                        event.newValue
-                    );
-
-                } else {
-
-                    removerCursorFoag();
-
-                }
-
+    document.addEventListener(
+        "pointermove",
+        evento => {
+            if (!cursorAtual) {
+                return;
             }
 
+            criarElementoCursor();
+
+            elementoCursor.classList.add("visivel");
+
+            posicionarCursor(
+                evento.clientX,
+                evento.clientY
+            );
+        },
+        { passive: true }
+    );
+
+    document.addEventListener(
+        "pointerdown",
+        evento => {
+            if (!cursorAtual || evento.pointerType === "touch") {
+                return;
+            }
+
+            clicando = true;
+            atualizarImagemCursor();
+
+            elementoCursor?.classList.add("clicando");
+        },
+        true
+    );
+
+    document.addEventListener(
+        "pointerup",
+        evento => {
+            if (!cursorAtual || evento.pointerType === "touch") {
+                return;
+            }
+
+            clicando = false;
+            atualizarImagemCursor();
+
+            elementoCursor?.classList.remove("clicando");
+        },
+        true
+    );
+
+    document.addEventListener(
+        "pointercancel",
+        () => {
+            clicando = false;
+            atualizarImagemCursor();
+
+            elementoCursor?.classList.remove("clicando");
+        },
+        true
+    );
+
+    document.addEventListener(
+        "mouseleave",
+        () => {
+            elementoCursor?.classList.remove("visivel");
         }
     );
 
+    document.addEventListener(
+        "mouseenter",
+        () => {
+            if (cursorAtual) {
+                elementoCursor?.classList.add("visivel");
+            }
+        }
+    );
 
     /* =====================================================
-       EVENTO PERSONALIZADO
-
-       O loja.js pode disparar:
-
-       window.dispatchEvent(
-           new CustomEvent(
-               "foag:cursor-alterado",
-               {
-                   detail: {
-                       cursor: "cursor_gato"
-                   }
-               }
-           )
-       );
+       EVENTOS DA LOJA
     ===================================================== */
 
     window.addEventListener(
         "foag:cursor-alterado",
-        event => {
+        evento => {
+            const id =
+                evento.detail?.cursor ||
+                null;
 
-            const cursorId =
-                event.detail?.cursor;
-
-            if (cursorId) {
-
-                ativarCursorFoag(
-                    cursorId
-                );
-
-            } else {
-
-                desativarCursorFoag();
-
-            }
-
+            atualizarCursorDaLoja(id);
         }
     );
 
+    window.addEventListener(
+        "storage",
+        evento => {
+            if (evento.key !== STORAGE_KEY) {
+                return;
+            }
+
+            if (
+                evento.newValue &&
+                CURSORES_FOAG[evento.newValue]
+            ) {
+                aplicarCursorFoag(evento.newValue);
+            } else {
+                desativarCursorFoag();
+            }
+        }
+    );
 
     /* =====================================================
-       FUNÇÕES GLOBAIS
+       INICIALIZAÇÃO
+    ===================================================== */
 
-       Deixamos disponíveis para Loja e Console.
+    function iniciar() {
+        const ativo =
+            pegarCursorAtivo();
+
+        if (ativo) {
+            aplicarCursorFoag(ativo);
+        }
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener(
+            "DOMContentLoaded",
+            iniciar,
+            { once: true }
+        );
+    } else {
+        iniciar();
+    }
+
+    /* =====================================================
+       API GLOBAL
     ===================================================== */
 
     window.CURSORES_FOAG =
@@ -564,6 +443,4 @@
 
     window.atualizarCursorDaLoja =
         atualizarCursorDaLoja;
-
-
 })();

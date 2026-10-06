@@ -150,7 +150,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao_perigo'])) {
     <link rel="stylesheet" href="dark_configuracoes.css?v=21">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../global/css/cursor.css">
 </head>
+
 <body>
     <!-- ===== SKIP LINK ===== -->
     <a href="#conteudo-principal" class="skip-link">Pular para o conteúdo principal</a>
@@ -2026,5 +2028,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao_perigo'])) {
     ======================================= -->
     <script src="aparencia.js?v=2"></script>
 
+    <script src="../global/js/cursor.js?v=<?= time() ?>"></script>
+
 </body>
+
 </html>
