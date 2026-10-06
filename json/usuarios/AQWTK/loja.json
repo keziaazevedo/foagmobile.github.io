@@ -1,0 +1,12 @@
+{
+    "itens_comprados": [
+        "moldura_dragao",
+        "cursor_dragao"
+    ],
+    "itens_ativos": {
+        "tema": null,
+        "fundo": null,
+        "moldura": "moldura_dragao",
+        "cursor": "cursor_dragao"
+    }
+}

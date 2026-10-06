@@ -1,0 +1,62 @@
+{
+    "estrelas": 200,
+    "historico": [
+        {
+            "id": "estrela_8ec98c2bd601",
+            "tipo": "sequencia_presenca",
+            "descricao": "25 dias seguidos de presença",
+            "estrelas": 40,
+            "data": "2026-10-06 07:37:58",
+            "timestamp": 1791286678,
+            "chave": "sequencia_presenca_2026-10"
+        },
+        {
+            "id": "gasto_11655e872969",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Dragão",
+            "estrelas": -100,
+            "data": "2026-10-06 07:40:12",
+            "timestamp": 1791286812,
+            "chave": "compra_loja_moldura_dragao"
+        },
+        {
+            "id": "gasto_d578bcf4fdc6",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Cursor Dragão",
+            "estrelas": -500,
+            "data": "2026-10-06 07:40:23",
+            "timestamp": 1791286823,
+            "chave": "compra_loja_cursor_dragao"
+        }
+    ],
+    "controle": {
+        "pomodoro": {
+            "bonus_diarios": []
+        },
+        "flashcards": {
+            "ultimo_dia": null,
+            "estrelas_dia": 0
+        },
+        "frequencia": {
+            "meses_processados": [],
+            "sequencia_presenca": {
+                "dias": 165,
+                "ultima_data": "2026-10-06",
+                "marcos_recebidos": {
+                    "2026-10": 25
+                }
+            }
+        },
+        "notas": {
+            "recompensas": []
+        },
+        "sequencia_estudo": {
+            "dias": 0,
+            "ultima_data_estudo": null,
+            "marcos_recebidos": []
+        },
+        "recompensas_recebidas": [
+            "sequencia_presenca_2026-10"
+        ]
+    }
+}
