@@ -1,16 +1,10 @@
 /* =========================================================
    FOAG — CURSOR PERSONALIZADO GLOBAL
-   Versão visual: não depende do limite de cursor do navegador
+   Cada usuário usa somente o cursor salvo em seu loja.json
 ========================================================= */
 
 (() => {
     "use strict";
-
-    const STORAGE_KEY = "foag_cursor_ativo";
-
-    /* =====================================================
-       DESCOBRIR A RAIZ DO PROJETO
-    ===================================================== */
 
     function descobrirBaseProjeto() {
         const script =
@@ -39,10 +33,6 @@
     function caminho(nome) {
         return `${BASE_PROJETO}/img/loja/cursor/${nome}`;
     }
-
-    /* =====================================================
-       CURSORES
-    ===================================================== */
 
     const CURSORES_FOAG = {
         cursor_galaxia: {
@@ -91,76 +81,7 @@
     let ultimoX = 0;
     let ultimoY = 0;
     let clicando = false;
-
-    /* =====================================================
-       STORAGE
-    ===================================================== */
-
-    function salvarCursorLocal(cursorId) {
-        try {
-            if (cursorId) {
-                localStorage.setItem(STORAGE_KEY, cursorId);
-            } else {
-                localStorage.removeItem(STORAGE_KEY);
-            }
-        } catch (erro) {
-            console.warn("FOAG Cursor: localStorage indisponível.", erro);
-        }
-    }
-
-    function pegarCursorLocal() {
-        try {
-            const id = localStorage.getItem(STORAGE_KEY);
-
-            return id && CURSORES_FOAG[id]
-                ? id
-                : null;
-        } catch (erro) {
-            return null;
-        }
-    }
-
-    function pegarCursorDaLoja() {
-        const id =
-            window.LOJA_DATA?.itens_ativos?.cursor ||
-            null;
-
-        return (
-            typeof id === "string" &&
-            CURSORES_FOAG[id]
-        )
-            ? id
-            : null;
-    }
-
-    function pegarCursorDaSessao() {
-        try {
-            const dados = JSON.parse(
-                sessionStorage.getItem("itens_ativos_loja") || "{}"
-            );
-
-            const id = dados?.cursor;
-
-            return id && CURSORES_FOAG[id]
-                ? id
-                : null;
-        } catch (erro) {
-            return null;
-        }
-    }
-
-    function pegarCursorAtivo() {
-        return (
-            pegarCursorDaLoja() ||
-            pegarCursorLocal() ||
-            pegarCursorDaSessao() ||
-            null
-        );
-    }
-
-    /* =====================================================
-       ELEMENTO VISUAL
-    ===================================================== */
+    let codigoUsuarioAtual = null;
 
     function criarElementoCursor() {
         if (elementoCursor?.isConnected) {
@@ -175,7 +96,6 @@
         img.draggable = false;
 
         document.body.appendChild(img);
-
         elementoCursor = img;
 
         return img;
@@ -202,8 +122,7 @@
             return;
         }
 
-        const config =
-            CURSORES_FOAG[cursorAtual];
+        const config = CURSORES_FOAG[cursorAtual];
 
         elementoCursor.src =
             clicando
@@ -211,23 +130,29 @@
                 : config.normal;
     }
 
-    /* =====================================================
-       APLICAR
-    ===================================================== */
+    function removerCursorFoag() {
+        cursorAtual = null;
+        clicando = false;
+
+        document.documentElement.classList.remove(
+            "foag-cursor-personalizado"
+        );
+
+        document.body?.classList.remove(
+            "foag-cursor-personalizado"
+        );
+
+        elementoCursor?.remove();
+        elementoCursor = null;
+    }
 
     function aplicarCursorFoag(cursorId = null) {
-        const id =
-            cursorId ||
-            pegarCursorAtivo();
-
-        if (!id || !CURSORES_FOAG[id]) {
-            desativarCursorFoag();
+        if (!cursorId || !CURSORES_FOAG[cursorId]) {
+            removerCursorFoag();
             return false;
         }
 
-        cursorAtual = id;
-
-        salvarCursorLocal(id);
+        cursorAtual = cursorId;
 
         document.documentElement.classList.add(
             "foag-cursor-personalizado"
@@ -243,17 +168,17 @@
         atualizarImagemCursor();
         posicionarCursor(ultimoX, ultimoY);
 
-        console.log("FOAG Cursor ativo:", id);
+        console.log(
+            `FOAG Cursor ativo para ${codigoUsuarioAtual ?? "usuário"}:`,
+            cursorId
+        );
 
         return true;
     }
 
     function ativarCursorFoag(cursorId) {
         if (!CURSORES_FOAG[cursorId]) {
-            console.warn(
-                "FOAG Cursor não encontrado:",
-                cursorId
-            );
+            console.warn("FOAG Cursor não encontrado:", cursorId);
             return false;
         }
 
@@ -261,21 +186,7 @@
     }
 
     function desativarCursorFoag() {
-        cursorAtual = null;
-        clicando = false;
-
-        salvarCursorLocal(null);
-
-        document.documentElement.classList.remove(
-            "foag-cursor-personalizado"
-        );
-
-        document.body?.classList.remove(
-            "foag-cursor-personalizado"
-        );
-
-        elementoCursor?.remove();
-        elementoCursor = null;
+        removerCursorFoag();
     }
 
     function atualizarCursorDaLoja(cursorId) {
@@ -286,9 +197,45 @@
         }
     }
 
-    /* =====================================================
-       MOVIMENTO E CLIQUE
-    ===================================================== */
+    async function carregarCursorDoUsuario() {
+        try {
+            const resposta = await fetch(
+                `${BASE_PROJETO}/global/cursor_usuario.php?_=${Date.now()}`,
+                {
+                    credentials: "same-origin",
+                    cache: "no-store"
+                }
+            );
+
+            if (!resposta.ok) {
+                throw new Error(`HTTP ${resposta.status}`);
+            }
+
+            const dados = await resposta.json();
+
+            codigoUsuarioAtual = dados.codigo_usuario || null;
+
+            if (
+                dados.ok &&
+                dados.cursor &&
+                CURSORES_FOAG[dados.cursor]
+            ) {
+                aplicarCursorFoag(dados.cursor);
+            } else {
+                removerCursorFoag();
+            }
+
+            return dados;
+        } catch (erro) {
+            console.error(
+                "FOAG Cursor: não foi possível carregar o cursor do usuário.",
+                erro
+            );
+
+            removerCursorFoag();
+            return null;
+        }
+    }
 
     document.addEventListener(
         "pointermove",
@@ -298,7 +245,6 @@
             }
 
             criarElementoCursor();
-
             elementoCursor.classList.add("visivel");
 
             posicionarCursor(
@@ -318,7 +264,6 @@
 
             clicando = true;
             atualizarImagemCursor();
-
             elementoCursor?.classList.add("clicando");
         },
         true
@@ -333,7 +278,6 @@
 
             clicando = false;
             atualizarImagemCursor();
-
             elementoCursor?.classList.remove("clicando");
         },
         true
@@ -344,7 +288,6 @@
         () => {
             clicando = false;
             atualizarImagemCursor();
-
             elementoCursor?.classList.remove("clicando");
         },
         true
@@ -366,81 +309,32 @@
         }
     );
 
-    /* =====================================================
-       EVENTOS DA LOJA
-    ===================================================== */
-
     window.addEventListener(
         "foag:cursor-alterado",
         evento => {
-            const id =
-                evento.detail?.cursor ||
-                null;
-
-            atualizarCursorDaLoja(id);
+            const cursorId = evento.detail?.cursor || null;
+            atualizarCursorDaLoja(cursorId);
         }
     );
 
-    window.addEventListener(
-        "storage",
-        evento => {
-            if (evento.key !== STORAGE_KEY) {
-                return;
-            }
-
-            if (
-                evento.newValue &&
-                CURSORES_FOAG[evento.newValue]
-            ) {
-                aplicarCursorFoag(evento.newValue);
-            } else {
-                desativarCursorFoag();
-            }
-        }
-    );
-
-    /* =====================================================
-       INICIALIZAÇÃO
-    ===================================================== */
-
-    function iniciar() {
-        const ativo =
-            pegarCursorAtivo();
-
-        if (ativo) {
-            aplicarCursorFoag(ativo);
-        }
+    function iniciarCursorFoag() {
+        carregarCursorDoUsuario();
     }
 
     if (document.readyState === "loading") {
         document.addEventListener(
             "DOMContentLoaded",
-            iniciar,
+            iniciarCursorFoag,
             { once: true }
         );
     } else {
-        iniciar();
+        iniciarCursorFoag();
     }
 
-    /* =====================================================
-       API GLOBAL
-    ===================================================== */
-
-    window.CURSORES_FOAG =
-        CURSORES_FOAG;
-
-    window.pegarCursorAtivo =
-        pegarCursorAtivo;
-
-    window.aplicarCursorFoag =
-        aplicarCursorFoag;
-
-    window.ativarCursorFoag =
-        ativarCursorFoag;
-
-    window.desativarCursorFoag =
-        desativarCursorFoag;
-
-    window.atualizarCursorDaLoja =
-        atualizarCursorDaLoja;
+    window.CURSORES_FOAG = CURSORES_FOAG;
+    window.aplicarCursorFoag = aplicarCursorFoag;
+    window.ativarCursorFoag = ativarCursorFoag;
+    window.desativarCursorFoag = desativarCursorFoag;
+    window.atualizarCursorDaLoja = atualizarCursorDaLoja;
+    window.carregarCursorDoUsuario = carregarCursorDoUsuario;
 })();
