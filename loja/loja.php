@@ -527,6 +527,8 @@ $lojaData = [
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     >
 
+    <link rel="stylesheet" href="../global/css/cursor.css">
+
     <script src="../m.escuro/dark-mode.js"></script>
 
 
@@ -869,7 +871,7 @@ $lojaData = [
                 data-filtro="especiais"
             >
                 <i class="fa-solid fa-mouse-pointer"></i>
-                Especiais
+                Cursores
             </button>
 
             <button
@@ -1197,9 +1199,8 @@ $lojaData = [
 
 </div>
 
-<!-- ======================================
-     JAVASCRIPT DA LOJA
-======================================= -->
+
+<script src="../global/js/cursor.js?v=<?= time() ?>"></script>
 
 <script src="loja.js?v=<?= time() ?>"></script>
 

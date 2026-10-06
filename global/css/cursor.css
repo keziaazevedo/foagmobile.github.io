@@ -1,0 +1,64 @@
+/* =========================================
+   CURSORES PERSONALIZADOS — FOAG
+========================================= */
+
+body.cursor-foag-ativo,
+body.cursor-foag-ativo * {
+    cursor: var(--foag-cursor-normal) !important;
+}
+
+
+/* Clique */
+
+body.cursor-foag-ativo:active,
+body.cursor-foag-ativo *:active {
+    cursor: var(--foag-cursor-clique) !important;
+}
+
+
+/* Links */
+
+body.cursor-foag-ativo a {
+    cursor: var(--foag-cursor-normal) !important;
+}
+
+body.cursor-foag-ativo a:active {
+    cursor: var(--foag-cursor-clique) !important;
+}
+
+
+/* Botões */
+
+body.cursor-foag-ativo button {
+    cursor: var(--foag-cursor-normal) !important;
+}
+
+body.cursor-foag-ativo button:active {
+    cursor: var(--foag-cursor-clique) !important;
+}
+
+
+/* Elementos que funcionam como botão */
+
+body.cursor-foag-ativo [role="button"] {
+    cursor: var(--foag-cursor-normal) !important;
+}
+
+body.cursor-foag-ativo [role="button"]:active {
+    cursor: var(--foag-cursor-clique) !important;
+}
+
+
+/* Inputs clicáveis */
+
+body.cursor-foag-ativo input[type="button"],
+body.cursor-foag-ativo input[type="submit"],
+body.cursor-foag-ativo input[type="reset"] {
+    cursor: var(--foag-cursor-normal) !important;
+}
+
+body.cursor-foag-ativo input[type="button"]:active,
+body.cursor-foag-ativo input[type="submit"]:active,
+body.cursor-foag-ativo input[type="reset"]:active {
+    cursor: var(--foag-cursor-clique) !important;
+}

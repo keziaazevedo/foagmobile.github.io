@@ -51,7 +51,7 @@ const NOMES_CATEGORIAS_LOJA = {
     emojis: 'Emoji',
     fundos: 'Fundo',
     molduras: 'Moldura',
-    especiais: 'Especial'
+    especiais: 'Cursor'
 };
 
 const ICONES_CATEGORIAS_LOJA = {
@@ -59,7 +59,7 @@ const ICONES_CATEGORIAS_LOJA = {
     emojis: 'fa-solid fa-face-smile',
     fundos: 'fa-solid fa-image',
     molduras: 'fa-solid fa-id-badge',
-    especiais: 'fa-solid fa-wand-magic-sparkles'
+    especiais: 'fa-solid fa-arrow-pointer'
 };
 
 
@@ -1024,6 +1024,23 @@ document.addEventListener(
                         </span>
                     </div>
                 `;
+            } else if (
+                item.categoria ===
+                'especiais' &&
+                item.imagem_click
+            ) {
+                previewItemVisual.innerHTML = `
+                    <div class="preview-cursor-duplo">
+                        <div class="preview-cursor-estado">
+                            <span>Normal</span>
+                            ${imagem}
+                        </div>
+                        <div class="preview-cursor-estado">
+                            <span>Ao clicar</span>
+                            <img src="${item.imagem_click}" alt="${item.nome} ao clicar" class="preview-item-img">
+                        </div>
+                    </div>
+                `;
             } else {
                 previewItemVisual.innerHTML =
                     imagem;
@@ -1484,11 +1501,11 @@ document.addEventListener(
 
                     especiais: {
                         icone:
-                            'fa-solid fa-wand-magic-sparkles',
+                            'fa-solid fa-arrow-pointer',
                         titulo:
-                            'Nenhum item especial por aqui',
+                            'Nenhum cursor por aqui',
                         texto:
-                            'Itens especiais e efeitos diferentes aparecerão nesta seção.'
+                            'Novos cursores personalizados aparecerão nesta seção.'
                     }
 
                 };
@@ -2427,10 +2444,97 @@ document.addEventListener(
 
             try {
 
-                await enviarAcaoLoja(
-                    'ativar',
-                    item.id
-                );
+                const resposta =
+                    await enviarAcaoLoja(
+                        'ativar',
+                        item.id
+                    );
+
+
+                // =============================================
+                // APLICAR CURSOR IMEDIATAMENTE
+                // =============================================
+                //
+                // Quando o item ativado for da categoria
+                // "especiais", ele representa um cursor.
+                // O servidor já salvou o item em
+                // itens_ativos.cursor; agora aplicamos no site
+                // sem precisar recarregar a página.
+                //
+                // =============================================
+
+                const tipoEquipavel =
+                    getTipoEquipavel(
+                        item
+                    );
+
+
+                if (
+                    tipoEquipavel ===
+                    'cursor'
+                ) {
+
+                    const cursorAtivo =
+                        resposta?.dados
+                            ?.itens_ativos
+                            ?.cursor ||
+                        item.id;
+
+
+                    if (
+                        typeof window
+                            .ativarCursorFoag ===
+                        'function'
+                    ) {
+
+                        window
+                            .ativarCursorFoag(
+                                cursorAtivo
+                            );
+
+                    } else {
+
+                        // Fallback:
+                        // guarda para o cursor.js aplicar
+                        // assim que estiver disponível.
+
+                        try {
+
+                            localStorage.setItem(
+                                'foag_cursor_ativo',
+                                cursorAtivo
+                            );
+
+                        } catch (
+                            erroStorage
+                        ) {
+
+                            console.warn(
+                                'Não foi possível salvar o cursor localmente:',
+                                erroStorage
+                            );
+
+                        }
+
+                    }
+
+
+                    // Evento global para outras partes do FOAG
+                    // que queiram reagir à troca do cursor.
+
+                    window.dispatchEvent(
+                        new CustomEvent(
+                            'foag:cursor-alterado',
+                            {
+                                detail: {
+                                    cursor:
+                                        cursorAtivo
+                                }
+                            }
+                        )
+                    );
+
+                }
 
 
                 mostrarSucesso(

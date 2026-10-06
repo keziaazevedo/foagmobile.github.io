@@ -5,12 +5,13 @@
         "moldura_estrelas",
         "moldura_sakura",
         "moldura_agua",
-        "moldura_rei"
+        "moldura_rei",
+        "cursor_sakura"
     ],
     "itens_ativos": {
         "tema": "tema_verde",
         "fundo": null,
         "moldura": "moldura_sakura",
-        "cursor": null
+        "cursor": "cursor_sakura"
     }
 }

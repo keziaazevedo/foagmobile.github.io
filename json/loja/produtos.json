@@ -660,77 +660,83 @@
                 "foto_y": 0
             }
         },
-        {
-            "id": "cursor_estrela",
-            "nome": "Cursor Estrela",
-            "descricao": " Um cursor em forma de estrela",
-            "preco": 40,
-            "icone": "fa-solid fa-star",
-            "categoria": "especiais",
-            "imagem": "../img/loja/especial/"
-        },
-        {
-            "id": "cursor_foguete",
-            "nome": "Cursor Foguete",
-            "descricao": " Um cursor de foguete espacial",
-            "preco": 45,
-            "icone": "fa-solid fa-rocket",
-            "categoria": "especiais",
-            "imagem": "../img/loja/especial/"
-        },
-        {
-            "id": "cursor_coracao",
-            "nome": "Cursor Coração",
-            "descricao": " Um cursor em formato de coração",
-            "preco": 35,
-            "icone": "fa-solid fa-heart",
-            "categoria": "especiais",
-            "imagem": "../img/loja/especial/"
-        },
-        {
-            "id": "cursor_lampada",
-            "nome": "Cursor Lâmpada",
-            "descricao": " Um cursor com uma lâmpada brilhante",
-            "preco": 40,
-            "icone": "fa-solid fa-lightbulb",
-            "categoria": "especiais",
-            "imagem": "../img/loja/especial/"
-        },
-        {
-            "id": "cursor_raio",
-            "nome": "Cursor Raio",
-            "descricao": " Um cursor com um raio de energia",
-            "preco": 50,
-            "icone": "fa-solid fa-bolt",
-            "categoria": "especiais",
-            "imagem": "../img/loja/especial/"
-        },
-        {
-            "id": "cursor_trofeu",
-            "nome": "Cursor Troféu",
-            "descricao": " Um cursor de vencedor",
-            "preco": 55,
-            "icone": "fa-solid fa-trophy",
-            "categoria": "especiais",
-            "imagem": "../img/loja/especial/"
-        },
-        {
-            "id": "cursor_alvo",
-            "nome": "Cursor Alvo",
-            "descricao": " Um cursor preciso como um alvo",
-            "preco": 45,
-            "icone": "fa-solid fa-bullseye",
-            "categoria": "especiais",
-            "imagem": "../img/loja/especial/"
-        },
-        {
-            "id": "cursor_flor",
-            "nome": "Cursor Flor",
-            "descricao": " Um cursor com uma flor delicada",
-            "preco": 35,
-            "icone": "fa-solid fa-flower",
-            "categoria": "especiais",
-            "imagem": "../img/loja/especial/"
-        }
+
+        {"id":"cursor_galaxia",
+        "nome":"Cursor Galáxia",
+        "descricao":"Um cursor cósmico inspirado na moldura Galáxia.",
+        "categoria":"especiais",
+        "preco":500,
+        "imagem":"../img/loja/cursor/cursor_galaxia.png",
+        "imagem_click":"../img/loja/cursor/cursormao_galaxia.png",
+        "novo":true,
+        "raridade":"epico"},
+
+        {"id":"cursor_gato",
+        "nome":"Cursor Gato Preto",
+        "descricao":"Patinha de gato que mostra as garrinhas ao clicar.",
+        "categoria":"especiais",
+        "preco":500,
+        "imagem":"../img/loja/cursor/cursor_gato.png",
+        "imagem_click":"../img/loja/cursor/cursormao_gato.png",
+        "novo":true,
+        "raridade":"epico"},
+
+        {"id":"cursor_dragao",
+        "nome":"Cursor Dragão",
+        "descricao":"Cursor escamado inspirado na moldura Dragão.",
+        "categoria":"especiais",
+        "preco":500,
+        "imagem":"../img/loja/cursor/cursor_dragao.png",
+        "imagem_click":"../img/loja/cursor/cursormao_dragao.png",
+        "novo":true,
+        "raridade":"epico"},
+
+        {"id":"cursor_serafim",
+        "nome":"Cursor Serafim",
+        "descricao":"Cursor celestial inspirado na moldura Serafim.",
+        "categoria":"especiais",
+        "preco":500,
+        "imagem":"../img/loja/cursor/cursor_querubim.png",
+        "imagem_click":"../img/loja/cursor/cursormao_querubim.png",
+        "novo":true,
+        "raridade":"epico"},
+
+        {"id":"cursor_natureza",
+        "nome":"Cursor Natureza",
+        "descricao":"Cursor orgânico inspirado na moldura Natureza.",
+        "categoria":"especiais",
+        "preco":500,
+        "imagem":"../img/loja/cursor/cursor_natureza.png",
+        "imagem_click":"../img/loja/cursor/cursormao_natureza.png",
+        "novo":true,
+        "raridade":"epico"},
+
+        {"id":"cursor_neon",
+        "nome":"Cursor Neon",
+        "descricao":"Cursor luminoso inspirado na moldura Neon.",
+        "categoria":"especiais",
+        "preco":500,
+        "imagem":"../img/loja/cursor/cursor_neon.png",
+        "imagem_click":"../img/loja/cursor/cursormao_neon.png",
+        "raridade":"raro"},
+
+        {"id":"cursor_fogo",
+        "nome":"Cursor Fogo",
+        "descricao":"Cursor flamejante inspirado na moldura Fogo.",
+        "categoria":"especiais",
+        "preco":500,
+        "imagem":"../img/loja/cursor/cursor_fogo.png",
+        "imagem_click":"../img/loja/cursor/cursormao_fogo.png",
+        "raridade":"raro"},
+
+        {"id":"cursor_sakura",
+        "nome":"Cursor Sakura",
+        "descricao":"Cursor delicado inspirado na moldura Sakura.",
+        "categoria":"especiais",
+        "preco":500,
+        "imagem":"../img/loja/cursor/cursor_sakura.png",
+        "imagem_click":"../img/loja/cursor/cursormao_sakura.png",
+        "raridade":"raro"}
+
     ]
 }

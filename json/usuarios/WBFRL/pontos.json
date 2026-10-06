@@ -1,5 +1,5 @@
 {
-    "estrelas": 288,
+    "estrelas": 300,
     "historico": [
         {
             "id": "estrela_d63d0474bd6e",
@@ -441,6 +441,15 @@
             "data": "2026-10-05 18:57:46",
             "timestamp": 1791241066,
             "chave": "evolucao_nota_mat_68f00281c995_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "gasto_4e6e2efd3730",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Cursor Sakura",
+            "estrelas": -500,
+            "data": "2026-10-05 19:28:22",
+            "timestamp": 1791242902,
+            "chave": "compra_loja_cursor_sakura"
         }
     ],
     "controle": {
