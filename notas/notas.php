@@ -2106,7 +2106,11 @@ foreach ($materias as $i => $materiaResumo) {
         if ($statusResumo === 'Reprovado') $reprovadas++;
     }
 
-    if ($mediaResumo > 0) {
+    $temNotasResumo = $tipoCurso === 'escola'
+        ? (($progressoResumo['preenchidas'] ?? 0) > 0)
+        : ($statusResumo !== '-');
+
+    if ($temNotasResumo) {
         $somaMedias += $mediaResumo;
         $contMedias++;
 
