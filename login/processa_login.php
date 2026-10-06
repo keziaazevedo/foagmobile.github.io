@@ -178,11 +178,7 @@ $_SESSION['usuario'] =
 |--------------------------------------------------------------------------
 */
 
-exibirMensagem(
-    "Login realizado com sucesso!",
-    "entrada.php"
-);
-
+header('Location: ../inicioo/inicio.php');
 exit;
 
 

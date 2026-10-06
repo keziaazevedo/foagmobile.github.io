@@ -145,6 +145,65 @@ function numeroBR(valor, casas = 2) {
   return Number(valor).toLocaleString('pt-BR', { minimumFractionDigits: casas, maximumFractionDigits: casas });
 }
 
+
+function recalcularMediaGeral() {
+  if (!notasForm) return;
+
+  const tipoCurso = notasForm.dataset.tipoCurso || 'escola';
+  let pesos = [1, 1, 1, 1];
+
+  try {
+    pesos = JSON.parse(notasForm.dataset.pesos || '[1,1,1,1]').map(Number);
+  } catch (_) {}
+
+  const medias = [];
+
+  notasForm.querySelectorAll('.nota-row').forEach((row) => {
+    const inputs = [...row.querySelectorAll('.input-nota')];
+
+    if (tipoCurso === 'escola') {
+      const valores = inputs
+        .map((input) => input.value.trim() === '' ? null : Number(input.value))
+        .filter((valor) => valor !== null && Number.isFinite(valor));
+
+      if (valores.length === 0) return;
+
+      const soma = valores.reduce((acc, valor) => acc + valor, 0);
+      medias.push(soma / valores.length);
+      return;
+    }
+
+    let soma = 0;
+    let somaPesos = 0;
+
+    inputs.forEach((input, idx) => {
+      if (input.value.trim() === '') return;
+
+      const nota = Number(input.value);
+      const peso = Number(pesos[idx] ?? 1);
+
+      if (!Number.isFinite(nota) || peso <= 0) return;
+
+      soma += nota * peso;
+      somaPesos += peso;
+    });
+
+    if (somaPesos > 0) {
+      medias.push(soma / somaPesos);
+    }
+  });
+
+  const mediaGeral = medias.length > 0
+    ? medias.reduce((acc, media) => acc + media, 0) / medias.length
+    : 0;
+
+  const kpiMediaGeral = document.getElementById('kpi-media-geral');
+
+  if (kpiMediaGeral) {
+    kpiMediaGeral.textContent = numeroBR(mediaGeral, 2);
+  }
+}
+
 function recalcularLinha(row) {
   if (!notasForm || !row) return;
   const alvo = Number(notasForm.dataset.mediaAprovacao || 6);
@@ -266,8 +325,13 @@ function recalcularLinha(row) {
 
 if (notasForm) {
   notasForm.querySelectorAll('.input-nota').forEach((input) => {
-    input.addEventListener('input', () => recalcularLinha(input.closest('.nota-row')));
+    input.addEventListener('input', () => {
+      recalcularLinha(input.closest('.nota-row'));
+      recalcularMediaGeral();
+    });
   });
+
+  recalcularMediaGeral();
 }
 
 // ==========================================

@@ -1,5 +1,5 @@
 {
-    "estrelas": 232,
+    "estrelas": 172,
     "historico": [
         {
             "id": "estrela_d4aa1f5181ba",
@@ -351,6 +351,15 @@
             "data": "2026-10-05 19:34:29",
             "timestamp": 1791243269,
             "chave": "evolucao_nota_MAT_9196C6D0_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "gasto_594406f25445",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Tema Rosa",
+            "estrelas": -60,
+            "data": "2026-10-05 20:12:41",
+            "timestamp": 1791245561,
+            "chave": "compra_loja_tema_rosa"
         }
     ],
     "controle": {

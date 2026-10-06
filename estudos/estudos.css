@@ -1825,3 +1825,216 @@ main.conteudo > * {
     font-size: 19px;
   }
 }
+
+/* =====================================================
+   CABEÇALHO E MENU — IDÊNTICOS AO RANKING
+===================================================== */
+
+header.cabecalho {
+    width: 100%;
+    padding: 15px;
+
+    position: relative;
+    z-index: 100;
+
+    background-color: #38a5ff;
+    color: #ffffff;
+
+    font-family: 'Snap ITC', cursive, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: left;
+
+    line-height: normal;
+
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.header-icons {
+    position: absolute;
+
+    top: 50%;
+    right: 20px;
+
+    transform: translateY(-50%);
+
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    color: #ffffff;
+    font-size: 22px;
+    line-height: normal;
+
+    cursor: pointer;
+    user-select: none;
+}
+
+.header-icons i {
+    color: #ffffff;
+
+    cursor: pointer;
+
+    transition:
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.header-icons > i {
+    display: flex;
+    align-items: center;
+}
+
+.header-icons a {
+    display: flex;
+    align-items: center;
+
+    color: #ffffff !important;
+    text-decoration: none;
+}
+
+.header-icons a i {
+    color: inherit !important;
+}
+
+.header-icons a:hover i,
+.header-icons i:hover {
+    color: #006cc5 !important;
+    transform: translateY(-13%) scale(1.1);
+}
+
+.container {
+    width: 100%;
+    flex: 1;
+
+    display: flex;
+
+    min-height: 0;
+}
+
+nav.menu {
+    width: 260px;
+    min-width: 260px;
+
+    flex-shrink: 0;
+
+    padding: 18px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 14px;
+
+    background: #38a5ff;
+
+    line-height: normal;
+
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+nav.menu a {
+    width: 100%;
+
+    padding: 10px 12px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    color: #ffffff;
+    background: transparent;
+
+    font-size: 16px;
+    line-height: normal;
+    text-decoration: none;
+
+    border-radius: 8px;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+nav.menu a i {
+    width: 22px;
+    text-align: center;
+}
+
+nav.menu a:hover,
+nav.menu a.active {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+nav.menu a:hover {
+    transform: translateX(2px);
+}
+
+
+/* =====================================================
+   RESPONSIVO — MESMOS BREAKPOINTS DO RANKING
+===================================================== */
+
+@media (max-width: 768px) {
+
+    header.cabecalho {
+        padding: 12px 15px;
+
+        font-size: 21px;
+    }
+
+    .header-icons {
+        right: 15px;
+
+        gap: 11px;
+
+        font-size: 19px;
+    }
+
+    .container {
+        flex-direction: column;
+    }
+
+    nav.menu {
+        width: 100%;
+        min-width: 100%;
+
+        padding: 14px;
+
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+
+        gap: 8px;
+    }
+
+    nav.menu a {
+        width: auto;
+    }
+}
+
+@media (max-width: 480px) {
+
+    header.cabecalho {
+        padding: 11px 10px;
+
+        font-size: 19px;
+    }
+
+    .header-icons {
+        right: 10px;
+
+        gap: 9px;
+
+        font-size: 17px;
+    }
+
+    nav.menu {
+        flex-direction: column;
+    }
+
+    nav.menu a {
+        width: 100%;
+    }
+}
+
