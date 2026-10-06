@@ -143,6 +143,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao_perigo'])) {
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <script src="../global/js/config.js?v=<?= time() ?>"></script>
+    <script src="../global/js/utils.js?v=<?= time() ?>"></script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Configurações - FOAG</title>
@@ -151,6 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao_perigo'])) {
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../global/css/cursor.css">
+    <link rel="stylesheet" href="../global/css/layout.css?v=<?= time() ?>">
 </head>
 
 <body>
@@ -158,27 +162,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao_perigo'])) {
     <a href="#conteudo-principal" class="skip-link">Pular para o conteúdo principal</a>
 
     <!-- ===== CABEÇALHO ===== -->
-    <header class="cabecalho" role="banner">
-        FOAG
-        <div class="header-icons">
-            <i id="icon-perfil" class="fa-regular fa-user" title="Perfil" role="button" tabindex="0" aria-label="Perfil do usuário"></i>
-            <i id="icon-sair" class="fa-solid fa-right-from-bracket" title="Sair" role="button" tabindex="0" aria-label="Sair do sistema"></i>
-            <i id="themeToggle" class="fa-solid fa-moon" role="button" tabindex="0" aria-label="Alternar tema claro e escuro"></i>
-        </div>
-    </header>
+    <?php include __DIR__ . '/../components/header.php'; ?>
 
     <div class="container">
         <!-- ===== MENU ===== -->
-        <nav class="menu" role="navigation" aria-label="Menu principal">
-            <a href="../inicioo/inicio.php"><i class="fa-solid fa-house" aria-hidden="true"></i> Início</a>
-            <a href="../calend/calendario.php"><i class="fa-solid fa-calendar-days" aria-hidden="true"></i> Calendário</a>
-            <a href="../bloco/agenda.php"><i class="fa-solid fa-book" aria-hidden="true"></i> Agenda</a>
-            <a href="../estudos/estudos.php"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Estudos</a>
-            <a href="../notas/notas.php"><i class="fa-solid fa-check-double" aria-hidden="true"></i> Boletim</a>
-            <a href="../loja/loja.php"><i class="fa-solid fa-store" aria-hidden="true"></i> Loja</a>
-            <a href="../rank/rank.php"><i class="fa-solid fa-trophy" aria-hidden="true"></i> Ranking</a>
-            <a href="../configuracoes/configuracoes.php" class="active" aria-current="page"><i class="fa-solid fa-gear" aria-hidden="true"></i> Configurações</a>
-        </nav>
+        <?php include __DIR__ . '/../components/menu.php'; ?>
 
         <!-- ===== CONTEÚDO PRINCIPAL ===== -->
         <main class="conteudo configuracoes-conteudo" id="conteudo-principal" role="main">
@@ -1170,7 +1158,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao_perigo'])) {
                     '<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Excluindo...';
             }
 
-            fetch('excluir.php', {
+            fetch('../api/configuracoes/excluir.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'

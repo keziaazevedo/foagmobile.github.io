@@ -49,7 +49,7 @@ const cancelLogout = document.getElementById("cancel-logout");
 
 if (iconPerfil) {
   iconPerfil.addEventListener("click", () => {
-    window.location.href = "../perfil/perfil.php";
+    window.location.href = FOAG_CONFIG.pages.perfil;
   });
 }
 
@@ -61,7 +61,7 @@ if (iconSair && logoutModal) {
 
 if (confirmLogout) {
   confirmLogout.addEventListener("click", () => {
-    window.location.href = "../login/logout.php";
+    window.location.href = FOAG_CONFIG.pages.logout;
   });
 }
 

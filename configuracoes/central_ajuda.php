@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
+    <script src="../global/js/config.js?v=<?= time() ?>"></script>
+    <script src="../global/js/utils.js?v=<?= time() ?>"></script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Central de Ajuda do FOAG - encontre respostas e orientações para utilizar a plataforma.">
@@ -773,37 +776,12 @@
         }
     </style>
     <link rel="stylesheet" href="../global/css/cursor.css">
+    <link rel="stylesheet" href="../global/css/layout.css?v=<?= time() ?>">
 </head>
 
 <body>
     <div class="pagina">
-        <header class="cabecalho">
-            <div class="cabecalho-conteudo">
-                <span class="identificacao">
-                    <span class="identificacao-ponto"></span>
-                    Suporte e orientações
-                </span>
-
-                <h1>Como podemos ajudar?</h1>
-
-                <p>
-                    Encontre respostas sobre cadastro, agenda, calendário,
-                    Pomodoro, perfil, privacidade e outras funções do FOAG.
-                </p>
-
-                <div class="busca">
-                    <input
-                        type="search"
-                        id="campo-busca"
-                        placeholder="Digite uma dúvida, por exemplo: alterar senha"
-                        aria-label="Pesquisar na Central de Ajuda"
-                        autocomplete="off"
-                    >
-
-                    <span class="busca-icone">⌕</span>
-                </div>
-            </div>
-        </header>
+        <?php include __DIR__ . '/../components/header.php'; ?>
 
         <div class="acoes-superiores">
             <a class="botao botao-principal" href="configuracoes.php">

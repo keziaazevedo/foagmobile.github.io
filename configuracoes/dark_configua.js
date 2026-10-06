@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         dados.acao = 'salvar';
 
-        fetch('configuracoes.php', {
+        fetch(FOAG_CONFIG.pages.configuracoes, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -215,7 +215,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             mostrarToast('⏳ Importando backup...', 'info');
 
-            fetch('configuracoes.php', {
+            fetch(FOAG_CONFIG.pages.configuracoes, {
                 method: 'POST',
                 body: formData
             })
@@ -258,7 +258,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (confirmado) {
                     mostrarToast('⏳ Executando ação...', 'info');
                     
-                    fetch('configuracoes.php', {
+                    fetch(FOAG_CONFIG.pages.configuracoes, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded',
@@ -335,7 +335,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (logoutModal) logoutModal.style.display = 'none';
             mostrarToast('👋 Saindo... Até logo!', 'sucesso');
             setTimeout(() => {
-                window.location.href = '../login/login.php';
+                window.location.href = FOAG_CONFIG.pages.login;
             }, 800);
         });
     }
@@ -363,7 +363,7 @@ document.addEventListener('DOMContentLoaded', function() {
             e.stopPropagation();
             mostrarToast('👤 Redirecionando para o perfil...', 'info');
             setTimeout(() => {
-                window.location.href = '../perfil/perfil.php';
+                window.location.href = FOAG_CONFIG.pages.perfil;
             }, 500);
         });
     }

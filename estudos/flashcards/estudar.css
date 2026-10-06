@@ -23,75 +23,6 @@ body {
   color: var(--texto);
 }
 
-header.cabecalho {
-  width: 100%;
-  padding: 10px 20px;
-  position: relative;
-  z-index: 100;
-  background: var(--azul);
-  color: white;
-  font-family: 'Snap ITC', sans-serif;
-  font-size: 24px;
-  font-weight: bold;
-  box-shadow: 5px 5px 15px rgba(0,0,0,.2);
-}
-
-.header-icons {
-  position: absolute;
-  top: 50%;
-  right: 20px;
-  transform: translateY(-50%);
-  display: flex;
-  gap: 15px;
-  font-size: 1.3rem;
-}
-
-.header-icons i {
-  cursor: pointer;
-  transition: .2s;
-}
-
-.header-icons i:hover {
-  transform: translateY(-2px) scale(1.08);
-}
-
-.container {
-  flex: 1;
-  display: flex;
-}
-
-nav.menu {
-  width: 260px;
-  flex-shrink: 0;
-  padding: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  background: var(--azul);
-  box-shadow: 5px 5px 15px rgba(0,0,0,.15);
-}
-
-nav.menu a {
-  padding: 10px 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border-radius: 8px;
-  color: white;
-  text-decoration: none;
-  font-size: 16px;
-}
-
-nav.menu a i {
-  width: 22px;
-  text-align: center;
-}
-
-nav.menu a:hover,
-nav.menu a.active {
-  background: rgba(255,255,255,.18);
-}
-
 main.conteudo {
   flex: 1;
   min-width: 0;
@@ -622,81 +553,7 @@ main.conteudo {
   box-shadow: none;
 }
 
-.footer-content {
-  width: calc(100% - 40px);
-  max-width: 1180px;
-  min-height: 52px;
-  margin: 0 auto;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 25px;
-}
-
-.footer-left {
-  display: flex;
-  align-items: center;
-  gap: 30px;
-}
-
-.footer-brand {
-  color: #38a5ff;
-  font-size: 17px;
-  font-weight: 700;
-}
-
-.footer-links {
-  display: flex;
-  align-items: center;
-  gap: 22px;
-}
-
-.footer-links a {
-  color: #64748b;
-  font-size: 12px;
-  font-weight: 500;
-  text-decoration: none;
-  transition: 0.2s ease;
-}
-
-.footer-links a:hover {
-  color: #38a5ff;
-}
-
-.footer-copy {
-  color: #a0a9b5;
-  font-size: 10px;
-  white-space: nowrap;
-}
-
-@media (max-width: 700px) {
-  .footer-content {
-    width: 100%;
-    padding: 15px 18px;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .footer-left {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .footer-links {
-    gap: 18px;
-  }
-}
-
 @media (max-width: 800px) {
-
-  .container {
-    flex-direction: column;
-  }
-
-  nav.menu {
-    width: 100%;
-  }
 
   main.conteudo {
     padding: 20px 15px;
@@ -753,4 +610,3 @@ main.conteudo {
   }
 
 }
-

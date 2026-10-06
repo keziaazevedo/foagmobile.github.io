@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const SAVE_URL =
     window.FLASHCARDS_SAVE_URL ||
-    'salvar_baralho.php';
+    FOAG_CONFIG.endpoints.flashcardsBaralhoSalvar;
 
 
   // ==========================================
@@ -96,25 +96,25 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
 
   function showToast(message) {
+      if (!toast) {
+        return;
+      }
 
-    if (!toast) {
-      return;
+      clearTimeout(toastTimer);
+
+      if (window.FOAG?.ui?.showSimpleToast) {
+        toastTimer = FOAG.ui.showSimpleToast(
+          toast,
+          message,
+          { duracao: 2600, classe: 'show' }
+        );
+        return;
+      }
+
+      toast.textContent = message;
+      toast.classList.add('show');
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
     }
-
-    toast.textContent = message;
-
-    toast.classList.add('show');
-
-    clearTimeout(toastTimer);
-
-    toastTimer =
-      setTimeout(() => {
-
-        toast.classList.remove('show');
-
-      }, 2600);
-
-  }
 
 
   // ==========================================
@@ -639,7 +639,7 @@ document.addEventListener('DOMContentLoaded', () => {
     () => {
 
         window.location.href =
-        `baralho.php?id=${encodeURIComponent(baralho.id)}`;
+        `${FOAG_CONFIG.url('estudos/flashcards/baralho.php')}?id=${encodeURIComponent(baralho.id)}`;
 
     }
     );
@@ -678,7 +678,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         window.location.href =
-        `estudar.php?id=${encodeURIComponent(baralho.id)}`;
+        `${FOAG_CONFIG.url('estudos/flashcards/estudar.php')}?id=${encodeURIComponent(baralho.id)}`;
 
     }
     );
@@ -1244,7 +1244,7 @@ document.addEventListener('DOMContentLoaded', () => {
       () => {
 
         window.location.href =
-          '../../perfil/perfil.php';
+          FOAG_CONFIG.pages.perfil;
 
       }
     );
@@ -1263,7 +1263,7 @@ document.addEventListener('DOMContentLoaded', () => {
       () => {
 
         window.location.href =
-          '../../configuracoes/configuracoes.php';
+          FOAG_CONFIG.pages.configuracoes;
 
       }
     );
@@ -1314,7 +1314,7 @@ document.addEventListener('DOMContentLoaded', () => {
       () => {
 
         window.location.href =
-          '../../login/logout.php';
+          FOAG_CONFIG.pages.logout;
 
       }
     );

@@ -1,4 +1,6 @@
 <?php
+
+require_once __DIR__ . '/../../config/bootstrap.php';
 // Configuração das insígnias disponíveis no sistema
 
 $insignias_disponiveis = [
@@ -167,14 +169,14 @@ $categorias_insignias = [
 
 // Funções
 function usuarioTemInsignia($codigoUsuario, $insigniaId) {
-    $caminho = __DIR__ . '/../json/usuarios/' . $codigoUsuario . '/insignias.json';
+    $caminho = FOAG_USUARIOS_DIR . '/' . $codigoUsuario . '/insignias.json';
     if (!file_exists($caminho)) return false;
     $dados = json_decode(file_get_contents($caminho), true);
     return is_array($dados) && in_array($insigniaId, $dados);
 }
 
 function desbloquearInsignia($codigoUsuario, $insigniaId) {
-    $caminho = __DIR__ . '/../json/usuarios/' . $codigoUsuario . '/insignias.json';
+    $caminho = FOAG_USUARIOS_DIR . '/' . $codigoUsuario . '/insignias.json';
     $pasta = dirname($caminho);
     if (!is_dir($pasta)) return false;
     
@@ -193,7 +195,7 @@ function desbloquearInsignia($codigoUsuario, $insigniaId) {
 function getInsigniasUsuario($codigoUsuario) {
     global $insignias_disponiveis;
     
-    $caminho = __DIR__ . '/../json/usuarios/' . $codigoUsuario . '/insignias.json';
+    $caminho = FOAG_USUARIOS_DIR . '/' . $codigoUsuario . '/insignias.json';
     if (!file_exists($caminho)) return [];
     
     $ids = json_decode(file_get_contents($caminho), true) ?: [];
@@ -209,7 +211,7 @@ function getInsigniasUsuario($codigoUsuario) {
 function verificarDesbloquearInsignias($codigoUsuario) {
     global $insignias_disponiveis;
     
-    $caminhoPerfil = __DIR__ . '/../json/usuarios/' . $codigoUsuario . '/perfil.json';
+    $caminhoPerfil = FOAG_USUARIOS_DIR . '/' . $codigoUsuario . '/perfil.json';
     if (!file_exists($caminhoPerfil)) return;
     
     $perfil = json_decode(file_get_contents($caminhoPerfil), true);
@@ -246,7 +248,7 @@ function verificarDesbloquearInsignias($codigoUsuario) {
 }
 
 function garantirArquivoInsignias($codigoUsuario) {
-    $caminho = __DIR__ . '/../json/usuarios/' . $codigoUsuario . '/insignias.json';
+    $caminho = FOAG_USUARIOS_DIR . '/' . $codigoUsuario . '/insignias.json';
     $pasta = dirname($caminho);
     
     if (!is_dir($pasta)) {

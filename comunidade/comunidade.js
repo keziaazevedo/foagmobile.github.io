@@ -25,9 +25,9 @@ document.addEventListener('DOMContentLoaded', function () {
             ? window.USUARIOS_POR_NOME
             : {};
 
-    const CHAT_ACTION_URL = window.CHAT_SAVE_URL || 'salvar_chat.php';
-    const INTERACAO_URL = window.INTERACAO_URL || 'interacao.php';
-    const INTERACOES_SAVE_URL = window.INTERACOES_SAVE_URL || 'salvar_interacao.php';
+    const CHAT_ACTION_URL = window.CHAT_SAVE_URL || FOAG_CONFIG.endpoints.comunidadeChatSalvar;
+    const INTERACAO_URL = window.INTERACAO_URL || FOAG_CONFIG.endpoints.comunidadeInteracao;
+    const INTERACOES_SAVE_URL = window.INTERACOES_SAVE_URL || FOAG_CONFIG.endpoints.comunidadeInteracoesSalvar;
 
     const palavrasProibidas = Array.isArray(window.PALAVRAS_PROIBIDAS)
         ? window.PALAVRAS_PROIBIDAS
@@ -89,14 +89,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function escaparHtml(valor) {
-        if (valor === null || valor === undefined) return '';
-
-        return String(valor)
-            .replaceAll('&', '&amp;')
-            .replaceAll('<', '&lt;')
-            .replaceAll('>', '&gt;')
-            .replaceAll('"', '&quot;')
-            .replaceAll("'", '&#039;');
+        return window.FOAG?.utils?.escapeHtml
+            ? FOAG.utils.escapeHtml(valor)
+            : String(valor ?? '');
     }
 
     function obterIniciais(nome) {
@@ -2181,7 +2176,7 @@ document.addEventListener('DOMContentLoaded', function () {
             function () {
 
                 window.location.href =
-                    '../configuracoes/configuracoes.php';
+                    FOAG_CONFIG.pages.configuracoes;
             }
         );
 
@@ -2194,7 +2189,7 @@ document.addEventListener('DOMContentLoaded', function () {
             function () {
 
                 window.location.href =
-                    '../perfil/perfil.php';
+                    FOAG_CONFIG.pages.perfil;
             }
         );
 
@@ -2265,7 +2260,7 @@ document.addEventListener('DOMContentLoaded', function () {
         function () {
 
             window.location.href =
-                '../login/logout.php';
+                FOAG_CONFIG.pages.logout;
         }
     );
 

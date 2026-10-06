@@ -5,6 +5,9 @@ $current = basename($_SERVER['PHP_SELF']);
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <script src="../global/js/config.js?v=<?= time() ?>"></script>
+    <script src="../global/js/utils.js?v=<?= time() ?>"></script>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sobre | FOAG</title>
@@ -13,6 +16,7 @@ $current = basename($_SERVER['PHP_SELF']);
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="../global/css/cursor.css">
+    <link rel="stylesheet" href="../global/css/layout.css?v=<?= time() ?>">
 </head>
 
 <body>

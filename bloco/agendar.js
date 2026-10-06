@@ -11,10 +11,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // =================================================
 
     const AGENDA_SAVE_URL =
-        window.AGENDA_SAVE_URL || 'salvar_agenda.php';
+        window.AGENDA_SAVE_URL || FOAG_CONFIG.endpoints.agendaSalvar;
 
     const HORARIO_SAVE_URL =
-        window.HORARIO_SAVE_URL || 'salvar_agenda.php';
+        window.HORARIO_SAVE_URL || FOAG_CONFIG.endpoints.agendaSalvar;
 
     const HORARIO_HTML =
         typeof window.HORARIO_HTML === 'string'
@@ -126,29 +126,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function escaparHtml(valor) {
-        return String(
-            valor ?? ''
-        )
-            .replaceAll(
-                '&',
-                '&amp;'
-            )
-            .replaceAll(
-                '<',
-                '&lt;'
-            )
-            .replaceAll(
-                '>',
-                '&gt;'
-            )
-            .replaceAll(
-                '"',
-                '&quot;'
-            )
-            .replaceAll(
-                "'",
-                '&#039;'
-            );
+        return window.FOAG?.utils?.escapeHtml
+            ? FOAG.utils.escapeHtml(valor)
+            : String(valor ?? '');
     }
 
     function nomeArquivoSeguro(nome) {
@@ -4316,7 +4296,7 @@ document.addEventListener('DOMContentLoaded', function () {
             'click',
             function () {
                 window.location.href =
-                    '../configuracoes/configuracoes.php';
+                    FOAG_CONFIG.pages.configuracoes;
             }
         );
 
@@ -4325,7 +4305,7 @@ document.addEventListener('DOMContentLoaded', function () {
             'click',
             function () {
                 window.location.href =
-                    '../perfil/perfil.php';
+                    FOAG_CONFIG.pages.perfil;
             }
         );
 
@@ -4360,7 +4340,7 @@ document.addEventListener('DOMContentLoaded', function () {
             'click',
             function () {
                 window.location.href =
-                    '../login/logout.php';
+                    FOAG_CONFIG.pages.logout;
             }
         );
 

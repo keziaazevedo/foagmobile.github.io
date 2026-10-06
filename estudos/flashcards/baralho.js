@@ -21,17 +21,17 @@ document.addEventListener(
 
     const SAVE_URL =
       window.CARTAO_SAVE_URL ||
-      'salvar_cartao.php';
+      FOAG_CONFIG.endpoints.flashcardsCartaoSalvar;
 
 
     const EDIT_URL =
       window.CARTAO_EDIT_URL ||
-      'editar_cartao.php';
+      FOAG_CONFIG.endpoints.flashcardsCartaoEditar;
 
 
     const DELETE_URL =
       window.CARTAO_DELETE_URL ||
-      'excluir_cartao.php';
+      FOAG_CONFIG.endpoints.flashcardsCartaoExcluir;
 
 
     const BARALHO_COR =
@@ -126,41 +126,25 @@ document.addEventListener(
     // TOAST
     // ==========================================
 
-    function showToast(
-      message
-    ) {
-
+    function showToast(message) {
       if (!toast) {
         return;
       }
 
+      clearTimeout(toastTimer);
 
-      toast.textContent =
-        message;
-
-
-      toast.classList.add(
-        'show'
-      );
-
-
-      clearTimeout(
-        toastTimer
-      );
-
-
-      toastTimer =
-        setTimeout(
-          () => {
-
-            toast.classList.remove(
-              'show'
-            );
-
-          },
-          2600
+      if (window.FOAG?.ui?.showSimpleToast) {
+        toastTimer = FOAG.ui.showSimpleToast(
+          toast,
+          message,
+          { duracao: 2600, classe: 'show' }
         );
+        return;
+      }
 
+      toast.textContent = message;
+      toast.classList.add('show');
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
     }
 
 
@@ -1335,7 +1319,7 @@ document.addEventListener(
         () => {
 
           window.location.href =
-            '../../perfil/perfil.php';
+            FOAG_CONFIG.pages.perfil;
 
         }
       );
@@ -1354,7 +1338,7 @@ document.addEventListener(
         () => {
 
           window.location.href =
-            '../../configuracoes/configuracoes.php';
+            FOAG_CONFIG.pages.configuracoes;
 
         }
       );
@@ -1405,7 +1389,7 @@ document.addEventListener(
         () => {
 
           window.location.href =
-            '../../login/logout.php';
+            FOAG_CONFIG.pages.logout;
 
         }
       );

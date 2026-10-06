@@ -4,7 +4,7 @@
 
 const SAVE_URL =
   window.POMODORO_SAVE_URL ||
-  'salvar_pomodoro.php';
+  FOAG_CONFIG.endpoints.pomodoroSalvar;
 
 const state =
   window.POMODORO_DATA &&
@@ -187,7 +187,7 @@ if (iconPerfil) {
     () => {
 
       window.location.href =
-        '../../perfil/perfil.php';
+        FOAG_CONFIG.pages.perfil;
 
     }
   );
@@ -204,7 +204,7 @@ if (iconConfiguracoes) {
     () => {
 
       window.location.href =
-        '../../configuracoes/configuracoes.php';
+        FOAG_CONFIG.pages.configuracoes;
 
     }
   );
@@ -240,7 +240,7 @@ if (confirmLogout) {
     () => {
 
       window.location.href =
-        '../../login/logout.php';
+        FOAG_CONFIG.pages.logout;
 
     }
   );

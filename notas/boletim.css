@@ -56,31 +56,6 @@ nav.menu {
   box-shadow: 5px 5px 15px rgba(0, 0, 0, .15);
 }
 
-nav.menu a {
-  text-decoration: none;
-  color: #fff;
-  font-size: 16px;
-  padding: 10px 12px;
-  border-radius: 8px;
-  transition: background .2s ease;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-nav.menu a:hover,
-nav.menu a.active {
-  background: rgba(255, 255, 255, .18);
-}
-
-.cabecalho {
-  position: relative;
-  padding: 10px 20px;
-  font-size: 24px;
-  font-weight: bold;
-  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
-}
-
 /* Ícones no header */
 .header-icons {
   position: absolute;
@@ -93,11 +68,6 @@ nav.menu a.active {
   color: #ffffff;
   cursor: pointer;
   user-select: none;
-}
-
-.header-icons i:hover {
-  color: #006cc5;
-  transform: translateY(-13%) scale(1.1);
 }
 
 /* Modal fundo */
@@ -404,72 +374,6 @@ nav.menu a.active {
   box-shadow: none;
 }
 
-.footer-content {
-  width: calc(100% - 40px);
-  max-width: 1180px;
-  min-height: 52px;
-  margin: 0 auto;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 25px;
-}
-
-.footer-left {
-  display: flex;
-  align-items: center;
-  gap: 30px;
-}
-
-.footer-brand {
-  color: #38a5ff;
-  font-size: 17px;
-  font-weight: 700;
-}
-
-.footer-links {
-  display: flex;
-  align-items: center;
-  gap: 22px;
-}
-
-.footer-links a {
-  color: #64748b;
-  font-size: 12px;
-  font-weight: 500;
-  text-decoration: none;
-  transition: 0.2s ease;
-}
-
-.footer-links a:hover {
-  color: #38a5ff;
-}
-
-.footer-copy {
-  color: #a0a9b5;
-  font-size: 10px;
-  white-space: nowrap;
-}
-
-@media (max-width: 700px) {
-  .footer-content {
-    width: 100%;
-    padding: 15px 18px;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .footer-left {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .footer-links {
-    gap: 18px;
-  }
-}
-
 /* ===========================
    RESPONSIVO
    =========================== */
@@ -485,17 +389,6 @@ nav.menu a.active {
     .container {
         flex-direction: column;
         height: calc(100vh - 70px - 48px);
-    }
-}
-
-@media (max-width: 480px) {
-
-    header.cabecalho {
-        font-size: 20px;
-    }
-
-    nav.menu a {
-        font-size: 14px;
     }
 }
 
@@ -834,23 +727,6 @@ nav.menu a.active {
     color: #ffffff;
     cursor: pointer;
     user-select: none;
-}
-
-.header-icons a {
-    display: flex;
-    align-items: center;
-    color: #ffffff !important;
-    text-decoration: none;
-}
-
-.header-icons a i {
-    color: inherit !important;
-}
-
-.header-icons a:hover i,
-.header-icons i:hover {
-    color: #006cc5 !important;
-    transform: translateY(-13%) scale(1.1);
 }
 
 /* ==========================================
@@ -2454,117 +2330,6 @@ header.cabecalho {
     box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-.header-icons {
-    position: absolute;
-
-    top: 50%;
-    right: 20px;
-
-    transform: translateY(-50%);
-
-    display: flex;
-    align-items: center;
-    gap: 15px;
-
-    color: #ffffff;
-    font-size: 22px;
-
-    cursor: pointer;
-    user-select: none;
-}
-
-.header-icons i {
-    color: #ffffff;
-
-    cursor: pointer;
-
-    transition:
-        color 0.2s ease,
-        transform 0.2s ease;
-}
-
-.header-icons a {
-    display: flex;
-    align-items: center;
-
-    color: #ffffff !important;
-    text-decoration: none;
-}
-
-.header-icons a i {
-    color: inherit !important;
-}
-
-.header-icons a:hover i,
-.header-icons i:hover {
-    color: #006cc5 !important;
-    transform: translateY(-13%) scale(1.1);
-}
-
-.container {
-    width: 100%;
-    flex: 1;
-
-    display: flex;
-
-    min-height: 0;
-}
-
-nav.menu {
-    width: 260px;
-    min-width: 260px;
-
-    flex-shrink: 0;
-
-    padding: 18px;
-
-    display: flex;
-    flex-direction: column;
-
-    gap: 14px;
-
-    background: #38a5ff;
-
-    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.15);
-}
-
-nav.menu a {
-    width: 100%;
-
-    padding: 10px 12px;
-
-    display: flex;
-    align-items: center;
-
-    gap: 8px;
-
-    color: #ffffff;
-    background: transparent;
-
-    font-size: 16px;
-    text-decoration: none;
-
-    border-radius: 8px;
-
-    transition:
-        background-color 0.2s ease,
-        transform 0.2s ease;
-}
-
-nav.menu a i {
-    width: 22px;
-    text-align: center;
-}
-
-nav.menu a:hover,
-nav.menu a.active {
-    background: rgba(255, 255, 255, 0.18);
-}
-
-nav.menu a:hover {
-    transform: translateX(2px);
-}
-
 
 /* =====================================================
    RESPONSIVO — MESMO PADRÃO DO RANKING
@@ -2608,30 +2373,3 @@ nav.menu a:hover {
         font-size: 16px;
     }
 }
-
-@media (max-width: 480px) {
-
-    header.cabecalho {
-        padding: 11px 10px;
-
-        font-size: 19px;
-    }
-
-    .header-icons {
-        right: 10px;
-
-        gap: 9px;
-
-        font-size: 17px;
-    }
-
-    nav.menu {
-        flex-direction: column;
-    }
-
-    nav.menu a {
-        width: 100%;
-        font-size: 16px;
-    }
-}
-

@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
+    <script src="../global/js/config.js?v=<?= time() ?>"></script>
+    <script src="../global/js/utils.js?v=<?= time() ?>"></script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Política de Privacidade da plataforma FOAG - Ferramenta de Organização Acadêmica Geral.">
@@ -656,31 +659,14 @@
         }
     </style>
     <link rel="stylesheet" href="../global/css/cursor.css">
+    <link rel="stylesheet" href="../global/css/layout.css?v=<?= time() ?>">
 </head>
 
 <body>
     <div class="barra-progresso" id="barra-progresso"></div>
 
     <div class="pagina">
-        <header class="cabecalho">
-            <div class="cabecalho-conteudo">
-                <span class="identificacao">
-                    <span class="identificacao-ponto"></span>
-                    Privacidade e proteção de dados
-                </span>
-
-                <h1>Política de Privacidade</h1>
-
-                <p>
-                    Saiba quais dados o FOAG poderá coletar, como essas
-                    informações são utilizadas e quais são os seus direitos.
-                </p>
-
-                <span class="data-atualizacao">
-                    Última atualização: 06 de agosto de 2026
-                </span>
-            </div>
-        </header>
+        <?php include __DIR__ . '/../components/header.php'; ?>
 
         <div class="acoes">
             <a class="botao botao-principal" href="configuracoes.php">

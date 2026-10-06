@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../config/bootstrap.php';
 
 session_start();
 
@@ -134,9 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         } else {
 
-            $pastaLogin =
-                __DIR__ .
-                '/../json/usuario_login';
+            $pastaLogin = FOAG_LOGIN_DATA_DIR;
 
 
             if (!is_dir($pastaLogin)) {
@@ -508,6 +507,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="pt-br">
 
 <head>
+    <script src="../global/js/config.js?v=<?= time() ?>"></script>
+    <script src="../global/js/utils.js?v=<?= time() ?>"></script>
+
 
     <meta charset="UTF-8">
 
@@ -529,7 +531,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
         rel="stylesheet"
     >
-
 </head>
 
 <body>

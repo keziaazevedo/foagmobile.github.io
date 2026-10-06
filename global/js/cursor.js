@@ -200,7 +200,7 @@
     async function carregarCursorDoUsuario() {
         try {
             const resposta = await fetch(
-                `${BASE_PROJETO}/global/cursor_usuario.php?_=${Date.now()}`,
+                `${window.FOAG_CONFIG?.endpoints?.cursorUsuario || `${BASE_PROJETO}/api/usuario/cursor_usuario.php`}?_=${Date.now()}`,
                 {
                     credentials: "same-origin",
                     cache: "no-store"

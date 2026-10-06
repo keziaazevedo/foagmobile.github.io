@@ -10,7 +10,7 @@
 
 const LOJA_ACTION_URL =
     window.LOJA_ACTION_URL ||
-    'salvar_loja.php';
+    FOAG_CONFIG.endpoints.lojaSalvar;
 
 
 let lojaData =
@@ -402,7 +402,7 @@ document.addEventListener(
             function () {
 
                 window.location.href =
-                    '../login/logout.php';
+                    FOAG_CONFIG.pages.logout;
 
             }
         );

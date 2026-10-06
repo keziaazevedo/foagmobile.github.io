@@ -67,15 +67,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const SAVE_MATERIA_URL =
     window.MATERIAS_SAVE_URL ||
-    'salvar_materia.php';
+    FOAG_CONFIG.endpoints.estudosMateriaSalvar;
 
   const UPDATE_MATERIA_URL =
     window.MATERIAS_UPDATE_URL ||
-    'editar_materia.php';
+    FOAG_CONFIG.endpoints.estudosMateriaEditar;
 
   const DELETE_MATERIA_URL =
     window.MATERIAS_DELETE_URL ||
-    'excluir_materia.php';
+    FOAG_CONFIG.endpoints.estudosMateriaExcluir;
 
 
   // ==========================================
@@ -1200,8 +1200,8 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
 
       <div class="subject-card-actions-row">
-        <a class="subject-study-btn" href="pomodoro/pomodoro.php"><i class="fa-solid fa-play"></i> Estudar</a>
-        <a class="subject-flash-btn" href="flashcards/flashcards.php"><i class="fa-solid fa-layer-group"></i> Flashcards</a>
+        <a class="subject-study-btn" href="${FOAG_CONFIG.url('estudos/pomodoro/pomodoro.php')}"><i class="fa-solid fa-play"></i> Estudar</a>
+        <a class="subject-flash-btn" href="${FOAG_CONFIG.url('estudos/flashcards/flashcards.php')}"><i class="fa-solid fa-layer-group"></i> Flashcards</a>
       </div>
     `;
 
@@ -1509,15 +1509,15 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="review-item">
         <div class="review-item-icon"><i class="fa-solid fa-layer-group"></i></div>
         <div class="review-item-main"><strong>${escapeHtml(baralho.nome || baralho.titulo || baralho.materia || 'Baralho')}</strong><span>${cards.length} ${cards.length===1?'cartão':'cartões'} · ${ultima ? `Última revisão: ${formatRelativeDate(ultima)}` : 'Ainda não revisado'}</span></div>
-        <a class="review-button" href="flashcards/flashcards.php">Revisar</a>
+        <a class="review-button" href="${FOAG_CONFIG.url('estudos/flashcards/flashcards.php')}">Revisar</a>
       </div>`).join('');
   }
 
   function escapeHtml(texto) {
-    const div = document.createElement('div');
-    div.textContent = String(texto ?? '');
-    return div.innerHTML;
-  }
+        return window.FOAG?.utils?.escapeHtml
+            ? FOAG.utils.escapeHtml(texto)
+            : String(texto ?? '');
+    }
 
   function renderActivity() {
     const el = document.getElementById('activity-list');
@@ -2103,7 +2103,7 @@ document.addEventListener('DOMContentLoaded', () => {
       () => {
 
         window.location.href =
-          '../perfil/perfil.php';
+          FOAG_CONFIG.pages.perfil;
 
       }
     );
@@ -2122,7 +2122,7 @@ document.addEventListener('DOMContentLoaded', () => {
       () => {
 
         window.location.href =
-          '../configuracoes/configuracoes.php';
+          FOAG_CONFIG.pages.configuracoes;
 
       }
     );
@@ -2173,7 +2173,7 @@ document.addEventListener('DOMContentLoaded', () => {
       () => {
 
         window.location.href =
-          '../login/logout.php';
+          FOAG_CONFIG.pages.logout;
 
       }
     );

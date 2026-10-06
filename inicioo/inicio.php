@@ -1,18 +1,11 @@
 <?php
-session_start();
+require_once __DIR__ . '/../core/usuario.php';
+require_once __DIR__ . '/../core/json.php';
 
-if (empty($_SESSION['codigo_usuario'])) {
-    header('Location: ../login/index.php');
-    exit;
-}
-
-$codigoUsuario = $_SESSION['codigo_usuario'];
+$contextoUsuario = foag_contexto_usuario();
+$codigoUsuario = $contextoUsuario['codigoUsuario'];
+$pastaUsuario = $contextoUsuario['pastaUsuario'];
 $current = basename($_SERVER['PHP_SELF']);
-
-$pastaUsuario =
-    __DIR__ .
-    '/../json/usuarios/' .
-    $codigoUsuario;
 
 if (!is_dir($pastaUsuario)) {
     exit('Pasta do usuário não encontrada.');
@@ -701,6 +694,9 @@ $anotacoesImportantes =
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <script src="../global/js/config.js?v=<?= time() ?>"></script>
+    <script src="../global/js/utils.js?v=<?= time() ?>"></script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FOAG - Início</title>
@@ -1684,7 +1680,7 @@ $anotacoesImportantes =
 
 
 <script>
-window.INICIO_NOTE_SAVE_URL = 'salvar_anotacao.php';
+window.INICIO_NOTE_SAVE_URL = FOAG_CONFIG.endpoints.inicioAnotacaoSalvar;
 </script>
 <script src="inicio.js"></script>
 

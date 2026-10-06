@@ -62,39 +62,6 @@ header.cabecalho {
     rgba(0, 0, 0, 0.2);
 }
 
-.header-icons {
-  position: absolute;
-
-  top: 50%;
-  right: 20px;
-
-  transform: translateY(-50%);
-
-  display: flex;
-  align-items: center;
-  gap: 15px;
-
-  font-size: 1.3rem;
-}
-
-.header-icons i {
-  color: #ffffff;
-
-  cursor: pointer;
-
-  transition:
-    transform 0.2s ease,
-    color 0.2s ease;
-}
-
-.header-icons i:hover {
-  color: #e4e4e4;
-
-  transform:
-    translateY(-10%)
-    scale(1.08);
-}
-
 
 /* =========================
    LAYOUT
@@ -131,42 +98,6 @@ nav.menu {
   box-shadow:
     5px 5px 15px
     rgba(0, 0, 0, 0.15);
-}
-
-nav.menu a {
-  padding: 10px 12px;
-
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  border-radius: 8px;
-
-  color: #ffffff;
-
-  text-decoration: none;
-
-  font-size: 16px;
-
-  transition:
-    background 0.2s ease,
-    transform 0.2s ease;
-}
-
-nav.menu a i {
-  width: 22px;
-
-  text-align: center;
-}
-
-nav.menu a:hover,
-nav.menu a.active {
-  background:
-    rgba(255, 255, 255, 0.18);
-}
-
-nav.menu a:hover {
-  transform: translateX(2px);
 }
 
 
@@ -1035,72 +966,6 @@ main.conteudo {
   box-shadow: none;
 }
 
-.footer-content {
-  width: calc(100% - 40px);
-  max-width: 1180px;
-  min-height: 52px;
-  margin: 0 auto;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 25px;
-}
-
-.footer-left {
-  display: flex;
-  align-items: center;
-  gap: 30px;
-}
-
-.footer-brand {
-  color: #38a5ff;
-  font-size: 17px;
-  font-weight: 700;
-}
-
-.footer-links {
-  display: flex;
-  align-items: center;
-  gap: 22px;
-}
-
-.footer-links a {
-  color: #64748b;
-  font-size: 12px;
-  font-weight: 500;
-  text-decoration: none;
-  transition: 0.2s ease;
-}
-
-.footer-links a:hover {
-  color: #38a5ff;
-}
-
-.footer-copy {
-  color: #a0a9b5;
-  font-size: 10px;
-  white-space: nowrap;
-}
-
-@media (max-width: 700px) {
-  .footer-content {
-    width: 100%;
-    padding: 15px 18px;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .footer-left {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .footer-links {
-    gap: 18px;
-  }
-}
-
 
 /* =========================
    RESPONSIVO
@@ -1123,14 +988,6 @@ main.conteudo {
 
 
 @media (max-width: 768px) {
-
-  .container {
-    flex-direction: column;
-  }
-
-  nav.menu {
-    width: 100%;
-  }
 
   main.conteudo {
     padding: 20px 15px;

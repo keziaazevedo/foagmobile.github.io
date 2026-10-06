@@ -48,37 +48,6 @@ header.cabecalho {
     box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-.header-icons {
-    position: absolute;
-    top: 50%;
-    right: 20px;
-    transform: translateY(-50%);
-
-    display: flex;
-    align-items: center;
-    gap: 15px;
-
-    color: #ffffff;
-    font-size: 22px;
-
-    cursor: pointer;
-    user-select: none;
-}
-
-.header-icons i {
-    color: #ffffff;
-    cursor: pointer;
-
-    transition:
-        color 0.2s ease,
-        transform 0.2s ease;
-}
-
-.header-icons i:hover {
-    color: #006cc5;
-    transform: translateY(-13%) scale(1.1);
-}
-
 /* =========================
    ESTRUTURA PRINCIPAL
 ========================= */
@@ -108,41 +77,6 @@ nav.menu {
     background: #38a5ff;
 
     box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.15);
-}
-
-nav.menu a {
-    width: 100%;
-    padding: 10px 12px;
-
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    color: #ffffff;
-    background: transparent;
-
-    font-size: 16px;
-    text-decoration: none;
-
-    border-radius: 8px;
-
-    transition:
-        background-color 0.2s ease,
-        transform 0.2s ease;
-}
-
-nav.menu a i {
-    width: 22px;
-    text-align: center;
-}
-
-nav.menu a:hover,
-nav.menu a.active {
-    background: rgba(255, 255, 255, 0.18);
-}
-
-nav.menu a:hover {
-    transform: translateX(2px);
 }
 
 /* =========================
@@ -1152,16 +1086,6 @@ footer {
 }
 
 @media (max-width: 480px) {
-    header.cabecalho {
-        padding: 11px 10px;
-        font-size: 19px;
-    }
-
-    .header-icons {
-        right: 10px;
-        gap: 9px;
-        font-size: 17px;
-    }
 
     .main-content {
         padding: 12px 8px;
@@ -1527,8 +1451,6 @@ footer {
 }
 
 
-
-
 /* =====================================================
    EMOJIS — VISUAL DE COLEÇÃO / INSÍGNIAS
    ===================================================== */
@@ -1792,7 +1714,6 @@ body.dark-mode
 }
 
 
-
 /* =====================================================
    ESTADO VAZIO — LOJA
    ===================================================== */
@@ -1963,7 +1884,6 @@ body.dark-mode .btn-ver-todos-itens:hover {
         font-size: 11px;
     }
 }
-
 
 
 /* =====================================================
@@ -2165,7 +2085,6 @@ body.dark-mode
         font-size: 7px;
     }
 }
-
 
 
 /* =====================================================
@@ -3533,7 +3452,6 @@ body.dark-mode
 }
 
 
-
 /* =====================================================
    LEGIBILIDADE — CONTEÚDO DA LOJA
    Cabeçalho principal preservado
@@ -3745,7 +3663,6 @@ body.dark-mode
         font-size: 10px !important;
     }
 }
-
 
 
 /* =====================================================
@@ -4013,7 +3930,6 @@ body.dark-mode
         font-size: 10px !important;
     }
 }
-
 
 
 /* =====================================================
@@ -4634,7 +4550,6 @@ body.dark-mode
         font-size: 10px !important;
     }
 }
-
 
 
 /* =====================================================

@@ -24,80 +24,6 @@ body {
     color: var(--texto);
 }
 
-header.cabecalho {
-    width: 100%;
-    padding: 15px 20px;
-    position: relative;
-    z-index: 10;
-    background: var(--azul-foag);
-    color: #ffffff;
-    font-family: "Snap ITC", sans-serif;
-    font-size: 24px;
-    font-weight: bold;
-    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
-}
-
-.header-icons {
-    position: absolute;
-    top: 50%;
-    right: 20px;
-    transform: translateY(-50%);
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    color: #ffffff;
-    font-size: 1.3rem;
-}
-
-.header-icons i {
-    color: #ffffff;
-    cursor: pointer;
-    transition: 0.2s ease;
-}
-
-.header-icons i:hover {
-    color: #e5e5e5;
-    transform: translateY(-2px) scale(1.08);
-}
-
-.container {
-    flex: 1;
-    display: flex;
-    min-height: 0;
-}
-
-nav.menu {
-    width: 260px;
-    flex-shrink: 0;
-    padding: 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    background: var(--azul-foag);
-    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.15);
-}
-
-nav.menu a {
-    padding: 10px 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    border-radius: 8px;
-    color: #ffffff;
-    font-size: 16px;
-    text-decoration: none;
-    transition: 0.2s ease;
-}
-
-nav.menu a:hover,
-nav.menu a.active {
-    background: rgba(255, 255, 255, 0.18);
-}
-
-nav.menu a:hover {
-    transform: translateX(3px);
-}
-
 .conteudo {
     flex: 1;
     padding: 30px;
@@ -803,19 +729,6 @@ body.dark-mode .total-estrelas .icone-item i {
 }
 
 @media (max-width: 768px) {
-    .container {
-        flex-direction: column;
-    }
-
-    nav.menu {
-        width: 100%;
-        flex-direction: row;
-        overflow-x: auto;
-    }
-
-    nav.menu a {
-        min-width: max-content;
-    }
 
     .conteudo {
         padding: 22px;
@@ -1438,8 +1351,6 @@ body.dark-mode .item-loja-perfil.ativo {
 }
 
 
-
-
 /* =====================================================
    PERFIL — PERSONALIZAÇÕES ORGANIZADAS
    ===================================================== */
@@ -1925,7 +1836,6 @@ body.dark-mode
 }
 
 
-
 /* =====================================================
    PERFIL — EQUIPAR ITEM PELA COLEÇÃO
    ===================================================== */
@@ -2046,7 +1956,6 @@ body.dark-mode
     background: #2c1717;
     color: #ff9d9d;
 }
-
 
 
 /* =====================================================
@@ -3110,7 +3019,6 @@ body.dark-mode
 }
 
 
-
 /* =====================================================
    MODAL DE INSÍGNIAS — NORMAIS X ESPECIAIS
    ===================================================== */
@@ -3531,7 +3439,6 @@ body.dark-mode
 }
 
 
-
 /* =====================================================
    INSÍGNIAS NORMAIS — FAMÍLIAS COM 3 NÍVEIS
    ===================================================== */
@@ -3891,7 +3798,6 @@ body.dark-mode
 }
 
 
-
 /* =====================================================
    INSÍGNIAS — VISUAL LIMPO E MAIOR
    ===================================================== */
@@ -4244,7 +4150,6 @@ body.dark-mode
         font-size: 7px !important;
     }
 }
-
 
 
 /* =====================================================
@@ -4698,7 +4603,6 @@ body.dark-mode
         font-size: 9px !important;
     }
 }
-
 
 
 /* =====================================================
