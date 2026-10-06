@@ -304,6 +304,28 @@ document.addEventListener('DOMContentLoaded', function () {
         `;
     }
 
+    function renderizarEmojiUsuario(codigo, nome) {
+    const visual = obterVisualUsuario(codigo, nome);
+
+    if (
+        !visual ||
+        !visual.emoji ||
+        !visual.emoji.imagem
+    ) {
+        return '';
+    }
+
+    return `
+        <img
+            class="emoji-nome-comunidade"
+            src="${escaparHtml(visual.emoji.imagem)}"
+            alt="${escaparHtml(visual.emoji.nome || 'Emoji')}"
+            title="${escaparHtml(visual.emoji.nome || 'Emoji')}"
+            loading="lazy"
+        >
+    `;
+}
+
     function formatarData(data) {
         if (!data) return 'Data desconhecida';
 
@@ -550,9 +572,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         <span class="nome">
 
-                            ${escaparHtml(
-                                resposta.autor || 'Anônimo'
-                            )}
+                           ${escaparHtml(resposta.autor || 'Anônimo')}
+    ${renderizarEmojiUsuario(
+        resposta.usuario_id || '',
+        resposta.autor || ''
+    )}
+    ${
+        minha
+            ? `<span class="usuario-tag-resposta">Você</span>`
+            : ''
+    } 
 
                             ${
                                 minha
@@ -749,7 +778,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <div>
 
                                     <span class="nome">
-                                        ${escaparHtml(usuarioNome)}
+                                         ${escaparHtml(usuarioNome)}
+                                         ${renderizarEmojiUsuario(usuarioCodigo, usuarioNome)}
                                     </span>
 
                                     <span class="data">
@@ -921,11 +951,9 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <div>
 
                                     <span class="nome">
-                                        ${escaparHtml(
-                                            pergunta.autor || 'Anônimo'
-                                        )}
-                                    </span>
-
+    ${escaparHtml(pergunta.autor || 'Anônimo')}
+    ${renderizarEmojiUsuario(pergunta.usuario_id || '', pergunta.autor || '')}
+</span>
                                     <span class="data">
                                         ${escaparHtml(
                                             formatarData(pergunta.data)

@@ -109,7 +109,8 @@ function estruturaLojaUsuario(): array
             'tema' => null,
             'fundo' => null,
             'moldura' => null,
-            'cursor' => null
+            'cursor' => null,
+            'emoji' => null   // 👈 ADICIONADO
         ]
     ];
 }
@@ -162,6 +163,7 @@ function tipoEquipavelProduto(array $produto): ?string
         'fundos' => 'fundo',
         'molduras' => 'moldura',
         'especiais' => 'cursor',
+        'emojis' => 'emoji',   // 👈 ADICIONADO
         default => null
     };
 }

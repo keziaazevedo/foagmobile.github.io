@@ -71,6 +71,7 @@
         "tema": null,
         "fundo": null,
         "moldura": "moldura_gato_preto",
-        "cursor": "cursor_dragao"
+        "cursor": "cursor_dragao",
+        "emoji": "emoji_feliz"
     }
 }

@@ -92,7 +92,8 @@ function estruturaLojaUsuarioPagina(): array
             'tema' => null,
             'fundo' => null,
             'moldura' => null,
-            'cursor' => null
+            'cursor' => null,
+            'emoji' => null   // 👈 ADICIONADO
         ]
     ];
 }
@@ -153,34 +154,17 @@ function normalizarLojaUsuarioPagina(
     return $padrao;
 }
 
-function tipoEquipavelPagina(
-    array $produto
-): ?string {
+function tipoEquipavelPagina(array $produto): ?string
+{
+    $categoria = (string)($produto['categoria'] ?? '');
 
-    $categoria =
-        (string)(
-            $produto[
-                'categoria'
-            ] ?? ''
-        );
-
-    return match (
-        $categoria
-    ) {
-        'temas' =>
-            'tema',
-
-        'fundos' =>
-            'fundo',
-
-        'molduras' =>
-            'moldura',
-
-        'especiais' =>
-            'cursor',
-
-        default =>
-            null
+    return match ($categoria) {
+        'temas' => 'tema',
+        'fundos' => 'fundo',
+        'molduras' => 'moldura',
+        'especiais' => 'cursor',
+        'emojis' => 'emoji',   // 👈 ADICIONADO
+        default => null
     };
 }
 

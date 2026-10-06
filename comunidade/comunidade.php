@@ -35,7 +35,7 @@ if (!is_dir($pastaUsuario)) {
 
 // ======================================
 // AVATARES DA COMUNIDADE
-// Foto de perfil + moldura equipada
+// Foto + Moldura + Emoji
 // ======================================
 
 $pastaFotosUrl = '../img/perfil/';
@@ -97,10 +97,12 @@ function normalizarAjusteMolduraComunidade($ajuste)
     return $padrao;
 }
 
+// ======================================
+// CATÁLOGO DA LOJA
+// ======================================
+
 $arquivoProdutosLoja = __DIR__ . '/../json/loja/produtos.json';
 $dadosProdutosLoja = lerJsonComunidade($arquivoProdutosLoja);
-
-$moldurasLojaPorId = [];
 
 $itensCatalogoLoja =
     isset($dadosProdutosLoja['itens']) &&
@@ -108,30 +110,55 @@ $itensCatalogoLoja =
         ? $dadosProdutosLoja['itens']
         : [];
 
+// Molduras indexadas por ID
+$moldurasLojaPorId = [];
+
+// Emojis indexados por ID
+$emojisLojaPorId = [];
+
 foreach ($itensCatalogoLoja as $produtoLoja) {
-    if (
-        !is_array($produtoLoja) ||
-        (string)($produtoLoja['categoria'] ?? '') !== 'molduras'
-    ) {
+    if (!is_array($produtoLoja)) {
         continue;
     }
 
-    $idMoldura = trim((string)($produtoLoja['id'] ?? ''));
-    $imagemMoldura = trim((string)($produtoLoja['imagem'] ?? ''));
+    $categoriaProduto = (string)($produtoLoja['categoria'] ?? '');
+    $idProduto = trim((string)($produtoLoja['id'] ?? ''));
+    $imagemProduto = trim((string)($produtoLoja['imagem'] ?? ''));
 
-    if ($idMoldura === '' || $imagemMoldura === '') {
+    if ($idProduto === '' || $imagemProduto === '') {
         continue;
     }
 
-    $moldurasLojaPorId[$idMoldura] = [
-        'id' => $idMoldura,
-        'nome' => (string)($produtoLoja['nome'] ?? 'Moldura'),
-        'imagem' => $imagemMoldura,
-        'ajuste_perfil' => normalizarAjusteMolduraComunidade(
-            $produtoLoja['ajuste_perfil'] ?? []
-        )
-    ];
+    // ------------------------------
+    // MOLDURAS
+    // ------------------------------
+    if ($categoriaProduto === 'molduras') {
+        $moldurasLojaPorId[$idProduto] = [
+            'id' => $idProduto,
+            'nome' => (string)($produtoLoja['nome'] ?? 'Moldura'),
+            'imagem' => $imagemProduto,
+            'ajuste_perfil' => normalizarAjusteMolduraComunidade(
+                $produtoLoja['ajuste_perfil'] ?? []
+            )
+        ];
+        continue;
+    }
+
+    // ------------------------------
+    // EMOJIS
+    // ------------------------------
+    if ($categoriaProduto === 'emojis') {
+        $emojisLojaPorId[$idProduto] = [
+            'id' => $idProduto,
+            'nome' => (string)($produtoLoja['nome'] ?? 'Emoji'),
+            'imagem' => $imagemProduto
+        ];
+    }
 }
+
+// ======================================
+// VISUAL DOS USUÁRIOS
+// ======================================
 
 $usuariosVisuais = [];
 $usuariosPorNome = [];
@@ -148,12 +175,14 @@ if ($pastasUsuariosVisual === false) {
 foreach ($pastasUsuariosVisual as $pastaVisual) {
     $codigoVisual = (string) basename($pastaVisual);
 
+    // ------------------------------
+    // PERFIL
+    // ------------------------------
     $perfilVisual = lerJsonComunidade(
         $pastaVisual . '/perfil.json'
     );
 
-    $nomeVisual =
-        trim((string)($perfilVisual['nome'] ?? ''));
+    $nomeVisual = trim((string)($perfilVisual['nome'] ?? ''));
 
     if ($nomeVisual === '') {
         $nomeVisual = 'Usuário FOAG';
@@ -162,19 +191,14 @@ foreach ($pastasUsuariosVisual as $pastaVisual) {
     // ------------------------------
     // FOTO
     // ------------------------------
-
     $fotoVisual = $fotoPadrao;
 
     if (!empty($perfilVisual['foto'])) {
-        $fotoArquivo = basename(
-            (string)$perfilVisual['foto']
-        );
+        $fotoArquivo = basename((string)$perfilVisual['foto']);
 
         if (
             $fotoArquivo !== '' &&
-            file_exists(
-                $pastaFotosArquivo . $fotoArquivo
-            )
+            file_exists($pastaFotosArquivo . $fotoArquivo)
         ) {
             $fotoVisual = $fotoArquivo;
         }
@@ -185,11 +209,8 @@ foreach ($pastasUsuariosVisual as $pastaVisual) {
         rawurlencode($fotoVisual);
 
     // ------------------------------
-    // MOLDURA
+    // LOJA (MOLDURA + EMOJI)
     // ------------------------------
-
-    $molduraVisual = null;
-
     $lojaVisual = lerJsonComunidade(
         $pastaVisual . '/loja.json'
     );
@@ -206,6 +227,11 @@ foreach ($pastasUsuariosVisual as $pastaVisual) {
             ? $lojaVisual['itens_comprados']
             : [];
 
+    // ------------------------------
+    // MOLDURA ATIVA
+    // ------------------------------
+    $molduraVisual = null;
+
     $idMolduraVisual =
         isset($itensAtivosVisual['moldura'])
             ? trim((string)$itensAtivosVisual['moldura'])
@@ -213,28 +239,62 @@ foreach ($pastasUsuariosVisual as $pastaVisual) {
 
     if (
         $idMolduraVisual !== '' &&
-        in_array(
-            $idMolduraVisual,
-            $itensCompradosVisual,
-            true
-        ) &&
+        in_array($idMolduraVisual, $itensCompradosVisual, true) &&
         isset($moldurasLojaPorId[$idMolduraVisual])
     ) {
-        $molduraVisual =
-            $moldurasLojaPorId[$idMolduraVisual];
+        $molduraVisual = $moldurasLojaPorId[$idMolduraVisual];
     }
 
+    // ------------------------------
+    // EMOJI ATIVO
+    // ------------------------------
+    $emojiVisual = null;
+
+    $idEmojiVisual =
+        isset($itensAtivosVisual['emoji'])
+            ? trim((string)$itensAtivosVisual['emoji'])
+            : '';
+
+    if (
+        $idEmojiVisual !== '' &&
+        in_array($idEmojiVisual, $itensCompradosVisual, true) &&
+        isset($emojisLojaPorId[$idEmojiVisual])
+    ) {
+        $emojiVisual = $emojisLojaPorId[$idEmojiVisual];
+    }
+
+    // ------------------------------
+// EMOJI ATIVO
+// ------------------------------
+$emojiVisual = null;
+
+$idEmojiVisual =
+    isset($itensAtivosVisual['emoji'])
+        ? trim((string)$itensAtivosVisual['emoji'])
+        : '';
+
+if (
+    $idEmojiVisual !== '' &&
+    in_array($idEmojiVisual, $itensCompradosVisual, true) &&
+    isset($emojisLojaPorId[$idEmojiVisual])
+) {
+    $emojiVisual = $emojisLojaPorId[$idEmojiVisual];
+}
+
+    // ------------------------------
+    // VISUAL FINAL
+    // ------------------------------
     $visual = [
         'codigo_usuario' => $codigoVisual,
         'nome' => $nomeVisual,
         'foto' => $caminhoFotoVisual,
-        'moldura' => $molduraVisual
+        'moldura' => $molduraVisual,
+        'emoji' => $emojiVisual
     ];
 
     $usuariosVisuais[$codigoVisual] = $visual;
 
-    $chaveNome =
-        normalizarNomeComunidade($nomeVisual);
+    $chaveNome = normalizarNomeComunidade($nomeVisual);
 
     /*
      * Compatibilidade com posts/respostas antigos que
@@ -256,8 +316,7 @@ if (
     isset($usuariosVisuais[$codigoUsuario]) &&
     !empty($usuariosVisuais[$codigoUsuario]['nome'])
 ) {
-    $nomeUsuario =
-        $usuariosVisuais[$codigoUsuario]['nome'];
+    $nomeUsuario = $usuariosVisuais[$codigoUsuario]['nome'];
 }
 
 // ======================================
@@ -310,7 +369,6 @@ function limparPerguntaParaExibicao($pergunta, $palavrasProibidas)
         $palavrasProibidas
     );
 
-    // Não envia texto bruto/ofensivo para o navegador.
     unset($pergunta['texto_original']);
 
     if (!isset($pergunta['respostas']) || !is_array($pergunta['respostas'])) {
@@ -458,7 +516,7 @@ usort($todasPerguntas, function ($a, $b) {
 });
 
 // ======================================
-// MATÉRIAS — antes dos filtros
+// MATÉRIAS
 // ======================================
 
 $materias = ['Geral'];
@@ -516,7 +574,7 @@ if ($filtroBusca !== '') {
 
     <title>Comunidade - FOAG</title>
 
-    <link rel="stylesheet" href="comunidade.css?v=4">
+    <link rel="stylesheet" href="comunidade.css?v=5">
     <link rel="stylesheet" href="../m.escuro/dark_basee.css">
     <link rel="stylesheet" href="dark_comu.css">
 
@@ -560,8 +618,6 @@ if ($filtroBusca !== '') {
 
         window.CHAT_SAVE_URL = "salvar_chat.php";
         window.INTERACAO_URL = "interacao.php";
-
-        // O arquivo enviado está no singular.
         window.INTERACOES_SAVE_URL = "salvar_interacao.php";
 
         window.USUARIO_NOME = <?= json_encode(
@@ -581,7 +637,6 @@ if ($filtroBusca !== '') {
             JSON_HEX_APOS |
             JSON_HEX_QUOT
         ); ?>;
-
 
         window.USUARIOS_VISUAIS = <?= json_encode(
             $usuariosVisuais,
@@ -940,7 +995,7 @@ if ($filtroBusca !== '') {
 </div>
 
 
-<script src="comunidade.js?v=4"></script>
+<script src="comunidade.js?v=5"></script>
 
 <script src="../configuracoes/aparencia.js?v=5"></script>
 <script src="../configuracoes/acessibilidade.js?v=25" defer></script>

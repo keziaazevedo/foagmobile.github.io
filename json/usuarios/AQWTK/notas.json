@@ -11,12 +11,20 @@
     "periodos": {
         "Padrão": {
             "materias": [
-                "a"
+                "a",
+                ""
             ],
             "materia_ids": [
-                "MAT_AD2B4745"
+                "MAT_AD2B4745",
+                ""
             ],
             "notas": [
+                {
+                    "1": null,
+                    "2": null,
+                    "3": null,
+                    "4": null
+                },
                 {
                     "1": null,
                     "2": null,

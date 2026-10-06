@@ -1193,41 +1193,22 @@ document.addEventListener(
         // IDENTIFICAR TIPO EQUIPÁVEL
         // =================================================
 
-        function getTipoEquipavel(
-            item
-        ) {
-
-            switch (
-                item.categoria
-            ) {
-
-                case 'temas':
-
-                    return 'tema';
-
-
-                case 'fundos':
-
-                    return 'fundo';
-
-
-                case 'molduras':
-
-                    return 'moldura';
-
-
-                case 'especiais':
-
-                    return 'cursor';
-
-
-                default:
-
-                    return null;
-
-            }
-
-        }
+ function getTipoEquipavel(item) {
+    switch (item.categoria) {
+        case 'temas':
+            return 'tema';
+        case 'fundos':
+            return 'fundo';
+        case 'molduras':
+            return 'moldura';
+        case 'especiais':
+            return 'cursor';
+        case 'emojis':
+            return 'emoji';   // 👈 ADICIONADO
+        default:
+            return null;
+    }
+}
 
 
         // =================================================

@@ -1729,3 +1729,55 @@ body.dark-mode
         --comu-avatar-size: 26px;
     }
 }
+/* =====================================================
+   EMOJI DO NOME — COMUNIDADE
+   ===================================================== */
+
+.emoji-nome-comunidade {
+    width: 18px;
+    height: 18px;
+
+    display: inline-block;
+    vertical-align: -3px;
+
+    margin-left: 5px;
+
+    object-fit: contain;
+    object-position: center;
+
+    border-radius: 0;
+    background: transparent;
+
+    pointer-events: none;
+    user-select: none;
+
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .15));
+}
+
+/* Respostas usam um emoji ligeiramente menor */
+.resposta-item .emoji-nome-comunidade {
+    width: 15px;
+    height: 15px;
+    vertical-align: -2px;
+    margin-left: 4px;
+}
+
+/* Dark mode */
+body.dark-mode .emoji-nome-comunidade {
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .35));
+}
+
+/* Mobile */
+@media (max-width: 520px) {
+    .emoji-nome-comunidade {
+        width: 16px;
+        height: 16px;
+        vertical-align: -3px;
+        margin-left: 4px;
+    }
+
+    .resposta-item .emoji-nome-comunidade {
+        width: 13px;
+        height: 13px;
+    }
+}
