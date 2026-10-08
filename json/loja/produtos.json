@@ -180,7 +180,7 @@
             "categoria": "emojis",
             "imagem": "../img/loja/emoji/sorrindo.png"
         },
-                {
+        {
             "id": "emoji_cafe",
             "nome": "cafe",
             "descricao": "Gatinho um cafe por favor",
@@ -189,7 +189,7 @@
             "categoria": "emojis",
             "imagem": "../img/loja/emoji/cafe.png"
         },
-                {
+        {
             "id": "emoji_certo",
             "nome": "beleza",
             "descricao": "Gatinho beleza",
@@ -198,7 +198,7 @@
             "categoria": "emojis",
             "imagem": "../img/loja/emoji/beleza.png"
         },
-                {
+        {
             "id": "emoji_isso",
             "nome": "isso",
             "descricao": "Gatinho isso",
@@ -207,7 +207,7 @@
             "categoria": "emojis",
             "imagem": "../img/loja/emoji/yayyy.png"
         },
-                {
+        {
             "id": "emoji_vergonha",
             "nome": "vergonha",
             "descricao": "Gatinho com vergonha",
@@ -225,7 +225,7 @@
             "categoria": "emojis",
             "imagem": "../img/loja/emoji/hu.png"
         },
-                {
+        {
             "id": "emoji_YIPPIE",
             "nome": "YIPPIE",
             "descricao": "Gatinho YIPPIE!",
@@ -234,7 +234,7 @@
             "categoria": "emojis",
             "imagem": "../img/loja/emoji/yippie.png"
         },
-                {
+        {
             "id": "emoji_huh",
             "nome": "Foi mal",
             "descricao": "Gatinho que errou",
@@ -243,7 +243,7 @@
             "categoria": "emojis",
             "imagem": "../img/loja/emoji/huh.png"
         },
-                {
+        {
             "id": "emoji_estrela",
             "nome": "estrela",
             "descricao": "Gatinho me da estrela",
@@ -252,7 +252,7 @@
             "categoria": "emojis",
             "imagem": "../img/loja/emoji/estrela.png"
         },
-                {
+        {
             "id": "emoji_raiva",
             "nome": "Bravo",
             "descricao": "Gatinho com raiva",
@@ -261,7 +261,7 @@
             "categoria": "emojis",
             "imagem": "../img/loja/emoji/bravo.png"
         },
-                {
+        {
             "id": "emoji_",
             "nome": "Sorriso",
             "descricao": "Gatinho feliz",
@@ -376,7 +376,15 @@
             "preco": 70,
             "icone": "fa-regular fa-image",
             "categoria": "molduras",
-            "imagem": "../img/loja/moldura/natureza.png"
+            "imagem": "../img/loja/moldura/natureza.png",
+            "ajuste_perfil": {
+                "moldura_escala": 1.27,
+                "moldura_x": 0,
+                "moldura_y": 1,
+                "foto_escala": 1,
+                "foto_x": 0,
+                "foto_y": 0
+            }
         },
         {
             "id": "moldura_nuvens",
@@ -385,7 +393,15 @@
             "preco": 75,
             "icone": "fa-regular fa-image",
             "categoria": "molduras",
-            "imagem": "../img/loja/moldura/nuvens.png"
+            "imagem": "../img/loja/moldura/nuvens.png",
+            "ajuste_perfil": {
+                "moldura_escala": 1.42,
+                "moldura_x": 2,
+                "moldura_y": 3,
+                "foto_escala": 1,
+                "foto_x": 0,
+                "foto_y": 0
+            }
         },
         {
             "id": "moldura_estrelas",
@@ -394,8 +410,18 @@
             "preco": 75,
             "icone": "fa-regular fa-image",
             "categoria": "molduras",
-            "imagem": "../img/loja/moldura/estrelas.png"
+            "imagem": "../img/loja/moldura/estrelas.png",
+            "ajuste_perfil": {
+                "moldura_escala": 1.13,
+                "moldura_x": -1,
+                "moldura_y": 1,
+                "foto_escala": 1,
+                "foto_x": 0,
+                "foto_y": 0
+            }
         },
+
+        
         {
             "id": "moldura_agua",
             "nome": "Moldura Água",
@@ -403,7 +429,15 @@
             "preco": 80,
             "icone": "fa-regular fa-image",
             "categoria": "molduras",
-            "imagem": "../img/loja/moldura/agua.png"
+            "imagem": "../img/loja/moldura/agua.png",
+            "ajuste_perfil": {
+                "moldura_escala": 1.37,
+                "moldura_x": 0,
+                "moldura_y": 0,
+                "foto_escala": 1,
+                "foto_x": 0,
+                "foto_y": 0
+            }
         },
         {
             "id": "moldura_borboletas",
@@ -412,7 +446,15 @@
             "preco": 85,
             "icone": "fa-regular fa-image",
             "categoria": "molduras",
-            "imagem": "../img/loja/moldura/borboletas.png"
+            "imagem": "../img/loja/moldura/borboletas.png",
+            "ajuste_perfil": {
+                "moldura_escala": 1.55,
+                "moldura_x": 2,
+                "moldura_y": 2,
+                "foto_escala": 1,
+                "foto_x": 0,
+                "foto_y": 0
+            }
         },
         {
             "id": "moldura_cachorro",
@@ -421,7 +463,15 @@
             "preco": 90,
             "icone": "fa-regular fa-image",
             "categoria": "molduras",
-            "imagem": "../img/loja/moldura/cachorro.png"
+            "imagem": "../img/loja/moldura/cachorro.png",
+            "ajuste_perfil": {
+                "moldura_escala": 1.85,
+                "moldura_x": -6,
+                "moldura_y": -16,
+                "foto_escala": 1,
+                "foto_x": 0,
+                "foto_y": 0
+            }
         },
         {
             "id": "moldura_gato_laranja",
@@ -430,7 +480,15 @@
             "preco": 90,
             "icone": "fa-regular fa-image",
             "categoria": "molduras",
-            "imagem": "../img/loja/moldura/gatolaranja.png"
+            "imagem": "../img/loja/moldura/gatolaranja.png",
+            "ajuste_perfil": {
+                "moldura_escala": 1.5,
+                "moldura_x": 3,
+                "moldura_y": -20,
+                "foto_escala": 1,
+                "foto_x": 0,
+                "foto_y": 0
+            }
         },
         {
             "id": "moldura_neon",
@@ -439,7 +497,15 @@
             "preco": 80,
             "icone": "fa-regular fa-image",
             "categoria": "molduras",
-            "imagem": "../img/loja/moldura/neon.png"
+            "imagem": "../img/loja/moldura/neon.png",
+            "ajuste_perfil": {
+                "moldura_escala": 1.34,
+                "moldura_x": 0,
+                "moldura_y": 2,
+                "foto_escala": 1,
+                "foto_x": 0,
+                "foto_y": 0
+            }
         },
         {
             "id": "moldura_campeao",
@@ -448,7 +514,15 @@
             "preco": 92,
             "icone": "fa-regular fa-image",
             "categoria": "molduras",
-            "imagem": "../img/loja/moldura/campeao.png"
+            "imagem": "../img/loja/moldura/campeao.png",
+            "ajuste_perfil": {
+                "moldura_escala": 1.51,
+                "moldura_x": 0,
+                "moldura_y": 4,
+                "foto_escala": 1,
+                "foto_x": 0,
+                "foto_y": 0
+            }
         },
         {
             "id": "moldura_gato_preto",
@@ -457,7 +531,15 @@
             "preco": 98,
             "icone": "fa-regular fa-image",
             "categoria": "molduras",
-            "imagem": "../img/loja/moldura/gatopreto.png"
+            "imagem": "../img/loja/moldura/gatopreto.png",
+            "ajuste_perfil": {
+                "moldura_escala": 1.92,
+                "moldura_x": 0,
+                "moldura_y": -13,
+                "foto_escala": 1,
+                "foto_x": 0,
+                "foto_y": 0
+            }
         },
         {
             "id": "moldura_fogo",
@@ -466,7 +548,15 @@
             "preco": 100,
             "icone": "fa-regular fa-image",
             "categoria": "molduras",
-            "imagem": "../img/loja/moldura/fogo.png"
+            "imagem": "../img/loja/moldura/fogo.png",
+            "ajuste_perfil": {
+                "moldura_escala": 1.51,
+                "moldura_x": 1,
+                "moldura_y": 4,
+                "foto_escala": 1,
+                "foto_x": 0,
+                "foto_y": 0
+            }
         },
         {
             "id": "moldura_galaxia",
@@ -475,7 +565,15 @@
             "preco": 90,
             "icone": "fa-regular fa-image",
             "categoria": "molduras",
-            "imagem": "../img/loja/moldura/galaxia.png"
+            "imagem": "../img/loja/moldura/galaxia.png",
+            "ajuste_perfil": {
+                "moldura_escala": 1.34,
+                "moldura_x": 2,
+                "moldura_y": -2,
+                "foto_escala": 1,
+                "foto_x": 0,
+                "foto_y": 0
+            }
         },
         {
             "id": "moldura_livros",
@@ -484,7 +582,15 @@
             "preco": 80,
             "icone": "fa-regular fa-image",
             "categoria": "molduras",
-            "imagem": "../img/loja/moldura/livros.png"
+            "imagem": "../img/loja/moldura/livros.png",
+            "ajuste_perfil": {
+                "moldura_escala": 1.39,
+                "moldura_x": -2,
+                "moldura_y": 1,
+                "foto_escala": 1,
+                "foto_x": 0,
+                "foto_y": 0
+            }
         },
         {
             "id": "moldura_sakura",
@@ -493,7 +599,15 @@
             "preco": 75,
             "icone": "fa-regular fa-image",
             "categoria": "molduras",
-            "imagem": "../img/loja/moldura/sakura.png"
+            "imagem": "../img/loja/moldura/sakura.png",
+            "ajuste_perfil": {
+                "moldura_escala": 1.26,
+                "moldura_x": 2,
+                "moldura_y": -2,
+                "foto_escala": 1,
+                "foto_x": 0,
+                "foto_y": 0
+            }
         },
         {
             "id": "moldura_querubim",
@@ -502,7 +616,15 @@
             "preco": 95,
             "icone": "fa-regular fa-image",
             "categoria": "molduras",
-            "imagem": "../img/loja/moldura/querubim.png"
+            "imagem": "../img/loja/moldura/querubim.png",
+            "ajuste_perfil": {
+                "moldura_escala": 1.44,
+                "moldura_x": 1,
+                "moldura_y": -5,
+                "foto_escala": 1,
+                "foto_x": 0,
+                "foto_y": 0
+            }
         },
         {
             "id": "moldura_dragao",
@@ -511,7 +633,15 @@
             "preco": 100,
             "icone": "fa-regular fa-image",
             "categoria": "molduras",
-            "imagem": "../img/loja/moldura/dragao.png"
+            "imagem": "../img/loja/moldura/dragao.png",
+            "ajuste_perfil": {
+                "moldura_escala": 1.35,
+                "moldura_x": -1,
+                "moldura_y": -1,
+                "foto_escala": 1,
+                "foto_x": 0,
+                "foto_y": 0
+            }
         },
         {
             "id": "moldura_rei",
@@ -520,79 +650,93 @@
             "preco": 100,
             "icone": "fa-regular fa-image",
             "categoria": "molduras",
-            "imagem": "../img/loja/moldura/rei.png"
+            "imagem": "../img/loja/moldura/rei.png",
+            "ajuste_perfil": {
+                "moldura_escala": 1.37,
+                "moldura_x": 0,
+                "moldura_y": -4,
+                "foto_escala": 1,
+                "foto_x": 0,
+                "foto_y": 0
+            }
         },
-        {
-            "id": "cursor_estrela",
-            "nome": "Cursor Estrela",
-            "descricao": " Um cursor em forma de estrela",
-            "preco": 40,
-            "icone": "fa-solid fa-star",
-            "categoria": "especiais",
-            "imagem": "../img/loja/especial/"
-        },
-        {
-            "id": "cursor_foguete",
-            "nome": "Cursor Foguete",
-            "descricao": " Um cursor de foguete espacial",
-            "preco": 45,
-            "icone": "fa-solid fa-rocket",
-            "categoria": "especiais",
-            "imagem": "../img/loja/especial/"
-        },
-        {
-            "id": "cursor_coracao",
-            "nome": "Cursor Coração",
-            "descricao": " Um cursor em formato de coração",
-            "preco": 35,
-            "icone": "fa-solid fa-heart",
-            "categoria": "especiais",
-            "imagem": "../img/loja/especial/"
-        },
-        {
-            "id": "cursor_lampada",
-            "nome": "Cursor Lâmpada",
-            "descricao": " Um cursor com uma lâmpada brilhante",
-            "preco": 40,
-            "icone": "fa-solid fa-lightbulb",
-            "categoria": "especiais",
-            "imagem": "../img/loja/especial/"
-        },
-        {
-            "id": "cursor_raio",
-            "nome": "Cursor Raio",
-            "descricao": " Um cursor com um raio de energia",
-            "preco": 50,
-            "icone": "fa-solid fa-bolt",
-            "categoria": "especiais",
-            "imagem": "../img/loja/especial/"
-        },
-        {
-            "id": "cursor_trofeu",
-            "nome": "Cursor Troféu",
-            "descricao": " Um cursor de vencedor",
-            "preco": 55,
-            "icone": "fa-solid fa-trophy",
-            "categoria": "especiais",
-            "imagem": "../img/loja/especial/"
-        },
-        {
-            "id": "cursor_alvo",
-            "nome": "Cursor Alvo",
-            "descricao": " Um cursor preciso como um alvo",
-            "preco": 45,
-            "icone": "fa-solid fa-bullseye",
-            "categoria": "especiais",
-            "imagem": "../img/loja/especial/"
-        },
-        {
-            "id": "cursor_flor",
-            "nome": "Cursor Flor",
-            "descricao": " Um cursor com uma flor delicada",
-            "preco": 35,
-            "icone": "fa-solid fa-flower",
-            "categoria": "especiais",
-            "imagem": "../img/loja/especial/"
-        }
+
+        {"id":"cursor_galaxia",
+        "nome":"Cursor Galáxia",
+        "descricao":"Um cursor cósmico inspirado na moldura Galáxia.",
+        "categoria":"especiais",
+        "preco":500,
+        "imagem":"../img/loja/cursor/cursor_galaxia.png",
+        "imagem_click":"../img/loja/cursor/cursormao_galaxia.png",
+        "novo":true,
+        "raridade":"epico"},
+
+        {"id":"cursor_gato",
+        "nome":"Cursor Gato Preto",
+        "descricao":"Patinha de gato que mostra as garrinhas ao clicar.",
+        "categoria":"especiais",
+        "preco":500,
+        "imagem":"../img/loja/cursor/cursor_gato.png",
+        "imagem_click":"../img/loja/cursor/cursormao_gato.png",
+        "novo":true,
+        "raridade":"epico"},
+
+        {"id":"cursor_dragao",
+        "nome":"Cursor Dragão",
+        "descricao":"Cursor escamado inspirado na moldura Dragão.",
+        "categoria":"especiais",
+        "preco":500,
+        "imagem":"../img/loja/cursor/cursor_dragao.png",
+        "imagem_click":"../img/loja/cursor/cursormao_dragao.png",
+        "novo":true,
+        "raridade":"epico"},
+
+        {"id":"cursor_serafim",
+        "nome":"Cursor Serafim",
+        "descricao":"Cursor celestial inspirado na moldura Serafim.",
+        "categoria":"especiais",
+        "preco":500,
+        "imagem":"../img/loja/cursor/cursor_querubim.png",
+        "imagem_click":"../img/loja/cursor/cursormao_querubim.png",
+        "novo":true,
+        "raridade":"epico"},
+
+        {"id":"cursor_natureza",
+        "nome":"Cursor Natureza",
+        "descricao":"Cursor orgânico inspirado na moldura Natureza.",
+        "categoria":"especiais",
+        "preco":500,
+        "imagem":"../img/loja/cursor/cursor_natureza.png",
+        "imagem_click":"../img/loja/cursor/cursormao_natureza.png",
+        "novo":true,
+        "raridade":"epico"},
+
+        {"id":"cursor_neon",
+        "nome":"Cursor Neon",
+        "descricao":"Cursor luminoso inspirado na moldura Neon.",
+        "categoria":"especiais",
+        "preco":500,
+        "imagem":"../img/loja/cursor/cursor_neon.png",
+        "imagem_click":"../img/loja/cursor/cursormao_neon.png",
+        "raridade":"raro"},
+
+        {"id":"cursor_fogo",
+        "nome":"Cursor Fogo",
+        "descricao":"Cursor flamejante inspirado na moldura Fogo.",
+        "categoria":"especiais",
+        "preco":500,
+        "imagem":"../img/loja/cursor/cursor_fogo.png",
+        "imagem_click":"../img/loja/cursor/cursormao_fogo.png",
+        "raridade":"raro"},
+
+        {"id":"cursor_sakura",
+        "nome":"Cursor Sakura",
+        "descricao":"Cursor delicado inspirado na moldura Sakura.",
+        "categoria":"especiais",
+        "preco":500,
+        "imagem":"../img/loja/cursor/cursor_sakura.png",
+        "imagem_click":"../img/loja/cursor/cursormao_sakura.png",
+        "raridade":"raro"}
+
     ]
 }

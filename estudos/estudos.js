@@ -31,6 +31,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const subjectsEmpty =
     document.getElementById('subjects-empty');
 
+  const noResults =
+    document.getElementById('subjects-no-results');
+
   const statSubjects =
     document.getElementById('stat-subjects');
 
@@ -64,15 +67,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const SAVE_MATERIA_URL =
     window.MATERIAS_SAVE_URL ||
-    'salvar_materia.php';
+    FOAG_CONFIG.endpoints.estudosMateriaSalvar;
 
   const UPDATE_MATERIA_URL =
     window.MATERIAS_UPDATE_URL ||
-    'editar_materia.php';
+    FOAG_CONFIG.endpoints.estudosMateriaEditar;
 
   const DELETE_MATERIA_URL =
     window.MATERIAS_DELETE_URL ||
-    'excluir_materia.php';
+    FOAG_CONFIG.endpoints.estudosMateriaExcluir;
 
 
   // ==========================================
@@ -238,6 +241,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         subjectsGrid.hidden =
           false;
+
+      }
+
+
+      // Evita que a mensagem de busca vazia permaneça visível
+      // depois que uma matéria é cadastrada.
+      if (noResults) {
+
+        noResults.hidden =
+          true;
 
       }
 
@@ -1072,6 +1085,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   // ==========================================
+  // DADOS AUXILIARES DO DASHBOARD
+  // ==========================================
+
+  function getFocusSessions(nomeMateria = null) {
+    const alvo = nomeMateria ? normalizarMateria(nomeMateria) : null;
+    return sessoesPomodoro.filter((sessao) => {
+      const modo = sessao.mode ?? sessao.modo ?? 'focus';
+      if (modo !== 'focus') return false;
+      if (!alvo) return true;
+      const disciplina = sessao.discipline ?? sessao.disciplina ?? sessao.materia ?? '';
+      return normalizarMateria(disciplina) === alvo;
+    });
+  }
+
+  function getSessionTimestamp(sessao) {
+    const raw = Number(sessao.ts ?? sessao.timestamp ?? sessao.data ?? 0);
+    return Number.isFinite(raw) ? raw : 0;
+  }
+
+  function getLastStudy(nomeMateria) {
+    const sessoes = getFocusSessions(nomeMateria).sort((a,b) => getSessionTimestamp(b) - getSessionTimestamp(a));
+    return sessoes[0] || null;
+  }
+
+  function formatRelativeDate(timestamp) {
+    if (!timestamp) return 'Ainda não estudada';
+    const data = new Date(timestamp);
+    if (Number.isNaN(data.getTime())) return 'Estudo registrado';
+    const hoje = new Date();
+    const inicioHoje = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
+    const inicioData = new Date(data.getFullYear(), data.getMonth(), data.getDate());
+    const diff = Math.round((inicioHoje - inicioData) / 86400000);
+    if (diff === 0) return `Hoje, ${data.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}`;
+    if (diff === 1) return 'Ontem';
+    if (diff > 1 && diff < 7) return `Há ${diff} dias`;
+    return data.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'});
+  }
+
+  function getMateriaByName(nome) {
+    return materias.find((m) => normalizarMateria(m.nome) === normalizarMateria(nome));
+  }
+
+  // ==========================================
   // CRIAR CARD DA MATÉRIA
   // ==========================================
 
@@ -1124,47 +1180,28 @@ document.addEventListener('DOMContentLoaded', () => {
       );
 
 
+    const totalSessoes = getFocusSessions(materia.nome).length;
+    const ultimaSessao = getLastStudy(materia.nome);
+    const ultimaSessaoTexto = formatRelativeDate(getSessionTimestamp(ultimaSessao || {}));
+
     card.innerHTML = `
       <div class="subject-card-top">
-
         <div class="subject-card-icon">
-
-          <i
-            class="fa-solid ${materia.icone || 'fa-circle-question'}"
-          ></i>
-
+          <i class="fa-solid ${materia.icone || 'fa-circle-question'}"></i>
         </div>
-
         <h3></h3>
-
       </div>
 
-
       <div class="subject-card-meta">
+        <span class="subject-study-time"><i class="fa-solid fa-clock"></i>${tempoEstudado}</span>
+        <span class="subject-sessions-count"><i class="fa-solid fa-circle-check"></i>${totalSessoes} ${totalSessoes === 1 ? 'sessão' : 'sessões'}</span>
+        <span class="subject-flashcards-count"><i class="fa-solid fa-layer-group"></i>${totalFlashcards} ${totalFlashcards === 1 ? 'flashcard' : 'flashcards'}</span>
+        <span class="subject-last-study"><i class="fa-regular fa-calendar"></i>${ultimaSessaoTexto}</span>
+      </div>
 
-        <span class="subject-study-time">
-
-          <i class="fa-solid fa-clock"></i>
-
-          ${tempoEstudado}
-
-        </span>
-
-
-        <span class="subject-flashcards-count">
-
-          <i class="fa-solid fa-layer-group"></i>
-
-          ${totalFlashcards}
-
-          ${
-            totalFlashcards === 1
-              ? 'flashcard'
-              : 'flashcards'
-          }
-
-        </span>
-
+      <div class="subject-card-actions-row">
+        <a class="subject-study-btn" href="${FOAG_CONFIG.url('estudos/pomodoro/pomodoro.php')}"><i class="fa-solid fa-play"></i> Estudar</a>
+        <a class="subject-flash-btn" href="${FOAG_CONFIG.url('estudos/flashcards/flashcards.php')}"><i class="fa-solid fa-layer-group"></i> Flashcards</a>
       </div>
     `;
 
@@ -1362,6 +1399,173 @@ document.addEventListener('DOMContentLoaded', () => {
 
   carregarMaterias();
 
+
+  // ==========================================
+  // DASHBOARD, BUSCA E ATIVIDADE
+  // ==========================================
+
+  const statStudyTime = document.getElementById('stat-study-time');
+  const statSessions = document.getElementById('stat-sessions');
+  const statStreak = document.getElementById('stat-streak');
+  const searchInput = document.getElementById('subject-search');
+  const sortSelect = document.getElementById('subject-sort');
+
+  function startOfWeek(date = new Date()) {
+    const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const day = d.getDay();
+    const delta = day === 0 ? -6 : 1 - day;
+    d.setDate(d.getDate() + delta);
+    return d.getTime();
+  }
+
+  function formatCompactMinutes(minutos) {
+    const total = Math.max(0, Math.round(minutos || 0));
+    const h = Math.floor(total / 60);
+    const m = total % 60;
+    if (!h) return `${m}min`;
+    return `${h}h ${String(m).padStart(2,'0')}min`;
+  }
+
+  function calculateStreak(sessoes) {
+    const dias = new Set(sessoes.map((s) => {
+      const d = new Date(getSessionTimestamp(s));
+      return Number.isNaN(d.getTime()) ? null : `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+    }).filter(Boolean));
+    let cursor = new Date();
+    cursor = new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate());
+    const keyHoje = `${cursor.getFullYear()}-${cursor.getMonth()+1}-${cursor.getDate()}`;
+    if (!dias.has(keyHoje)) cursor.setDate(cursor.getDate()-1);
+    let streak = 0;
+    while (true) {
+      const key = `${cursor.getFullYear()}-${cursor.getMonth()+1}-${cursor.getDate()}`;
+      if (!dias.has(key)) break;
+      streak++;
+      cursor.setDate(cursor.getDate()-1);
+    }
+    return streak;
+  }
+
+  function renderDashboard() {
+    const foco = getFocusSessions();
+    const inicioSemana = startOfWeek();
+    const destaSemana = foco.filter((s) => getSessionTimestamp(s) >= inicioSemana);
+    const minutosSemana = destaSemana.reduce((soma,s) => soma + Number(s.minutes ?? s.minutos ?? 0), 0);
+    if (statStudyTime) statStudyTime.textContent = formatCompactMinutes(minutosSemana);
+    if (statSessions) statSessions.textContent = destaSemana.length;
+    const streak = calculateStreak(foco);
+    if (statStreak) statStreak.textContent = `${streak} ${streak === 1 ? 'dia' : 'dias'}`;
+
+    const diasAtivos = new Set(destaSemana.map((s) => {
+      const d = new Date(getSessionTimestamp(s));
+      return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+    })).size;
+
+    const metaHorasSalva = Number(localStorage.getItem('foag_meta_estudo_semanal_horas'));
+    const metaHoras = Number.isFinite(metaHorasSalva) && metaHorasSalva > 0 ? metaHorasSalva : 5;
+    const metaMin = metaHoras * 60;
+    const perc = Math.min(100, Math.round((minutosSemana / metaMin) * 100));
+    const goalLabel = document.getElementById('weekly-goal-label');
+    const goalProgress = document.getElementById('weekly-goal-progress');
+    const goalPercent = document.getElementById('weekly-goal-percent');
+    const studyDays = document.getElementById('weekly-study-days');
+    if (goalLabel) goalLabel.textContent = `${formatCompactMinutes(minutosSemana)} de ${metaHoras}h`;
+    if (goalProgress) goalProgress.style.width = `${perc}%`;
+    if (goalPercent) goalPercent.textContent = `${perc}% concluído`;
+    if (studyDays) studyDays.innerHTML = `<i class="fa-solid fa-fire"></i> ${diasAtivos} ${diasAtivos === 1 ? 'dia ativo' : 'dias ativos'}`;
+
+    const ultima = [...foco].sort((a,b)=>getSessionTimestamp(b)-getSessionTimestamp(a))[0];
+    const continueSubject = document.getElementById('continue-subject');
+    const continueDetail = document.getElementById('continue-detail');
+    const continueIcon = document.getElementById('continue-icon');
+    if (ultima) {
+      const nome = ultima.discipline ?? ultima.disciplina ?? ultima.materia ?? 'Geral';
+      const materia = getMateriaByName(nome);
+      if (continueSubject) continueSubject.textContent = nome;
+      if (continueDetail) continueDetail.textContent = `Último estudo: ${formatRelativeDate(getSessionTimestamp(ultima))} · ${Number(ultima.minutes ?? ultima.minutos ?? 0)} min`;
+      if (continueIcon) {
+        continueIcon.style.color = materia?.cor || '#1684df';
+        continueIcon.innerHTML = `<i class="fa-solid ${materia?.icone || 'fa-book-open'}"></i>`;
+      }
+    }
+
+    const totalCards = baralhos.reduce((n,b)=>n+(Array.isArray(b.cartoes)?b.cartoes.length:0),0);
+    const flashInfo = document.getElementById('method-flashcards-info');
+    const pomoInfo = document.getElementById('method-pomodoro-info');
+    if (flashInfo) flashInfo.textContent = totalCards ? `${totalCards} ${totalCards === 1 ? 'cartão criado' : 'cartões criados'} para revisar.` : 'Crie cartões e revise conteúdos importantes.';
+    if (pomoInfo) pomoInfo.textContent = foco.length ? `${foco.length} ${foco.length === 1 ? 'sessão registrada' : 'sessões registradas'} no seu histórico.` : 'Organize períodos de foco e acompanhe suas sessões.';
+  }
+
+  function renderReviewList() {
+    const el = document.getElementById('review-list');
+    if (!el) return;
+    const itens = baralhos.map((baralho) => {
+      const cards = Array.isArray(baralho.cartoes) ? baralho.cartoes : [];
+      let ultima = 0;
+      cards.forEach((c) => (Array.isArray(c.revisoes)?c.revisoes:[]).forEach((r)=>{ ultima=Math.max(ultima, Number(r.ts ?? r.timestamp ?? 0)); }));
+      return {baralho,cards,ultima};
+    }).filter((x)=>x.cards.length).sort((a,b)=>a.ultima-b.ultima).slice(0,3);
+    if (!itens.length) { el.innerHTML = '<div class="list-empty">Crie flashcards para começar suas revisões.</div>'; return; }
+    el.innerHTML = itens.map(({baralho,cards,ultima}) => `
+      <div class="review-item">
+        <div class="review-item-icon"><i class="fa-solid fa-layer-group"></i></div>
+        <div class="review-item-main"><strong>${escapeHtml(baralho.nome || baralho.titulo || baralho.materia || 'Baralho')}</strong><span>${cards.length} ${cards.length===1?'cartão':'cartões'} · ${ultima ? `Última revisão: ${formatRelativeDate(ultima)}` : 'Ainda não revisado'}</span></div>
+        <a class="review-button" href="${FOAG_CONFIG.url('estudos/flashcards/flashcards.php')}">Revisar</a>
+      </div>`).join('');
+  }
+
+  function escapeHtml(texto) {
+        return window.FOAG?.utils?.escapeHtml
+            ? FOAG.utils.escapeHtml(texto)
+            : String(texto ?? '');
+    }
+
+  function renderActivity() {
+    const el = document.getElementById('activity-list');
+    if (!el) return;
+    const atividades = [];
+    getFocusSessions().forEach((s)=>atividades.push({ts:getSessionTimestamp(s), tipo:'pomo', titulo:s.discipline ?? s.disciplina ?? s.materia ?? 'Estudo', detalhe:`Pomodoro · ${Number(s.minutes ?? s.minutos ?? 0)} min`}));
+    baralhos.forEach((b)=>{
+      const nome = b.nome || b.titulo || b.materia || 'Flashcards';
+      (Array.isArray(b.cartoes)?b.cartoes:[]).forEach((c)=>(Array.isArray(c.revisoes)?c.revisoes:[]).forEach((r)=>atividades.push({ts:Number(r.ts ?? r.timestamp ?? 0),tipo:'flash',titulo:nome,detalhe:'Flashcard revisado'})));
+    });
+    atividades.sort((a,b)=>b.ts-a.ts);
+    const vistos = atividades.slice(0,3);
+    if (!vistos.length) { el.innerHTML='<div class="list-empty">Suas sessões e revisões recentes aparecerão aqui.</div>'; return; }
+    el.innerHTML = vistos.map((a)=>`<div class="activity-item"><div class="activity-item-icon"><i class="fa-solid ${a.tipo==='pomo'?'fa-stopwatch':'fa-layer-group'}"></i></div><div class="activity-item-main"><strong>${escapeHtml(a.titulo)}</strong><span>${escapeHtml(a.detalhe)} · ${formatRelativeDate(a.ts)}</span></div></div>`).join('');
+  }
+
+  function renderFilteredSubjects() {
+    if (!subjectsGrid) return;
+    const termo = normalizarMateria(searchInput?.value || '');
+    let lista = materias.filter((m)=>normalizarMateria(m.nome).includes(termo));
+    const ordem = sortSelect?.value || 'recent';
+    if (ordem === 'studied') lista.sort((a,b)=>getMinutosEstudados(b.nome)-getMinutosEstudados(a.nome));
+    if (ordem === 'az') lista.sort((a,b)=>String(a.nome||'').localeCompare(String(b.nome||''),'pt-BR'));
+    subjectsGrid.innerHTML='';
+    lista.forEach(createSubjectCard);
+    const hasMaterias = materias.length > 0;
+    subjectsEmpty.hidden = hasMaterias;
+    subjectsGrid.hidden = !hasMaterias || lista.length === 0;
+    if (noResults) noResults.hidden = !hasMaterias || lista.length > 0;
+  }
+
+  searchInput?.addEventListener('input', renderFilteredSubjects);
+  sortSelect?.addEventListener('change', renderFilteredSubjects);
+
+  document.getElementById('edit-weekly-goal')?.addEventListener('click', () => {
+    const atual = Number(localStorage.getItem('foag_meta_estudo_semanal_horas')) || 5;
+    const resposta = window.prompt('Quantas horas você quer estudar por semana?', String(atual));
+    if (resposta === null) return;
+    const horas = Number(String(resposta).replace(',','.'));
+    if (!Number.isFinite(horas) || horas <= 0 || horas > 100) { showToast('Digite uma meta entre 0,5 e 100 horas.'); return; }
+    localStorage.setItem('foag_meta_estudo_semanal_horas', String(horas));
+    renderDashboard();
+    showToast('Meta semanal atualizada.');
+  });
+
+  renderDashboard();
+  renderReviewList();
+  renderActivity();
 
   // ==========================================
   // BOTÕES ABRIR NOVA MATÉRIA
@@ -1899,7 +2103,7 @@ document.addEventListener('DOMContentLoaded', () => {
       () => {
 
         window.location.href =
-          '../perfil/perfil.php';
+          FOAG_CONFIG.pages.perfil;
 
       }
     );
@@ -1918,7 +2122,7 @@ document.addEventListener('DOMContentLoaded', () => {
       () => {
 
         window.location.href =
-          '../configuracoes/configuracoes.php';
+          FOAG_CONFIG.pages.configuracoes;
 
       }
     );
@@ -1969,7 +2173,7 @@ document.addEventListener('DOMContentLoaded', () => {
       () => {
 
         window.location.href =
-          '../login/logout.php';
+          FOAG_CONFIG.pages.logout;
 
       }
     );

@@ -2,7 +2,8 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-session_start();
+require_once __DIR__ . '/../core/usuario.php';
+require_once __DIR__ . '/../core/json.php';
 
 // ======================================
 // SISTEMA DE ESTRELAS
@@ -18,22 +19,13 @@ $recompensaBoletim = [
 ];
 
 // ======================================
-// LOGIN OBRIGATÓRIO
+// USUÁRIO ATUAL
 // ======================================
 
-if (empty($_SESSION['codigo_usuario'])) {
-    header("Location: ../login/index.php");
-    exit;
-}
-
-$codigoUsuario = $_SESSION['codigo_usuario'];
-
-// ======================================
-// ARQUIVOS JSON DO USUÁRIO
-// ======================================
-
-$baseJsonDir = __DIR__ . '/../json/usuarios';
-$pastaUsuario = $baseJsonDir . '/' . $codigoUsuario;
+$contextoUsuario = foag_contexto_usuario('../login/index.php');
+$codigoUsuario = $contextoUsuario['codigoUsuario'];
+$baseJsonDir = $contextoUsuario['baseJsonDir'];
+$pastaUsuario = $contextoUsuario['pastaUsuario'];
 
 if (!is_dir($pastaUsuario)) {
     exit("Pasta do usuário não encontrada.");
@@ -739,6 +731,54 @@ function calcularMediaEStatus(
         'media'   => $media,
         'status'  => $status,
         'precisa' => null
+    ];
+}
+
+
+function calcularProgressoAnualEscola(
+    $notas,
+    $mediaAprovacao,
+    $notaMaxima
+) {
+    $totalPontos = 0.0;
+    $preenchidas = 0;
+    $totalPeriodos = 4;
+
+    for ($i = 1; $i <= $totalPeriodos; $i++) {
+        $valor = $notas[$i] ?? $notas[(string)$i] ?? null;
+        if ($valor === null || $valor === '') {
+            continue;
+        }
+        $totalPontos += (float)$valor;
+        $preenchidas++;
+    }
+
+    $metaTotal = (float)$mediaAprovacao * $totalPeriodos;
+    $restantes = $totalPeriodos - $preenchidas;
+    $faltam = max(0, $metaTotal - $totalPontos);
+    $mediaAtual = $preenchidas > 0 ? $totalPontos / $preenchidas : 0;
+    $mediaNecessaria = $restantes > 0 ? $faltam / $restantes : null;
+    $impossivel = $restantes > 0 && $faltam > ((float)$notaMaxima * $restantes);
+
+    if ($preenchidas === 0) {
+        $status = 'Sem notas';
+    } elseif ($preenchidas < $totalPeriodos) {
+        $status = $totalPontos >= $metaTotal ? 'Meta alcançada' : 'Em andamento';
+    } else {
+        $status = $totalPontos >= $metaTotal ? 'Aprovado' : 'Não atingiu a média';
+    }
+
+    return [
+        'total' => $totalPontos,
+        'meta_total' => $metaTotal,
+        'preenchidas' => $preenchidas,
+        'restantes' => $restantes,
+        'faltam' => $faltam,
+        'media_atual' => $mediaAtual,
+        'media_necessaria' => $mediaNecessaria,
+        'impossivel' => $impossivel,
+        'completo' => $preenchidas === $totalPeriodos,
+        'status' => $status
     ];
 }
 
@@ -2006,16 +2046,112 @@ $current =
     basename(
         $_SERVER['PHP_SELF']
     );
+
+// ======================================
+// RESUMO E METADADOS PARA A NOVA UI
+// ======================================
+
+$totalMaterias = 0;
+$aprovadas = 0;
+$recuperacao = 0;
+$reprovadas = 0;
+$somaMedias = 0;
+$contMedias = 0;
+$melhorMateria = null;
+$piorMateria = null;
+$materiasAtencao = [];
+
+$metaMaterias = [];
+foreach (($materiasData['materias'] ?? []) as $m) {
+    if (!is_array($m)) continue;
+    $mid = (string)($m['id'] ?? '');
+    if ($mid === '') continue;
+    $metaMaterias[$mid] = [
+        'cor' => (string)($m['cor'] ?? '#94a3b8'),
+        'icone' => (string)($m['icone'] ?? 'fa-book')
+    ];
+}
+
+foreach ($materias as $i => $materiaResumo) {
+    $nomeResumo = trim((string)$materiaResumo);
+    if ($nomeResumo === '') continue;
+
+    $totalMaterias++;
+    $notasResumo = $notasAll[$i] ?? notasVazias();
+    if ($tipoCurso === 'escola') {
+        $progressoResumo = calcularProgressoAnualEscola($notasResumo, $mediaAprovacao, $notaMaxima);
+        $mediaResumo = (float)$progressoResumo['media_atual'];
+        $statusResumo = (string)$progressoResumo['status'];
+        $precisaResumo = $progressoResumo['media_necessaria'];
+
+        if ($statusResumo === 'Aprovado') $aprovadas++;
+        if ($statusResumo === 'Meta alcançada') $recuperacao++; // reaproveitado abaixo como contador de meta atingida em andamento
+        if (in_array($statusResumo, ['Em andamento', 'Não atingiu a média'], true) && $progressoResumo['preenchidas'] > 0) $reprovadas++;
+    } else {
+        $dadosResumo = calcularMediaEStatus($notasResumo, $mediaAprovacao, $pesos);
+        $mediaResumo = (float)$dadosResumo['media'];
+        $statusResumo = (string)$dadosResumo['status'];
+        $precisaResumo = calcularQuantoPrecisa($notasResumo, $mediaAprovacao, $notaMaxima, $pesos);
+
+        if ($statusResumo === 'Aprovado') $aprovadas++;
+        if ($statusResumo === 'Recuperação') $recuperacao++;
+        if ($statusResumo === 'Reprovado') $reprovadas++;
+    }
+
+    $temNotasResumo = $tipoCurso === 'escola'
+        ? (($progressoResumo['preenchidas'] ?? 0) > 0)
+        : ($statusResumo !== '-');
+
+    if ($temNotasResumo) {
+        $somaMedias += $mediaResumo;
+        $contMedias++;
+
+        if ($melhorMateria === null || $mediaResumo > $melhorMateria['media']) {
+            $melhorMateria = ['nome' => $nomeResumo, 'media' => $mediaResumo];
+        }
+        if ($piorMateria === null || $mediaResumo < $piorMateria['media']) {
+            $piorMateria = ['nome' => $nomeResumo, 'media' => $mediaResumo];
+        }
+    }
+
+    $deveEntrarAtencao = $tipoCurso === 'escola'
+        ? (isset($progressoResumo) && $progressoResumo['preenchidas'] > 0 && $progressoResumo['faltam'] > 0)
+        : ($statusResumo !== 'Aprovado');
+
+    if ($deveEntrarAtencao) {
+        $materiasAtencao[] = [
+            'indice' => $i,
+            'nome' => $nomeResumo,
+            'media' => $mediaResumo,
+            'status' => $statusResumo,
+            'precisa' => $precisaResumo,
+            'id' => (string)($materiaIds[$i] ?? ''),
+            'progresso' => $tipoCurso === 'escola' ? $progressoResumo : null
+        ];
+    }
+}
+
+usort($materiasAtencao, function ($a, $b) {
+    return $a['media'] <=> $b['media'];
+});
+
+$mediaGeral = $contMedias > 0 ? $somaMedias / $contMedias : 0;
+$emAtencao = count($materiasAtencao);
+$metaAnual = $tipoCurso === 'escola' ? ((float)$mediaAprovacao * 4) : (float)$mediaAprovacao;
+$metasAlcancadas = $tipoCurso === 'escola' ? $recuperacao : $aprovadas;
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
+    <script src="../global/js/config.js?v=<?= time() ?>"></script>
+    <script src="../global/js/utils.js?v=<?= time() ?>"></script>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FOAG — Notas e Médias</title>
-  <link rel="stylesheet" href="boletim.css">
+  <link rel="stylesheet" href="boletim.css?v=20261005-1">
   <link rel="stylesheet" href="../m.escuro/dark_basee.css">
-  <link rel="stylesheet" href="dark_notas.css">
+  <link rel="stylesheet" href="dark_notas.css?v=20261005-1">
   <link rel="stylesheet" href="../estrelas/modal_estrelas.css?v=<?= time() ?>">
 
   <!-- ACESSIBILIDADE GLOBAL -->
@@ -2189,55 +2325,21 @@ $current =
         }
       }
   </style>
+    <link rel="stylesheet" href="../global/css/cursor.css">
+    <link rel="stylesheet" href="../global/css/base.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../global/css/components.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../global/css/forms.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../global/css/tables.css?v=<?= time() ?>">
+
+    <link rel="stylesheet" href="../global/css/layout.css?v=<?= time() ?>">
 </head>
 
 <body>
-    <header class="cabecalho">
-      FOAG
-<div class="header-icons">
-    <a href="../configuracoes/configuracoes.php" class="link-configuracoes" title="Configurações">
-        <i class="fa-solid fa-gear"></i>
-    </a>
-    <i id="icon-perfil" class="fa-regular fa-user" title="Perfil"></i>
-    <i id="icon-sair" class="fa-solid fa-right-from-bracket" title="Sair"></i>
-</div>
-    </header>
+    <?php include __DIR__ . '/../components/header.php'; ?>
 
     <div class="container">
         <!-- Menu lateral -->
-        <nav class="menu">
-            <a href="../inicioo/inicio.php" class="<?= $current === 'inicio.php' ? 'active' : '' ?>">
-                <i class="fa-solid fa-house"></i> Início
-            </a>
-
-            <a href="../estudos/estudos.php" class="<?= $current === 'estudos.php' ? 'active' : '' ?>">
-                <i class="fa-solid fa-graduation-cap"></i> Estudos
-            </a>
-
-            <a href="../bloco/agenda.php" class="<?= $current === 'agenda.php' ? 'active' : '' ?>">
-                <i class="fa-solid fa-book"></i> Agenda
-            </a>
-
-            <a href="../calend/calendario.php" class="<?= $current === 'calendario.php' ? 'active' : '' ?>">
-                <i class="fa-solid fa-calendar-days"></i> Calendário
-            </a>
-
-            <a href="../notas/notas.php" class="<?= $current === 'notas.php' ? 'active' : '' ?>">
-                <i class="fa-solid fa-check-double"></i> Boletim
-            </a>
-
-            <a href="../comunidade/comunidade.php" class="<?= $current === 'comunidade.php' ? 'active' : '' ?>">
-                <i class="fa-solid fa-comments"></i> Comunidade
-            </a>
-
-            <a href="../rank/rank.php" class="<?= $current === 'rank.php' ? 'active' : '' ?>">
-                <i class="fa-solid fa-trophy"></i> Ranking
-            </a>
-
-            <a href="../loja/loja.php" class="<?= $current === 'loja.php' ? 'active' : '' ?>">
-                <i class="fa-solid fa-store"></i> Loja
-            </a>
-        </nav>
+        <?php include __DIR__ . '/../components/menu.php'; ?>
 
         <div class="page-area">
         <main class="main-content">
@@ -2286,349 +2388,255 @@ $current =
         </form>
       </section>
 
-      <!-- CARD CONFIGURAÇÕES -->
-      <section class="card-notas card-config">
-        <div class="config-header">
-          <h2 class="titulo-tabela">Configurações de notas</h2>
-          <span class="pill-tipo">
-            Modo: <?= ($tipoCurso === 'escola' ? 'Escola' : 'Faculdade'); ?> · Período: <?= htmlspecialchars($periodoAtual); ?>
-          </span>
-        </div>
-
-        <p class="sub-notas">
-          Ajuste o tipo de curso, a nota máxima, a média mínima e os pesos das avaliações.
-          Funciona tanto para ensino básico quanto para universidade.
-        </p>
-
-        <form method="POST" class="config-form">
-          <div class="tipo-curso-group">
-            <span>Tipo:</span>
-            <label>
-              <input type="radio" name="tipo_curso" value="escola" <?= ($tipoCurso === 'escola' ? 'checked' : ''); ?>>
-              Escola
-            </label>
-            <label>
-              <input type="radio" name="tipo_curso" value="faculdade" <?= ($tipoCurso === 'faculdade' ? 'checked' : ''); ?>>
-              Faculdade
-            </label>
+      <!-- RESUMO RÁPIDO -->
+      <section class="resumo-hero" aria-label="Resumo do boletim">
+        <article class="resumo-kpi destaque">
+          <span class="kpi-icone"><i class="fa-solid fa-chart-line"></i></span>
+          <div>
+            <span class="resumo-label">Média geral</span>
+            <strong class="resumo-valor" id="kpi-media-geral"><?= number_format($mediaGeral, 2, ',', '.'); ?></strong>
           </div>
-
-          <div class="config-field">
-            <label for="nota_maxima">Nota máxima</label>
-            <input type="number" step="0.01" id="nota_maxima" name="nota_maxima"
-                   value="<?= htmlspecialchars($notaMaxima); ?>" min="1">
+        </article>
+        <article class="resumo-kpi aprovado">
+          <span class="kpi-icone"><i class="fa-solid fa-circle-check"></i></span>
+          <div>
+            <span class="resumo-label"><?= $tipoCurso === 'escola' ? 'Meta anual' : 'Aprovadas'; ?></span>
+            <strong class="resumo-valor" id="kpi-aprovadas"><?= $tipoCurso === 'escola' ? number_format($metaAnual, 0, ',', '.') : $aprovadas; ?></strong>
+            <small><?= $tipoCurso === 'escola' ? 'pontos por matéria' : 'de ' . $totalMaterias . ' matérias'; ?></small>
           </div>
-          <div class="config-field">
-            <label for="media_aprovacao">Média para aprovação</label>
-            <input type="number" step="0.01" id="media_aprovacao" name="media_aprovacao"
-                   value="<?= htmlspecialchars($mediaAprovacao); ?>" min="0">
+        </article>
+        <article class="resumo-kpi atencao">
+          <span class="kpi-icone"><i class="fa-solid fa-bolt"></i></span>
+          <div>
+            <span class="resumo-label"><?= $tipoCurso === 'escola' ? 'Meta já alcançada' : 'Precisam de atenção'; ?></span>
+            <strong class="resumo-valor" id="kpi-atencao"><?= $tipoCurso === 'escola' ? $metasAlcancadas : $emAtencao; ?></strong>
+            <small><?= $tipoCurso === 'escola' ? 'antes do fechamento' : 'priorize primeiro'; ?></small>
           </div>
-
-          <div class="config-field">
-            <label for="peso_1">Peso <?= htmlspecialchars($labelsAval[0]); ?></label>
-            <input type="number" step="0.1" id="peso_1" name="peso_1"
-                   value="<?= htmlspecialchars(isset($pesos[1]) ? $pesos[1] : 1); ?>" min="0">
+        </article>
+        <article class="resumo-kpi materias">
+          <span class="kpi-icone"><i class="fa-solid fa-book-open"></i></span>
+          <div>
+            <span class="resumo-label">Matérias</span>
+            <strong class="resumo-valor"><?= $totalMaterias; ?></strong>
+            <small>neste período</small>
           </div>
-          <div class="config-field">
-            <label for="peso_2">Peso <?= htmlspecialchars($labelsAval[1]); ?></label>
-            <input type="number" step="0.1" id="peso_2" name="peso_2"
-                   value="<?= htmlspecialchars(isset($pesos[2]) ? $pesos[2] : 1); ?>" min="0">
-          </div>
-          <div class="config-field">
-            <label for="peso_3">Peso <?= htmlspecialchars($labelsAval[2]); ?></label>
-            <input type="number" step="0.1" id="peso_3" name="peso_3"
-                   value="<?= htmlspecialchars(isset($pesos[3]) ? $pesos[3] : 1); ?>" min="0">
-          </div>
-          <div class="config-field">
-            <label for="peso_4">Peso <?= htmlspecialchars($labelsAval[3]); ?></label>
-            <input type="number" step="0.1" id="peso_4" name="peso_4"
-                   value="<?= htmlspecialchars(isset($pesos[4]) ? $pesos[4] : 1); ?>" min="0">
-          </div>
-
-          <div class="config-field-periodo">
-            <label for="periodo_atual">Período / semestre</label>
-            <select id="periodo_atual" name="periodo_atual">
-              <?php
-              foreach ($data['periodos'] as $nomePeriodo => $dadosPeriodo) {
-                  $selected = ($nomePeriodo === $periodoAtual) ? 'selected' : '';
-                  echo '<option value="' . htmlspecialchars($nomePeriodo) . '" ' . $selected . '>'
-                     . htmlspecialchars($nomePeriodo)
-                     . '</option>';
-              }
-              ?>
-            </select>
-          </div>
-
-          <div class="config-field">
-            <label for="novo_periodo">Adicionar novo período</label>
-            <input type="text" id="novo_periodo" name="novo_periodo" placeholder="Ex: 2025/1">
-          </div>
-
-          <input type="hidden" name="periodo_atual_form" value="<?= htmlspecialchars($periodoAtual); ?>">
-
-          <button type="submit" name="salvar_config" class="btn-config">Salvar configurações</button>
-        </form>
+        </article>
       </section>
 
       <!-- CARD PRINCIPAL DE NOTAS -->
-      <section class="card-notas">
-        <h2 class="titulo-tabela">Notas e cálculo de médias</h2>
-        <p class="sub-notas">
-          Preencha apenas as avaliações que já aconteceram.
-          A média é calculada só com o que já existe.
-        </p>
-
-        <form method="POST">
-          <input type="hidden" name="periodo_atual_form" value="<?= htmlspecialchars($periodoAtual); ?>">
-
-          <div class="table-scroll">
-          <table class="tabela-notas">
-            <thead>
-              <tr>
-                <th>Matéria / Disciplina</th>
-                <th><?= htmlspecialchars($labelsAval[0]); ?></th>
-                <th><?= htmlspecialchars($labelsAval[1]); ?></th>
-                <th><?= htmlspecialchars($labelsAval[2]); ?></th>
-                <th><?= htmlspecialchars($labelsAval[3]); ?></th>
-                <th>Média</th>
-                <th>Situação</th>
-                <th>Precisa (próx.)</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php
-              if (count($materias) === 0) {
-                  echo '<tr class="linha-vazia">
-                          <td colspan="9">
-                            Nenhuma matéria cadastrada ainda. Clique em <strong>Adicionar matéria</strong> para começar.
-                          </td>
-                        </tr>';
-              } else {
-                  foreach ($materias as $i => $materia) {
-                      $materia = htmlspecialchars((string)$materia);
-                      $notas   = isset($notasAll[$i]) ? $notasAll[$i] : [1 => null, 2 => null, 3 => null, 4 => null];
-
-                      $dados   = calcularMediaEStatus($notas, $mediaAprovacao, $pesos);
-                      $media   = $dados['media'];
-                      $status  = $dados['status'];
-                      $precisa = calcularQuantoPrecisa($notas, $mediaAprovacao, $notaMaxima, $pesos);
-
-                      $statusClass   = '';
-                      $statusTooltip = '';
-                      if ($status === 'Aprovado') {
-                          $statusClass   = 'status-aprovado';
-                          $statusTooltip = 'Sua média está acima da média mínima configurada.';
-                      } elseif ($status === 'Recuperação') {
-                          $statusClass   = 'status-recuperacao';
-                          $statusTooltip = 'Você está abaixo da média mínima, mas ainda tem chance de alcançar.';
-                      } elseif ($status === 'Reprovado') {
-                          $statusClass   = 'status-reprovado';
-                          $statusTooltip = 'Sua média ficou bem abaixo da média mínima.';
-                      }
-
-                      $materiaId = htmlspecialchars(
-                          (string)($materiaIds[$i] ?? '')
-                      );
-
-                      echo '<tr>';
-                      echo '<td>
-                              <input type="hidden" name="materia_id_' . $i . '" value="' . $materiaId . '">
-                              <input type="text" name="materia_' . $i . '" value="' . $materia . '" placeholder="Ex: Cálculo I">
-                            </td>';
-
-                      for ($a = 1; $a <= 4; $a++) {
-                          $notaVal       = isset($notas[$a]) ? $notas[$a] : null;
-                          $notaStr       = ($notaVal !== null && $notaVal !== '') ? (string)$notaVal : '';
-                          $notaFloat     = $notaVal !== null ? (float)$notaVal : null;
-                          $notaInvalida  = ($notaFloat !== null && $notaFloat > $notaMaxima);
-
-                          $extraClass = $notaInvalida ? ' nota-invalida' : '';
-                          $titleNota  = $notaInvalida
-                              ? 'A nota máxima configurada é ' . $notaMaxima . '.'
-                              : 'Digite a nota dessa avaliação (máx: ' . $notaMaxima . ').';
-
-                          echo '<td>
-                                  <input 
-                                    type="number" 
-                                    step="0.01" 
-                                    name="nota_' . $i . '_' . $a . '" 
-                                    value="' . htmlspecialchars($notaStr) . '" 
-                                    placeholder="Ex: 7.5" 
-                                    max="' . htmlspecialchars($notaMaxima) . '" 
-                                    class="input-nota' . $extraClass . '"
-                                    title="' . htmlspecialchars($titleNota) . '"
-                                  >
-                                </td>';
-                      }
-
-                      echo '<td class="celula-media">' . number_format($media, 2, ',', '.') . '</td>';
-
-                      echo '<td class="celula-status">
-                              <span class="badge-status ' . $statusClass . '" title="' . htmlspecialchars($statusTooltip) . '">
-                                ' . $status . '
-                              </span>
-                            </td>';
-
-                      echo '<td class="celula-precisa">';
-                      if ($precisa === null) {
-                          echo '-';
-                      } elseif ($precisa === 'Impossível') {
-                          echo '<span class="badge-precisa impossivel" title="Mesmo com a nota máxima na próxima avaliação, não bate a média mínima.">Impossível</span>';
-                      } else {
-                          $tooltipPrecisa = 'Nota necessária na próxima avaliação para chegar em ' . $mediaAprovacao . '.';
-                          echo '<span title="' . htmlspecialchars($tooltipPrecisa) . '">≈ ' . number_format($precisa, 2, ',', '.') . '</span>';
-                      }
-                      echo '</td>';
-
-                      echo '<td>
-                              <button type="submit" name="limpar_linha" value="1" class="btn-linha"
-                                      onclick="document.getElementById(\'linha_index\').value=' . (int)$i . ';">
-                                Limpar notas
-                              </button>
-                            </td>';
-
-                      echo '</tr>';
-                  }
-              }
-              ?>
-            </tbody>
-          </table>
+      <section class="card-notas card-boletim-principal">
+        <div class="card-section-header">
+          <div>
+            <span class="section-eyebrow">Seu desempenho</span>
+            <h2 class="titulo-tabela">Suas notas</h2>
+            <p class="sub-notas">Digite suas notas. O FOAG acompanha os pontos acumulados e só define aprovação após o fechamento de todos os bimestres.</p>
           </div>
+          <div class="acoes-topo-notas">
+            <span class="autosave-status" id="autosave-status"><i class="fa-solid fa-cloud"></i> Tudo salvo</span>
+            <button type="button" class="btn-view-toggle" id="btn-view-toggle" aria-pressed="false">
+              <i class="fa-solid fa-table-list"></i>
+              <span class="view-toggle-label">Ver modo resumido</span>
+            </button>
+            <button type="button" class="btn-config-toggle" id="btn-config-toggle" aria-expanded="false" aria-controls="config-panel">
+              <i class="fa-solid fa-sliders"></i> Configurar boletim
+            </button>
+          </div>
+        </div>
 
+        <div id="config-panel" class="config-panel" hidden>
+          <form method="POST" class="config-form config-form-nova">
+            <div class="tipo-curso-group">
+              <span>Tipo:</span>
+              <label><input type="radio" name="tipo_curso" value="escola" <?= ($tipoCurso === 'escola' ? 'checked' : ''); ?>> Escola</label>
+              <label><input type="radio" name="tipo_curso" value="faculdade" <?= ($tipoCurso === 'faculdade' ? 'checked' : ''); ?>> Faculdade</label>
+            </div>
+            <div class="config-field"><label for="nota_maxima">Nota máxima</label><input type="number" step="0.01" id="nota_maxima" name="nota_maxima" value="<?= htmlspecialchars($notaMaxima); ?>" min="1"></div>
+            <div class="config-field"><label for="media_aprovacao">Média para aprovação</label><input type="number" step="0.01" id="media_aprovacao" name="media_aprovacao" value="<?= htmlspecialchars($mediaAprovacao); ?>" min="0"></div>
+            <?php for ($pi = 1; $pi <= 4; $pi++): ?>
+              <div class="config-field"><label for="peso_<?= $pi; ?>">Peso <?= htmlspecialchars($labelsAval[$pi - 1]); ?></label><input type="number" step="0.1" id="peso_<?= $pi; ?>" name="peso_<?= $pi; ?>" value="<?= htmlspecialchars($pesos[$pi] ?? 1); ?>" min="0"></div>
+            <?php endfor; ?>
+            <div class="config-field"><label for="novo_periodo">Novo período</label><input type="text" id="novo_periodo" name="novo_periodo" placeholder="Ex: 2027/1"></div>
+            <input type="hidden" name="periodo_atual" value="<?= htmlspecialchars($periodoAtual); ?>">
+            <input type="hidden" name="periodo_atual_form" value="<?= htmlspecialchars($periodoAtual); ?>">
+            <button type="submit" name="salvar_config" class="btn-config">Salvar configurações</button>
+          </form>
+        </div>
+
+        <form method="POST" id="notas-form" data-media-aprovacao="<?= htmlspecialchars($mediaAprovacao); ?>" data-nota-maxima="<?= htmlspecialchars($notaMaxima); ?>" data-pesos="<?= htmlspecialchars(json_encode(array_values($pesos))); ?>" data-tipo-curso="<?= htmlspecialchars($tipoCurso); ?>" data-meta-anual="<?= htmlspecialchars($metaAnual); ?>">
+          <input type="hidden" name="periodo_atual_form" value="<?= htmlspecialchars($periodoAtual); ?>">
+          <div class="table-scroll">
+            <table class="tabela-notas tabela-notas-nova" id="tabela-boletim">
+              <thead>
+                <tr>
+                  <th>Matéria</th>
+                  <th><?= htmlspecialchars($labelsAval[0]); ?></th>
+                  <th><?= htmlspecialchars($labelsAval[1]); ?></th>
+                  <th><?= htmlspecialchars($labelsAval[2]); ?></th>
+                  <th><?= htmlspecialchars($labelsAval[3]); ?></th>
+                  <th class="col-media">
+                    <?php if ($tipoCurso === 'escola'): ?>
+                      <span class="view-detalhado">Pontos</span><span class="view-resumido">Média atual</span>
+                    <?php else: ?>Média<?php endif; ?>
+                  </th>
+                  <th class="col-status">Situação</th>
+                  <th class="col-falta">
+                    <?php if ($tipoCurso === 'escola'): ?>
+                      <span class="view-detalhado">O que falta</span><span class="view-resumido">Falta</span>
+                    <?php else: ?>Próxima meta<?php endif; ?>
+                  </th>
+                  <th><span class="sr-only">Ações</span></th>
+                </tr>
+              </thead>
+              <tbody>
+              <?php if (count($materias) === 0): ?>
+                <tr class="linha-vazia"><td colspan="9">Nenhuma matéria cadastrada ainda. Adicione uma matéria para começar.</td></tr>
+              <?php else: foreach ($materias as $i => $materia):
+                  $materiaNomeRaw = (string)$materia;
+                  $notas = $notasAll[$i] ?? notasVazias();
+                  if ($tipoCurso === 'escola') {
+                      $progresso = calcularProgressoAnualEscola($notas, $mediaAprovacao, $notaMaxima);
+                      $media = (float)$progresso['media_atual'];
+                      $status = (string)$progresso['status'];
+                      $precisa = $progresso['media_necessaria'];
+                  } else {
+                      $dados = calcularMediaEStatus($notas, $mediaAprovacao, $pesos);
+                      $media = (float)$dados['media'];
+                      $status = (string)$dados['status'];
+                      $precisa = calcularQuantoPrecisa($notas, $mediaAprovacao, $notaMaxima, $pesos);
+                      $progresso = null;
+                  }
+                  $materiaIdRaw = (string)($materiaIds[$i] ?? '');
+                  $meta = $metaMaterias[$materiaIdRaw] ?? ['cor' => '#94a3b8', 'icone' => 'fa-book'];
+                  $statusClass = in_array($status, ['Aprovado', 'Meta alcançada'], true) ? 'status-aprovado' : (in_array($status, ['Em andamento', 'Recuperação', 'Sem notas'], true) ? 'status-recuperacao' : 'status-reprovado');
+              ?>
+                <tr class="nota-row" data-row="<?= (int)$i; ?>">
+                  <td class="materia-cell">
+                    <input type="hidden" name="materia_id_<?= (int)$i; ?>" value="<?= htmlspecialchars($materiaIdRaw); ?>">
+                    <input type="hidden" name="materia_<?= (int)$i; ?>" value="<?= htmlspecialchars($materiaNomeRaw); ?>">
+                    <span class="materia-dot" style="--materia-cor: <?= htmlspecialchars($meta['cor']); ?>"><i class="fa-solid <?= htmlspecialchars($meta['icone']); ?>"></i></span>
+                    <span class="materia-nome"><?= htmlspecialchars($materiaNomeRaw); ?></span>
+                  </td>
+                  <?php for ($a = 1; $a <= 4; $a++):
+                    $notaVal = $notas[$a] ?? null;
+                    $notaStr = ($notaVal !== null && $notaVal !== '') ? (string)$notaVal : '';
+                  ?>
+                    <td><input type="number" step="0.01" min="0" max="<?= htmlspecialchars($notaMaxima); ?>" name="nota_<?= (int)$i; ?>_<?= $a; ?>" value="<?= htmlspecialchars($notaStr); ?>" placeholder="—" class="input-nota" data-avaliacao="<?= $a; ?>"></td>
+                  <?php endfor; ?>
+                  <td class="celula-media">
+                    <?php if ($tipoCurso === 'escola'): ?>
+                      <span class="view-detalhado media-detalhada">
+                        <strong class="media-valor pontos-valor"><?= number_format((float)$progresso['total'], 1, ',', '.'); ?></strong><span class="media-referencia">/ <?= number_format((float)$progresso['meta_total'], 0, ',', '.'); ?> pts</span>
+                        <small class="media-parcial">média atual <?= number_format($media, 1, ',', '.'); ?></small>
+                      </span>
+                      <span class="view-resumido media-resumida">
+                        <strong class="media-atual-resumida"><?= number_format($media, 1, ',', '.'); ?></strong><span>/ <?= number_format((float)$notaMaxima, 0, ',', '.'); ?></span>
+                      </span>
+                    <?php else: ?>
+                      <strong class="media-valor"><?= number_format($media, 2, ',', '.'); ?></strong><span class="media-referencia">/ <?= number_format((float)$notaMaxima, 0, ',', '.'); ?></span>
+                    <?php endif; ?>
+                  </td>
+                  <td class="celula-status col-status"><span class="badge-status <?= $statusClass; ?>"><?= htmlspecialchars($status); ?></span></td>
+                  <td class="celula-precisa col-falta">
+                    <?php if ($tipoCurso === 'escola'): ?>
+                      <span class="view-detalhado falta-detalhada">
+                      <?php if ($progresso['preenchidas'] === 0): ?>
+                        <span class="proxima-meta"><small>Meta anual</small><strong><?= number_format($progresso['meta_total'], 0, ',', '.'); ?> pts</strong></span>
+                      <?php elseif (!$progresso['completo'] && $progresso['faltam'] <= 0): ?>
+                        <span class="meta-ok"><i class="fa-solid fa-check"></i> Meta anual alcançada</span>
+                      <?php elseif ($progresso['impossivel']): ?>
+                        <span class="badge-precisa impossivel">Meta não alcançável só com os bimestres restantes</span>
+                      <?php elseif (!$progresso['completo']): ?>
+                        <span class="proxima-meta"><small>Faltam <?= number_format($progresso['faltam'], 1, ',', '.'); ?> pts</small><strong><?= $progresso['restantes'] === 1 ? 'precisa de ' . number_format($progresso['faltam'], 1, ',', '.') : 'média ' . number_format($progresso['media_necessaria'], 1, ',', '.') . ' nos ' . $progresso['restantes'] . ' restantes'; ?></strong></span>
+                      <?php elseif ($status === 'Aprovado'): ?>
+                        <span class="meta-ok"><i class="fa-solid fa-check"></i> Aprovado no ano</span>
+                      <?php else: ?>
+                        <span class="badge-precisa impossivel">Faltaram <?= number_format($progresso['faltam'], 1, ',', '.'); ?> pts</span>
+                      <?php endif; ?>
+                      </span>
+                      <span class="view-resumido falta-resumida" title="Pontos que ainda faltam para a meta anual">
+                        <strong class="falta-numero"><?= number_format((float)$progresso['faltam'], 1, ',', '.'); ?></strong><span> pts</span>
+                      </span>
+                    <?php elseif ($status === 'Aprovado'): ?>
+                      <span class="meta-ok"><i class="fa-solid fa-check"></i> Meta atingida</span>
+                    <?php elseif ($precisa === 'Impossível'): ?>
+                      <span class="badge-precisa impossivel">Requer recuperação</span>
+                    <?php elseif ($precisa !== null): ?>
+                      <span class="proxima-meta"><small>Você precisa de</small><strong><?= number_format((float)$precisa, 1, ',', '.'); ?></strong></span>
+                    <?php else: ?>—<?php endif; ?>
+                  </td>
+                  <td class="acoes-linha"><button type="submit" name="limpar_linha" value="1" class="btn-menu-linha" title="Limpar notas" onclick="document.getElementById('linha_index').value=<?= (int)$i; ?>"><i class="fa-solid fa-ellipsis"></i></button></td>
+                </tr>
+              <?php endforeach; endif; ?>
+              </tbody>
+            </table>
+          </div>
           <input type="hidden" id="linha_index" name="linha_index" value="">
-
-          <div class="buttons-notas">
-            <button type="submit" name="adicionar_linha">Adicionar matéria</button>
-            <button type="submit" name="remover_linha">Remover linha vazia</button>
-            <button type="submit" name="limpar_tudo">Limpar todas as notas</button>
-            <button type="submit" name="salvar_edicoes" class="btn-destaque">Salvar alterações</button>
+          <div class="buttons-notas buttons-notas-nova">
+            <button type="submit" name="adicionar_linha" class="btn-add-materia"><i class="fa-solid fa-plus"></i> Adicionar matéria</button>
+            <button type="submit" name="limpar_tudo" class="btn-secundario"><i class="fa-regular fa-trash-can"></i> Limpar notas</button>
           </div>
         </form>
       </section>
 
-      <!-- CARD RESUMO GERAL -->
-      <section class="card-notas">
-        <h2 class="titulo-tabela">Resumo geral</h2>
-        <?php
-        $totalMaterias = 0;
-
-        foreach ($materias as $materiaContagem) {
-            if (trim((string)$materiaContagem) !== '') {
-                $totalMaterias++;
-            }
-        }
-        $aprovadas = 0;
-        $recuperacao = 0;
-        $reprovadas = 0;
-        $somaMedias = 0;
-        $contMedias = 0;
-
-        $melhorMateria = null;
-        $piorMateria   = null;
-
-        foreach ($materias as $i => $materia) {
-            $materiaNome = trim((string)$materia);
-            $notas  = isset($notasAll[$i]) ? $notasAll[$i] : [1 => null, 2 => null, 3 => null, 4 => null];
-            $dados  = calcularMediaEStatus($notas, $mediaAprovacao, $pesos);
-            $media  = $dados['media'];
-            $status = $dados['status'];
-
-            if ($status === 'Aprovado') $aprovadas++;
-            if ($status === 'Recuperação') $recuperacao++;
-            if ($status === 'Reprovado') $reprovadas++;
-
-            if ($media > 0) {
-                $somaMedias += $media;
-                $contMedias++;
-
-                if ($materiaNome !== '') {
-                    if ($melhorMateria === null || $media > $melhorMateria['media']) {
-                        $melhorMateria = ['nome' => $materiaNome, 'media' => $media];
-                    }
-                    if ($piorMateria === null || $media < $piorMateria['media']) {
-                        $piorMateria = ['nome' => $materiaNome, 'media' => $media];
-                    }
-                }
-            }
-        }
-
-        $mediaGeral = $contMedias > 0 ? $somaMedias / $contMedias : 0;
-        ?>
-        <div class="resumo-grid">
-          <div class="resumo-card">
-            <span class="resumo-label">Matérias cadastradas</span>
-            <span class="resumo-valor"><?= $totalMaterias; ?></span>
-          </div>
-          <div class="resumo-card aprovado">
-            <span class="resumo-label">Aprovado</span>
-            <span class="resumo-valor"><?= $aprovadas; ?></span>
-          </div>
-          <div class="resumo-card recuperacao">
-            <span class="resumo-label">Recuperação</span>
-            <span class="resumo-valor"><?= $recuperacao; ?></span>
-          </div>
-          <div class="resumo-card reprovado">
-            <span class="resumo-label">Reprovado</span>
-            <span class="resumo-valor"><?= $reprovadas; ?></span>
-          </div>
-          <div class="resumo-card geral">
-            <span class="resumo-label">Média geral</span>
-            <span class="resumo-valor"><?= number_format($mediaGeral, 2, ',', '.'); ?></span>
-          </div>
+      <!-- ATENÇÃO -->
+      <section class="card-notas card-atencao">
+        <div class="card-section-header compacta">
+          <div><span class="section-eyebrow">Prioridades</span><h2 class="titulo-tabela">Matérias que precisam de atenção</h2></div>
         </div>
+        <?php if (count($materiasAtencao) > 0): ?>
+          <div class="atencao-lista">
+            <?php foreach (array_slice($materiasAtencao, 0, 3) as $item):
+              $meta = $metaMaterias[$item['id']] ?? ['cor' => '#94a3b8', 'icone' => 'fa-book'];
+            ?>
+              <article class="atencao-item">
+                <div class="atencao-materia">
+                  <span class="materia-dot" style="--materia-cor: <?= htmlspecialchars($meta['cor']); ?>"><i class="fa-solid <?= htmlspecialchars($meta['icone']); ?>"></i></span>
+                  <div><strong><?= htmlspecialchars($item['nome']); ?></strong><span><?php if ($tipoCurso === 'escola' && !empty($item['progresso'])): ?><?= number_format($item['progresso']['total'], 1, ',', '.'); ?> de <?= number_format($item['progresso']['meta_total'], 0, ',', '.'); ?> pontos acumulados<?php else: ?>Média atual <?= number_format($item['media'], 1, ',', '.'); ?> · meta <?= number_format((float)$mediaAprovacao, 1, ',', '.'); ?><?php endif; ?></span></div>
+                </div>
+                <div class="atencao-meta">
+                  <?php if ($tipoCurso === 'escola' && !empty($item['progresso'])): ?>
+                    <span>Para a meta anual</span><strong>faltam <?= number_format($item['progresso']['faltam'], 1, ',', '.'); ?> pontos</strong>
+                    <?php if ($item['progresso']['restantes'] > 1 && !$item['progresso']['impossivel']): ?><small>média <?= number_format($item['progresso']['media_necessaria'], 1, ',', '.'); ?> nos <?= $item['progresso']['restantes']; ?> bimestres restantes</small><?php elseif ($item['progresso']['restantes'] === 1 && !$item['progresso']['impossivel']): ?><small>precisa de <?= number_format($item['progresso']['faltam'], 1, ',', '.'); ?> no último bimestre</small><?php endif; ?>
+                  <?php elseif ($item['precisa'] === 'Impossível'): ?><strong>Recuperação necessária</strong>
+                  <?php elseif ($item['precisa'] !== null): ?><span>Próxima avaliação</span><strong>precisa de <?= number_format((float)$item['precisa'], 1, ',', '.'); ?></strong>
+                  <?php else: ?><strong>Continue acompanhando</strong><?php endif; ?>
+                </div>
+                <div class="atencao-acoes">
+                  <a href="../tarefas/tarefas.php" class="btn-acao-estudo"><i class="fa-solid fa-list-check"></i> Criar tarefa</a>
+                  <a href="../timer/timer.php" class="btn-acao-estudo secundario"><i class="fa-regular fa-clock"></i> Estudar com Timer</a>
+                </div>
+              </article>
+            <?php endforeach; ?>
+          </div>
+        <?php else: ?>
+          <div class="empty-sucesso"><i class="fa-solid fa-circle-check"></i><div><strong>Está tudo em dia.</strong><span>Quando alguma matéria ainda precisar de pontos para atingir a meta anual, ela aparecerá aqui.</span></div></div>
+        <?php endif; ?>
+      </section>
 
-        <?php
-        if ($melhorMateria || $piorMateria) {
-            echo '<div class="resumo-extra">';
-            if ($melhorMateria) {
-                echo '<p>💪 <strong>Ponto forte:</strong> '
-                   . htmlspecialchars($melhorMateria['nome'])
-                   . ' (' . number_format($melhorMateria['media'], 2, ',', '.') . ')</p>';
-            }
-            if ($piorMateria) {
-                echo '<p>⚠️ <strong>Precisa de atenção:</strong> '
-                   . htmlspecialchars($piorMateria['nome'])
-                   . ' (' . number_format($piorMateria['media'], 2, ',', '.') . ')</p>';
-            }
-            echo '</div>';
-
-            echo '<p class="dica-foag">Dica FOAG: ';
-            if ($piorMateria) {
-                echo 'reserve blocos fixos no seu horário de estudos para '
-                   . htmlspecialchars($piorMateria['nome'])
-                   . ' e foque primeiro nas avaliações com maior peso.';
-            } else {
-                echo 'use o calendário do FOAG para marcar revisões antes das provas com maior peso.';
-            }
-            echo '</p>';
-        } else {
-            echo '<p class="dica-foag">
-                    Comece adicionando suas matérias e notas. A partir daí o FOAG mostra onde você está indo melhor e onde precisa focar mais.
-                  </p>';
-        }
-        ?>
+      <!-- DESEMPENHO -->
+      <section class="card-notas card-desempenho">
+        <div class="card-section-header compacta"><div><span class="section-eyebrow">Visão rápida</span><h2 class="titulo-tabela">Desempenho por matéria</h2></div></div>
+        <div class="desempenho-lista">
+          <?php foreach ($materias as $i => $materiaGrafico):
+            $nomeGrafico = trim((string)$materiaGrafico); if ($nomeGrafico === '') continue;
+            $dadosGrafico = calcularMediaEStatus($notasAll[$i] ?? notasVazias(), $mediaAprovacao, $pesos);
+            $mediaGrafico = (float)$dadosGrafico['media'];
+            $pctGrafico = $notaMaxima > 0 ? max(0, min(100, ($mediaGrafico / $notaMaxima) * 100)) : 0;
+            $midGrafico = (string)($materiaIds[$i] ?? '');
+            $metaGrafico = $metaMaterias[$midGrafico] ?? ['cor' => '#94a3b8'];
+          ?>
+            <div class="desempenho-linha">
+              <span class="desempenho-nome"><?= htmlspecialchars($nomeGrafico); ?></span>
+              <div class="desempenho-barra"><span style="width: <?= number_format($pctGrafico, 2, '.', ''); ?>%; --materia-cor: <?= htmlspecialchars($metaGrafico['cor']); ?>"></span></div>
+              <strong><?= number_format($mediaGrafico, 1, ',', '.'); ?></strong>
+            </div>
+          <?php endforeach; ?>
+        </div>
       </section>
 
     </main>
 
-    <footer class="footer">
-      <div class="footer-content">
-        <div class="footer-left">
-          <span class="footer-brand">FOAG</span>
-
-          <nav class="footer-links">
-            <a href="../sobre/sobre.php">Sobre</a>
-            <a href="../contato/contato.php">Contato</a>
-            <a href="../privacidade/privacidade.php">Privacidade</a>
-          </nav>
-        </div>
-
-        <span class="footer-copy">
-          © <?= date('Y') ?> FOAG
-        </span>
-      </div>
-    </footer>
+    <?php include __DIR__ . '/../components/footer.php'; ?>
 
         </div>
     </div>
@@ -2697,5 +2705,8 @@ $current =
   
   <script src="../configuracoes/aparencia.js?v=5"></script>
 <script src="../configuracoes/acessibilidade.js?v=25" defer></script>
+    <script src="../global/js/cursor.js?v=<?= time() ?>"></script>
+
 </body>
+
 </html>

@@ -2,10 +2,9 @@
    RESET + BASE
    ========================= */
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
 }
 
 body {
@@ -29,14 +28,6 @@ header.cabecalho {
   font-weight: bold;
 }
 
-.cabecalho {
-  position: relative;
-  padding: 10px 20px;
-  font-size: 24px;
-  font-weight: bold;
-  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
-}
-
 /* Ícones do header */
 .header-icons {
   position: absolute;
@@ -50,17 +41,6 @@ header.cabecalho {
   color: #ffffff;
   cursor: pointer;
   user-select: none;
-}
-
-.header-icons i {
-  color: #ffffff;
-  cursor: pointer;
-  transition: transform 0.2s ease, color 0.2s ease;
-}
-
-.header-icons i:hover {
-  transform: translateY(-13%) scale(1.1);
-  color: #dddddd;
 }
 
 /* Ícone FOGi */
@@ -91,23 +71,6 @@ nav.menu {
   flex-direction: column;
   gap: 14px;
   box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.15);
-}
-
-nav.menu a {
-  text-decoration: none;
-  color: #ffffff;
-  font-size: 16px;
-  padding: 10px 12px;
-  border-radius: 8px;
-  transition: background 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-nav.menu a:hover,
-nav.menu a.active {
-  background: rgba(255, 255, 255, 0.18);
 }
 
 /* Conteúdo principal */
@@ -665,7 +628,6 @@ nav.menu a.active {
 }
 
 
-
 /* Botão fechar do mês expandido */
 .mes.expanded .fechar-btn {
   position: absolute;
@@ -831,7 +793,6 @@ nav.menu a.active {
 .dot.tarefa { background: #0099ff; } /* azul bem escuro */
 
 
-
 /* =========================
    BACKDROP DO CALENDÁRIO
    ========================= */
@@ -867,72 +828,6 @@ body.no-scroll {
   border-bottom: none;
   box-shadow: none;
 }
-
-.footer-content {
-  width: calc(100% - 40px);
-  max-width: 1180px;
-  min-height: 52px;
-  margin: 0 auto;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 25px;
-}
-
-.footer-left {
-  display: flex;
-  align-items: center;
-  gap: 30px;
-}
-
-.footer-brand {
-  color: #38a5ff;
-  font-size: 17px;
-  font-weight: 700;
-}
-
-.footer-links {
-  display: flex;
-  align-items: center;
-  gap: 22px;
-}
-
-.footer-links a {
-  color: #64748b;
-  font-size: 12px;
-  font-weight: 500;
-  text-decoration: none;
-  transition: 0.2s ease;
-}
-
-.footer-links a:hover {
-  color: #38a5ff;
-}
-
-.footer-copy {
-  color: #a0a9b5;
-  font-size: 10px;
-  white-space: nowrap;
-}
-
-@media (max-width: 700px) {
-  .footer-content {
-    width: 100%;
-    padding: 15px 18px;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .footer-left {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .footer-links {
-    gap: 18px;
-  }
-}
 /* =========================
    RESPONSIVIDADE
    ========================= */
@@ -948,14 +843,6 @@ body.no-scroll {
 }
 
 @media (max-width: 768px) {
-  .container {
-    flex-direction: column;
-  }
-
-  nav.menu {
-    width: 100%;
-    padding: 15px;
-  }
 
   .calendario {
     grid-template-columns: repeat(2, 1fr);
@@ -1047,15 +934,6 @@ body.no-scroll {
     margin-right: 0;
   }
 
-  .cabecalho {
-    font-size: 20px;
-    padding: 10px;
-  }
-
-  nav.menu a {
-    font-size: 16px;
-  }
-
   .mes.expanded {
     top: 2%;
     left: 2%;
@@ -1063,5 +941,3 @@ body.no-scroll {
     height: 90%;
   }
 }
-
-

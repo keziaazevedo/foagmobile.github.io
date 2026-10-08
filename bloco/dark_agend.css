@@ -247,3 +247,33 @@ body.dark-mode .agenda-auto-save {
   background: rgba(102, 154, 218, 0.16) !important;
   color: #7fb0ea !important;
 }
+
+/* Agenda redesign — dark mode */
+body.dark-mode .agenda-page-title h1,
+body.dark-mode .agenda-section-header h2,
+body.dark-mode .agenda-notas-header h2,
+body.dark-mode .agenda-painel-titulo,
+body.dark-mode .agenda-resumo-card strong,
+body.dark-mode .nota-titulo { color: #eef4fb !important; }
+body.dark-mode .agenda-page-title p,
+body.dark-mode .agenda-resumo-card span:not(.agenda-resumo-icone),
+body.dark-mode .agenda-hoje-data,
+body.dark-mode .nota-conteudo { color: #99a7b8 !important; }
+body.dark-mode .agenda-resumo-card,
+body.dark-mode .agenda-hoje-card,
+body.dark-mode .agenda-painel,
+body.dark-mode .agenda-notas-card,
+body.dark-mode .horario-agenda-card,
+body.dark-mode .agenda-auto-save,
+body.dark-mode .agenda-novo-menu,
+body.dark-mode .nota-item { background: #151d27 !important; border-color: #273444 !important; }
+body.dark-mode .agenda-hoje-item,
+body.dark-mode #tabela-tarefas tbody tr,
+body.dark-mode #tabela-nao-esquecer tbody tr,
+body.dark-mode .nota-editor { background: #111923 !important; border-color: #273444 !important; }
+body.dark-mode .agenda-novo-menu button,
+body.dark-mode .tarefa-texto,
+body.dark-mode #tabela-nao-esquecer td:nth-child(2) { color: #dce5ef !important; }
+body.dark-mode #tabela-tarefas input[type="date"],
+body.dark-mode #tabela-nao-esquecer input[type="date"],
+body.dark-mode #nota-texto { background: #0f1720 !important; border-color: #2a394a !important; color: #dce5ef !important; }

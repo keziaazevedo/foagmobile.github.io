@@ -95,6 +95,14 @@
             "mode": "focus",
             "source": "cronometro",
             "discipline": "Ed. fisica"
+        },
+        {
+            "id": "d72a006b-57ba-4e32-a78f-7a4040f7c05c",
+            "ts": 1791225929501,
+            "minutes": 5,
+            "mode": "focus",
+            "source": "cronometro",
+            "discipline": "Quimica"
         }
     ],
     "goals": {

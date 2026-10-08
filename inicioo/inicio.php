@@ -1,21 +1,59 @@
 <?php
-session_start();
+require_once __DIR__ . '/../core/usuario.php';
+require_once __DIR__ . '/../core/json.php';
 
-if (empty($_SESSION['codigo_usuario'])) {
-    header('Location: ../login/index.php');
-    exit;
-}
-
-$codigoUsuario = $_SESSION['codigo_usuario'];
+$contextoUsuario = foag_contexto_usuario();
+$codigoUsuario = $contextoUsuario['codigoUsuario'];
+$pastaUsuario = $contextoUsuario['pastaUsuario'];
 $current = basename($_SERVER['PHP_SELF']);
-
-$pastaUsuario =
-    __DIR__ .
-    '/../json/usuarios/' .
-    $codigoUsuario;
 
 if (!is_dir($pastaUsuario)) {
     exit('Pasta do usuário não encontrada.');
+}
+
+
+// ==========================================
+// BOAS-VINDAS DO USUÁRIO
+// ==========================================
+
+$arquivoPerfil = $pastaUsuario . '/perfil.json';
+$nomeUsuario = 'Usuário';
+
+if (file_exists($arquivoPerfil)) {
+    $perfilUsuario = json_decode(
+        file_get_contents($arquivoPerfil),
+        true
+    );
+
+    if (
+        is_array($perfilUsuario) &&
+        !empty($perfilUsuario['nome'])
+    ) {
+        $nomeUsuario = trim(
+            (string)$perfilUsuario['nome']
+        );
+    }
+}
+
+$arquivoPrimeiroAcesso =
+    $pastaUsuario . '/inicio_visitado.json';
+
+$primeiroAcesso =
+    !file_exists($arquivoPrimeiroAcesso);
+
+if ($primeiroAcesso) {
+    file_put_contents(
+        $arquivoPrimeiroAcesso,
+        json_encode(
+            [
+                'primeiro_acesso_em' =>
+                    date('Y-m-d H:i:s')
+            ],
+            JSON_PRETTY_PRINT |
+            JSON_UNESCAPED_UNICODE
+        ),
+        LOCK_EX
+    );
 }
 
 // ==========================================
@@ -656,13 +694,21 @@ $anotacoesImportantes =
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <script src="../global/js/config.js?v=<?= time() ?>"></script>
+    <script src="../global/js/utils.js?v=<?= time() ?>"></script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FOAG - Início</title>
     <link rel="stylesheet" href="inicioo.css?v=10">
-<link rel="stylesheet" href="dark_ini.css?v=11">
+    <link rel="stylesheet" href="dark_ini.css?v=11">
+    <link rel="stylesheet" href="../global/css/cursor.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../global/css/base.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../global/css/components.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../global/css/forms.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../global/css/tables.css?v=<?= time() ?>">
 </head>
 <body>
 
@@ -844,7 +890,11 @@ $anotacoesImportantes =
             <div class="welcome-header">
 
                 <h1>
-                    Bem-vindo de volta! 👋
+                    <?php if ($primeiroAcesso): ?>
+                        Bem-vindo, <?= htmlspecialchars($nomeUsuario, ENT_QUOTES, 'UTF-8') ?>! 👋
+                    <?php else: ?>
+                        Bem-vindo de volta, <?= htmlspecialchars($nomeUsuario, ENT_QUOTES, 'UTF-8') ?>! 👋
+                    <?php endif; ?>
                 </h1>
 
                 <p class="subtitle">
@@ -1634,9 +1684,11 @@ $anotacoesImportantes =
 
 
 <script>
-window.INICIO_NOTE_SAVE_URL = 'salvar_anotacao.php';
+window.INICIO_NOTE_SAVE_URL = FOAG_CONFIG.endpoints.inicioAnotacaoSalvar;
 </script>
 <script src="inicio.js"></script>
+
+<script src="../global/js/cursor.js"></script>
 
 <!-- LIBRAS GLOBAL FOAG -->
 <script src="../configuracoes/acessibilidade.js?v=22"></script>

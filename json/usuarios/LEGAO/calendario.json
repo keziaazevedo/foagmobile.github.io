@@ -1,1 +1,17 @@
-[]
+{
+    "dias": {
+        "2026-10-07": "sem-aula",
+        "2026-10-12": "sem-aula",
+        "2026-10-30": "sem-aula"
+    },
+    "metas": [],
+    "configuracoes": {
+        "2026": {
+            "meta_anual": 80,
+            "inicio_ano_letivo": "",
+            "fim_ano_letivo": "",
+            "inicio_ferias_meio": "",
+            "fim_ferias_meio": ""
+        }
+    }
+}

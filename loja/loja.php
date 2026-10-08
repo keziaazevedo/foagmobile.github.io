@@ -1,22 +1,16 @@
 <?php
-session_start();
+require_once __DIR__ . '/../core/usuario.php';
+require_once __DIR__ . '/../core/json.php';
 
-// ======================================
-// LOGIN
-// ======================================
+$contextoUsuario = foag_contexto_usuario(
+    '../login/index.php',
+    true
+);
 
-if (empty($_SESSION['codigo_usuario'])) {
-    header('Location: ../login/index.php');
-    exit;
-}
+$codigoUsuario = $contextoUsuario['codigoUsuario'];
+$pastaUsuario = $contextoUsuario['pastaUsuario'];
 
-$codigoUsuario =
-    $_SESSION['codigo_usuario'];
-
-$current =
-    basename(
-        $_SERVER['PHP_SELF']
-    );
+$current = basename($_SERVER['PHP_SELF']);
 
 // ======================================
 // SISTEMA CENTRAL DE PONTOS
@@ -34,27 +28,6 @@ if (!file_exists($arquivoSistemaPontos)) {
 
 require_once
     $arquivoSistemaPontos;
-
-// ======================================
-// PASTA DO USUÁRIO
-// ======================================
-
-$pastaUsuario =
-    __DIR__ .
-    '/../json/usuarios/' .
-    $codigoUsuario;
-
-if (!is_dir($pastaUsuario)) {
-    if (!mkdir(
-        $pastaUsuario,
-        0777,
-        true
-    )) {
-        exit(
-            'Não foi possível criar a pasta do usuário.'
-        );
-    }
-}
 
 // ======================================
 // FUNÇÕES AUXILIARES
@@ -92,7 +65,8 @@ function estruturaLojaUsuarioPagina(): array
             'tema' => null,
             'fundo' => null,
             'moldura' => null,
-            'cursor' => null
+            'cursor' => null,
+            'emoji' => null   // 👈 ADICIONADO
         ]
     ];
 }
@@ -153,34 +127,17 @@ function normalizarLojaUsuarioPagina(
     return $padrao;
 }
 
-function tipoEquipavelPagina(
-    array $produto
-): ?string {
+function tipoEquipavelPagina(array $produto): ?string
+{
+    $categoria = (string)($produto['categoria'] ?? '');
 
-    $categoria =
-        (string)(
-            $produto[
-                'categoria'
-            ] ?? ''
-        );
-
-    return match (
-        $categoria
-    ) {
-        'temas' =>
-            'tema',
-
-        'fundos' =>
-            'fundo',
-
-        'molduras' =>
-            'moldura',
-
-        'especiais' =>
-            'cursor',
-
-        default =>
-            null
+    return match ($categoria) {
+        'temas' => 'tema',
+        'fundos' => 'fundo',
+        'molduras' => 'moldura',
+        'especiais' => 'cursor',
+        'emojis' => 'emoji',   // 👈 ADICIONADO
+        default => null
     };
 }
 
@@ -488,6 +445,9 @@ $lojaData = [
 <html lang="pt-br">
 
 <head>
+    <script src="../global/js/config.js?v=<?= time() ?>"></script>
+    <script src="../global/js/utils.js?v=<?= time() ?>"></script>
+
 
     <meta charset="UTF-8">
 
@@ -502,7 +462,7 @@ $lojaData = [
 
     <link
         rel="stylesheet"
-        href="loja.css"
+        href="loja.css?v=9"
     >
 
     <link
@@ -510,10 +470,7 @@ $lojaData = [
         href="../m.escuro/dark_basee.css"
     >
 
-    <link
-        rel="stylesheet"
-        href="dark_loja.css"
-    >
+    <link rel="stylesheet" href="dark_loja.css?v=9">
 
     <link
         rel="preconnect"
@@ -530,6 +487,8 @@ $lojaData = [
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     >
 
+    <link rel="stylesheet" href="../global/css/cursor.css">
+
     <script src="../m.escuro/dark-mode.js"></script>
 
 
@@ -543,7 +502,7 @@ $lojaData = [
                 JSON_UNESCAPED_SLASHES
             ); ?>;
         window.LOJA_ACTION_URL =
-            "salvar_loja.php";
+            FOAG_CONFIG.endpoints.lojaSalvar;
 
         window.USER_ID =
             "<?= htmlspecialchars(
@@ -650,70 +609,22 @@ $lojaData = [
     }
 }
 </style>
+    <link rel="stylesheet" href="../global/css/base.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../global/css/components.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../global/css/forms.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../global/css/tables.css?v=<?= time() ?>">
 
+
+    <link rel="stylesheet" href="../global/css/layout.css?v=<?= time() ?>">
 </head>
 
 <body>
 
-<header class="cabecalho">
-
-    FOAG
-
-    <div class="header-icons">
-
-    <a href="../configuracoes/configuracoes.php" class="link-configuracoes" title="Configurações">
-      <i class="fa-solid fa-gear"></i>
-          </a>
-
-        <a href="../perfil/perfil.php" class="link-perfil" title="Perfil">
-            <i class="fa-regular fa-user"></i>
-        </a>
-
-        <i
-            id="icon-sair"
-            class="fa-solid fa-right-from-bracket"
-            title="Sair">
-        </i>
-
-    </div>
-
-</header>
+<?php include __DIR__ . '/../components/header.php'; ?>
 
 <div class="container">
 
-    <nav class="menu">
-        <a href="../inicioo/inicio.php" class="<?= $current === 'inicio.php' ? 'active' : '' ?>">
-            <i class="fa-solid fa-house"></i> Início
-        </a>
-
-        <a href="../estudos/estudos.php" class="<?= $current === 'estudos.php' ? 'active' : '' ?>">
-            <i class="fa-solid fa-graduation-cap"></i> Estudos
-        </a>
-
-        <a href="../bloco/agenda.php" class="<?= $current === 'agenda.php' ? 'active' : '' ?>">
-            <i class="fa-solid fa-book"></i> Agenda
-        </a>
-
-        <a href="../calend/calendario.php" class="<?= $current === 'calendario.php' ? 'active' : '' ?>">
-            <i class="fa-solid fa-calendar-days"></i> Calendário
-        </a>
-
-        <a href="../notas/notas.php" class="<?= $current === 'notas.php' ? 'active' : '' ?>">
-            <i class="fa-solid fa-check-double"></i> Boletim
-        </a>
-
-        <a href="../comunidade/comunidade.php" class="<?= $current === 'comunidade.php' ? 'active' : '' ?>">
-            <i class="fa-solid fa-comments"></i> Comunidade
-        </a>
-
-        <a href="../rank/rank.php" class="<?= $current === 'rank.php' ? 'active' : '' ?>">
-            <i class="fa-solid fa-trophy"></i> Ranking
-        </a>
-
-        <a href="../loja/loja.php" class="<?= $current === 'loja.php' ? 'active' : '' ?>">
-            <i class="fa-solid fa-store"></i> Loja
-        </a>
-    </nav>
+    <?php include __DIR__ . '/../components/menu.php'; ?>
 
 <div class="page-area">
 
@@ -768,9 +679,58 @@ $lojaData = [
 
                 </div>
 
+                <div class="colecao-header-resumo" id="colecaoHeaderResumo">
+                    <div class="colecao-header-topo">
+                        <span>
+                            <i class="fa-solid fa-box-open"></i>
+                            Coleção
+                        </span>
+
+                        <strong id="colecaoHeaderContador">
+                            0 / 0
+                        </strong>
+                    </div>
+
+                    <div class="colecao-header-barra">
+                        <span id="colecaoHeaderProgresso"></span>
+                    </div>
+                </div>
+
             </div>
 
         </div>
+
+        <!-- VITRINES OPCIONAIS: aparecem apenas se houver
+             item.novo / item.destaque no catálogo -->
+        <section class="loja-vitrines" id="lojaVitrines" hidden>
+            <div class="vitrine-bloco" id="vitrineNovidades" hidden>
+                <div class="vitrine-cabecalho">
+                    <div>
+                        <span class="vitrine-selo">Novidades</span>
+                        <h2>Novos na Loja</h2>
+                    </div>
+                    <button type="button" class="vitrine-ver" data-vitrine-filtro="todos">
+                        Ver na loja
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+                <div class="vitrine-itens" id="vitrineNovidadesItens"></div>
+            </div>
+
+            <div class="vitrine-bloco" id="vitrineDestaques" hidden>
+                <div class="vitrine-cabecalho">
+                    <div>
+                        <span class="vitrine-selo destaque">Destaques</span>
+                        <h2>Itens em destaque</h2>
+                    </div>
+                    <button type="button" class="vitrine-ver" data-vitrine-filtro="todos">
+                        Ver na loja
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+                <div class="vitrine-itens" id="vitrineDestaquesItens"></div>
+            </div>
+        </section>
 
         <!-- ==================================
              FILTROS
@@ -823,7 +783,7 @@ $lojaData = [
                 data-filtro="especiais"
             >
                 <i class="fa-solid fa-mouse-pointer"></i>
-                Especiais
+                Cursores
             </button>
 
             <button
@@ -835,6 +795,46 @@ $lojaData = [
             </button>
 
         </div>
+
+        <!-- ==================================
+             PAINEL DA COLEÇÃO
+        =================================== -->
+
+        <section
+            class="colecao-painel"
+            id="colecaoPainel"
+            hidden
+        >
+            <div class="colecao-painel-info">
+                <span class="colecao-painel-icone">
+                    <i class="fa-solid fa-box-open"></i>
+                </span>
+
+                <div>
+                    <span class="colecao-painel-sobretitulo">
+                        Minha coleção
+                    </span>
+                    <h2>
+                        Seus itens do FOAG
+                    </h2>
+                    <p id="colecaoPainelTexto">
+                        Veja tudo que você já conquistou na Loja.
+                    </p>
+                </div>
+            </div>
+
+            <div class="colecao-painel-status">
+                <div class="colecao-painel-numeros">
+                    <strong id="colecaoPainelContador">0 / 0</strong>
+                    <span id="colecaoPainelPercentual">0%</span>
+                </div>
+                <div class="colecao-painel-barra">
+                    <span id="colecaoPainelProgresso"></span>
+                </div>
+            </div>
+
+            <div class="colecao-em-uso" id="colecaoEmUso"></div>
+        </section>
 
         <!-- ==================================
              ITENS DA LOJA
@@ -855,7 +855,23 @@ $lojaData = [
             class="modal-compra"
         >
 
-            <div class="modal-content">
+            <div class="modal-content modal-loja-padronizado">
+
+                <button
+                    type="button"
+                    class="modal-fechar-x"
+                    id="fechar-compra-x"
+                    aria-label="Fechar"
+                >
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+                <span
+                    class="modal-categoria"
+                    id="modalCategoria"
+                >
+                    Item
+                </span>
 
                 <div
                     class="modal-icon"
@@ -872,15 +888,41 @@ $lojaData = [
                     Tem certeza que deseja comprar este item?
                 </p>
 
-                <div class="modal-preco">
+                <div class="modal-compra-resumo">
+                    <div class="modal-preco">
+                        <span>Preço</span>
+                        <strong>
+                            <i class="fa-solid fa-star"></i>
+                            <span id="modalPreco">0</span>
+                        </strong>
+                    </div>
 
-                    <i class="fa-solid fa-star"></i>
+                    <div class="modal-saldo">
+                        <span>Seu saldo</span>
+                        <strong>
+                            <i class="fa-solid fa-star"></i>
+                            <span id="modalSaldoAtual">0</span>
+                        </strong>
+                    </div>
 
-                    <span id="modalPreco">
-                        0
-                    </span>
-
+                    <div class="modal-saldo restante">
+                        <span>Após a compra</span>
+                        <strong>
+                            <i class="fa-solid fa-star"></i>
+                            <span id="modalSaldoRestante">0</span>
+                        </strong>
+                    </div>
                 </div>
+
+                <button
+                    type="button"
+                    class="btn-experimentar-modal"
+                    id="experimentar-item-modal"
+                    hidden
+                >
+                    <i class="fa-regular fa-eye"></i>
+                    Visualizar item
+                </button>
 
                 <div class="modal-buttons">
 
@@ -903,6 +945,68 @@ $lojaData = [
 
             </div>
 
+        </div>
+
+        <!-- ==================================
+             MODAL DE PREVIEW
+        =================================== -->
+
+        <div
+            id="modal-preview-item"
+            class="modal-preview-item"
+        >
+            <div class="modal-content modal-loja-padronizado">
+                <button
+                    type="button"
+                    class="modal-fechar-x"
+                    id="fechar-preview-item"
+                    aria-label="Fechar"
+                >
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+                <span class="modal-categoria" id="previewCategoria">
+                    Preview
+                </span>
+
+                <div class="preview-palco" id="previewPalco">
+                    <div class="preview-item-visual" id="previewItemVisual"></div>
+                </div>
+
+                <h3 id="previewTitulo">Visualizar item</h3>
+
+                <p id="previewDescricao">
+                    Veja como o item aparece antes de comprar.
+                </p>
+
+            </div>
+        </div>
+
+        <div
+            class="loja-toast"
+            id="lojaToast"
+            role="status"
+            aria-live="polite"
+        >
+            <div class="loja-toast-icone" id="lojaToastIcone">
+                <i class="fa-solid fa-check"></i>
+            </div>
+
+            <div class="loja-toast-conteudo">
+                <strong id="lojaToastTitulo">
+                    Tudo certo!
+                </strong>
+                <span id="lojaToastTexto"></span>
+            </div>
+
+            <button
+                type="button"
+                class="loja-toast-fechar"
+                id="lojaToastFechar"
+                aria-label="Fechar"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
         </div>
 
         <!-- ==================================
@@ -941,23 +1045,7 @@ $lojaData = [
 
     </main>
 
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-left">
-                <span class="footer-brand">FOAG</span>
-
-                <nav class="footer-links">
-                    <a href="../sobre/sobre.php">Sobre</a>
-                    <a href="../contato/contato.php">Contato</a>
-                    <a href="../privacidade/privacidade.php">Privacidade</a>
-                </nav>
-            </div>
-
-            <span class="footer-copy">
-                © <?= date('Y') ?> FOAG
-            </span>
-        </div>
-    </footer>
+    <?php include __DIR__ . '/../components/footer.php'; ?>
 
 </div>
 
@@ -972,7 +1060,16 @@ $lojaData = [
     class="modal"
 >
 
-    <div class="modal-content">
+    <div class="modal-content modal-loja-padronizado">
+
+        <button
+            type="button"
+            class="modal-fechar-x"
+            id="fechar-logout-x"
+            aria-label="Fechar"
+        >
+            <i class="fa-solid fa-xmark"></i>
+        </button>
 
         <h3>
             Ah... já vai?
@@ -998,9 +1095,8 @@ $lojaData = [
 
 </div>
 
-<!-- ======================================
-     JAVASCRIPT DA LOJA
-======================================= -->
+
+<script src="../global/js/cursor.js?v=<?= time() ?>"></script>
 
 <script src="loja.js?v=<?= time() ?>"></script>
 

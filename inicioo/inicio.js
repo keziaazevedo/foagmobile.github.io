@@ -90,7 +90,7 @@ document.addEventListener(
 
         const NOTE_SAVE_URL =
             window.INICIO_NOTE_SAVE_URL ||
-            'salvar_anotacao.php';
+            FOAG_CONFIG.endpoints.inicioAnotacaoSalvar;
 
 
         let ultimoFoco =
@@ -821,7 +821,7 @@ document.addEventListener(
                 function () {
 
                     window.location.href =
-                        '../perfil/perfil.php';
+                        FOAG_CONFIG.pages.perfil;
                 }
             );
 
@@ -846,7 +846,7 @@ document.addEventListener(
                 function () {
 
                     window.location.href =
-                        '../login/logout.php';
+                        FOAG_CONFIG.pages.logout;
                 }
             );
 

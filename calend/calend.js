@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const CALEND_SAVE_URL =
         window.CAL_CALEND_SAVE_URL ||
-        'salvar_calendario.php';
+        FOAG_CONFIG.endpoints.calendarioSalvar;
 
 
     const ANO_ATUAL =
@@ -209,18 +209,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     function escapeHtml(valor) {
-
-        const div =
-            document.createElement(
-                'div'
-            );
-
-        div.textContent =
-            String(
-                valor ?? ''
-            );
-
-        return div.innerHTML;
+        return window.FOAG?.utils?.escapeHtml
+            ? FOAG.utils.escapeHtml(valor)
+            : String(valor ?? '');
     }
 
 
@@ -629,7 +620,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const resposta =
                 await fetch(
 
-                    '../bloco/salvar_tarefa_calendario.php',
+                    FOAG_CONFIG.endpoints.calendarioTarefaSalvar,
 
                     {
                         method:
@@ -4818,7 +4809,7 @@ document.addEventListener('DOMContentLoaded', () => {
             () => {
 
                 window.location.href =
-                    '../perfil/perfil.php';
+                    FOAG_CONFIG.pages.perfil;
             }
         );
 
@@ -4845,7 +4836,7 @@ document.addEventListener('DOMContentLoaded', () => {
             () => {
 
                 window.location.href =
-                    '../login/logout.php';
+                    FOAG_CONFIG.pages.logout;
             }
         );
 

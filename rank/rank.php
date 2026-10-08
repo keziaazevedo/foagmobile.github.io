@@ -1,33 +1,22 @@
 <?php
-session_start();
+require_once __DIR__ . '/../core/usuario.php';
+require_once __DIR__ . '/../core/json.php';
 
-// ======================================
-// VERIFICAR LOGIN
-// ======================================
+$contextoUsuario = foag_contexto_usuario('../login/index.php');
+$codigoUsuario = $contextoUsuario['codigoUsuario'];
+$baseJsonDir = $contextoUsuario['baseJsonDir'];
+$pastaUsuario = $contextoUsuario['pastaUsuario'];
 
-if (empty($_SESSION['codigo_usuario'])) {
-    header("Location: ../login/index.php");
-    exit;
-}
-
-$codigoUsuario = $_SESSION['codigo_usuario'];
 $current = basename($_SERVER['PHP_SELF']);
-
-// ======================================
-// CAMINHOS
-// ======================================
-
-$baseJsonDir = __DIR__ . '/../json/usuarios';
 
 /* ======================================
    FOTOS DE PERFIL
 ====================================== */
 
-$pastaFotosUrl = '../img/perfil/';
-$pastaFotosArquivo = __DIR__ . '/../img/perfil/';
+$pastaFotosUrl = foag_url('img/perfil') . '/';
+$pastaFotosArquivo = FOAG_PERFIL_IMG_DIR . '/';
 $fotoPadrao = 'foto_padrao.png';
 
-$pastaUsuario = $baseJsonDir . '/' . $codigoUsuario;
 $arquivoPerfil = $pastaUsuario . '/perfil.json';
 
 if (!is_dir($pastaUsuario)) {
@@ -55,6 +44,102 @@ function lerJson($arquivo)
     return is_array($dados) ? $dados : [];
 }
 
+
+// ======================================
+// MOLDURAS DA LOJA
+// ======================================
+
+function normalizarAjusteMolduraRanking($ajuste)
+{
+    $padrao = [
+        'moldura_escala' => 1.28,
+        'moldura_x' => 0,
+        'moldura_y' => 0,
+        'foto_escala' => 1.00,
+        'foto_x' => 0,
+        'foto_y' => 0
+    ];
+
+    if (!is_array($ajuste)) {
+        return $padrao;
+    }
+
+    foreach ($padrao as $chave => $valorPadrao) {
+        if (
+            array_key_exists($chave, $ajuste) &&
+            is_numeric($ajuste[$chave])
+        ) {
+            $padrao[$chave] = (float) $ajuste[$chave];
+        }
+    }
+
+    return $padrao;
+}
+
+/*
+ * Os deslocamentos do ajuste_perfil foram calibrados sobre
+ * um avatar-base de 132px. No Ranking usamos porcentagens
+ * equivalentes para manter o encaixe em qualquer tamanho.
+ */
+function deslocamentoRankingPercentual($valorPx)
+{
+    if (!is_numeric($valorPx)) {
+        return 0;
+    }
+
+    return ((float) $valorPx / 132) * 100;
+}
+
+$arquivoProdutosLoja =
+    __DIR__ . '/../json/loja/produtos.json';
+
+$dadosProdutosLoja =
+    lerJson($arquivoProdutosLoja);
+
+$moldurasLojaPorId = [];
+
+$itensCatalogoLoja =
+    isset($dadosProdutosLoja['itens']) &&
+    is_array($dadosProdutosLoja['itens'])
+        ? $dadosProdutosLoja['itens']
+        : [];
+
+foreach ($itensCatalogoLoja as $produtoLoja) {
+    if (
+        !is_array($produtoLoja) ||
+        (string)($produtoLoja['categoria'] ?? '') !== 'molduras'
+    ) {
+        continue;
+    }
+
+    $idMoldura =
+        trim((string)($produtoLoja['id'] ?? ''));
+
+    $imagemMoldura =
+        trim((string)($produtoLoja['imagem'] ?? ''));
+
+    if (
+        $idMoldura === '' ||
+        $imagemMoldura === ''
+    ) {
+        continue;
+    }
+
+    $moldurasLojaPorId[$idMoldura] = [
+        'id' => $idMoldura,
+        'nome' => (string)($produtoLoja['nome'] ?? 'Moldura'),
+        'imagem' => $imagemMoldura,
+        'ajuste_perfil' => normalizarAjusteMolduraRanking(
+            $produtoLoja['ajuste_perfil'] ?? []
+        ),
+        'ajuste_share' => normalizarAjusteMolduraRanking(
+            $produtoLoja['ajuste_share']
+                ?? $produtoLoja['ajuste_perfil']
+                ?? []
+        )
+    ];
+}
+
 // ======================================
 // NORMALIZAR TEXTO
 // ======================================
@@ -71,6 +156,31 @@ function normalizarTexto($texto)
     }
 
     return strtolower($texto);
+}
+
+// ======================================
+// CAMPOS DE PERFIL COMPATÍVEIS
+// ======================================
+
+function obterPrimeiroTextoPerfil($perfil, $chaves)
+{
+    if (!is_array($perfil)) {
+        return '';
+    }
+
+    foreach ($chaves as $chave) {
+        if (!array_key_exists($chave, $perfil)) {
+            continue;
+        }
+
+        $valor = trim((string) $perfil[$chave]);
+
+        if ($valor !== '') {
+            return $valor;
+        }
+    }
+
+    return '';
 }
 
 // ======================================
@@ -346,9 +456,27 @@ $cidadeUsuarioAtual =
         ?? ''
     );
 
-$regiaoUsuarioAtual =
-    obterRegiaoBrasil(
-        $estadoUsuarioAtual
+$escolaUsuarioAtual =
+    obterPrimeiroTextoPerfil(
+        $dadosPerfilAtual,
+        [
+            'escola',
+            'nome_escola',
+            'escola_nome',
+            'instituicao',
+            'instituição'
+        ]
+    );
+
+$serieUsuarioAtual =
+    obterPrimeiroTextoPerfil(
+        $dadosPerfilAtual,
+        [
+            'serie',
+            'série',
+            'serie_escolar',
+            'ano_escolar'
+        ]
     );
 
 $_SESSION['user_nome'] =
@@ -423,6 +551,48 @@ foreach ($pastasUsuarios as $pasta) {
             $fotoPerfil
         );
 
+
+    // ==================================
+    // MOLDURA ATIVA DO USUÁRIO
+    // ==================================
+
+    $molduraPerfil = null;
+
+    $dadosLojaUsuario =
+        lerJson(
+            $pasta . '/loja.json'
+        );
+
+    $itensAtivosUsuario =
+        isset($dadosLojaUsuario['itens_ativos']) &&
+        is_array($dadosLojaUsuario['itens_ativos'])
+            ? $dadosLojaUsuario['itens_ativos']
+            : [];
+
+    $itensCompradosUsuario =
+        isset($dadosLojaUsuario['itens_comprados']) &&
+        is_array($dadosLojaUsuario['itens_comprados'])
+            ? $dadosLojaUsuario['itens_comprados']
+            : [];
+
+    $idMolduraAtiva =
+        isset($itensAtivosUsuario['moldura'])
+            ? trim((string)$itensAtivosUsuario['moldura'])
+            : '';
+
+    if (
+        $idMolduraAtiva !== '' &&
+        in_array(
+            $idMolduraAtiva,
+            $itensCompradosUsuario,
+            true
+        ) &&
+        isset($moldurasLojaPorId[$idMolduraAtiva])
+    ) {
+        $molduraPerfil =
+            $moldurasLojaPorId[$idMolduraAtiva];
+    }
+
     // ==================================
     // LOCALIZAÇÃO
     // ==================================
@@ -441,9 +611,27 @@ foreach ($pastasUsuarios as $pasta) {
             ?? ''
         );
 
-    $regiao =
-        obterRegiaoBrasil(
-            $estado
+    $escola =
+        obterPrimeiroTextoPerfil(
+            $perfil,
+            [
+                'escola',
+                'nome_escola',
+                'escola_nome',
+                'instituicao',
+                'instituição'
+            ]
+        );
+
+    $serie =
+        obterPrimeiroTextoPerfil(
+            $perfil,
+            [
+                'serie',
+                'série',
+                'serie_escolar',
+                'ano_escolar'
+            ]
         );
 
     // ==================================
@@ -514,14 +702,20 @@ foreach ($pastasUsuarios as $pasta) {
         'foto' =>
             $caminhoFoto,
 
+        'moldura' =>
+            $molduraPerfil,
+
         'estado' =>
             $estado,
 
         'cidade' =>
             $cidade,
 
-        'regiao' =>
-            $regiao,
+        'escola' =>
+            $escola,
+
+        'serie' =>
+            $serie,
 
         'estrelas' =>
             $estrelas,
@@ -535,6 +729,23 @@ foreach ($pastasUsuarios as $pasta) {
 }
 
 // ======================================
+// ESTRELAS DO USUÁRIO ATUAL
+// ======================================
+
+$estrelasUsuarioAtual = 0;
+
+foreach ($usuarios as $usuarioCarregado) {
+    if (
+        (string)($usuarioCarregado['codigo_usuario'] ?? '')
+        === (string)$codigoUsuario
+    ) {
+        $estrelasUsuarioAtual =
+            (int)($usuarioCarregado['estrelas'] ?? 0);
+        break;
+    }
+}
+
+// ======================================
 // FILTRAR POR NÍVEL
 // ======================================
 
@@ -543,9 +754,9 @@ function filtrarUsuariosPorNivel(
     $nivel,
     $estadoAtual,
     $cidadeAtual,
-    $regiaoAtual
+    $escolaAtual,
+    $serieAtual
 ) {
-
     if ($nivel === 'nacional') {
         return $usuarios;
     }
@@ -553,76 +764,49 @@ function filtrarUsuariosPorNivel(
     $resultado = [];
 
     foreach ($usuarios as $usuario) {
-
-        // ==================================
-        // ESTADUAL
-        // ==================================
-
         if ($nivel === 'estadual') {
-
             if ($estadoAtual === '') {
                 continue;
             }
 
-            if (
-                ($usuario['estado'] ?? '')
-                === $estadoAtual
-            ) {
-                $resultado[] =
-                    $usuario;
+            if (($usuario['estado'] ?? '') === $estadoAtual) {
+                $resultado[] = $usuario;
             }
-        }
-
-        // ==================================
-        // MUNICIPAL
-        // ==================================
-
-        elseif ($nivel === 'municipal') {
-
-            if (
-                $estadoAtual === ''
-                ||
-                $cidadeAtual === ''
-            ) {
+        } elseif ($nivel === 'municipal') {
+            if ($estadoAtual === '' || $cidadeAtual === '') {
                 continue;
             }
 
             if (
-                ($usuario['estado'] ?? '')
-                === $estadoAtual
-                &&
-                normalizarTexto(
-                    $usuario['cidade']
-                    ?? ''
-                )
-                ===
-                normalizarTexto(
-                    $cidadeAtual
-                )
+                ($usuario['estado'] ?? '') === $estadoAtual
+                && normalizarTexto($usuario['cidade'] ?? '')
+                    === normalizarTexto($cidadeAtual)
             ) {
-
-                $resultado[] =
-                    $usuario;
+                $resultado[] = $usuario;
             }
-        }
-
-        // ==================================
-        // REGIONAL
-        // ==================================
-
-        elseif ($nivel === 'regional') {
-
-            if ($regiaoAtual === '') {
+        } elseif ($nivel === 'escola') {
+            if ($escolaAtual === '') {
                 continue;
             }
 
             if (
-                ($usuario['regiao'] ?? '')
-                === $regiaoAtual
+                normalizarTexto($usuario['escola'] ?? '')
+                === normalizarTexto($escolaAtual)
             ) {
+                $resultado[] = $usuario;
+            }
+        } elseif ($nivel === 'serie') {
+            if ($escolaAtual === '' || $serieAtual === '') {
+                continue;
+            }
 
-                $resultado[] =
-                    $usuario;
+            if (
+                normalizarTexto($usuario['escola'] ?? '')
+                === normalizarTexto($escolaAtual)
+                && normalizarTexto($usuario['serie'] ?? '')
+                    === normalizarTexto($serieAtual)
+            ) {
+                $resultado[] = $usuario;
             }
         }
     }
@@ -635,14 +819,14 @@ function filtrarUsuariosPorNivel(
 // ======================================
 
 $usuariosPorNivel = [
-
     'nacional' =>
         filtrarUsuariosPorNivel(
             $usuarios,
             'nacional',
             $estadoUsuarioAtual,
             $cidadeUsuarioAtual,
-            $regiaoUsuarioAtual
+            $escolaUsuarioAtual,
+            $serieUsuarioAtual
         ),
 
     'estadual' =>
@@ -651,7 +835,8 @@ $usuariosPorNivel = [
             'estadual',
             $estadoUsuarioAtual,
             $cidadeUsuarioAtual,
-            $regiaoUsuarioAtual
+            $escolaUsuarioAtual,
+            $serieUsuarioAtual
         ),
 
     'municipal' =>
@@ -660,16 +845,28 @@ $usuariosPorNivel = [
             'municipal',
             $estadoUsuarioAtual,
             $cidadeUsuarioAtual,
-            $regiaoUsuarioAtual
+            $escolaUsuarioAtual,
+            $serieUsuarioAtual
         ),
 
-    'regional' =>
+    'escola' =>
         filtrarUsuariosPorNivel(
             $usuarios,
-            'regional',
+            'escola',
             $estadoUsuarioAtual,
             $cidadeUsuarioAtual,
-            $regiaoUsuarioAtual
+            $escolaUsuarioAtual,
+            $serieUsuarioAtual
+        ),
+
+    'serie' =>
+        filtrarUsuariosPorNivel(
+            $usuarios,
+            'serie',
+            $estadoUsuarioAtual,
+            $cidadeUsuarioAtual,
+            $escolaUsuarioAtual,
+            $serieUsuarioAtual
         )
 ];
 
@@ -715,14 +912,20 @@ function criarRanking(
             'foto' =>
                 $usuario['foto'],
 
+            'moldura' =>
+                $usuario['moldura'] ?? null,
+
             'estado' =>
                 $usuario['estado'],
 
             'cidade' =>
                 $usuario['cidade'],
 
-            'regiao' =>
-                $usuario['regiao'],
+            'escola' =>
+                $usuario['escola'] ?? '',
+
+            'serie' =>
+                $usuario['serie'] ?? '',
 
             'valor_bruto' =>
                 $valorBruto,
@@ -811,24 +1014,23 @@ function criarNiveisRanking(
 // ======================================
 
 $nomesNiveis = [
-
-    'nacional' =>
-        '🌍 Nacional',
-
+    'nacional' => '🌎 Nacional',
     'estadual' =>
         $estadoUsuarioAtual !== ''
             ? '🏛️ Estadual (' . $estadoUsuarioAtual . ')'
             : '🏛️ Estadual',
-
     'municipal' =>
         $cidadeUsuarioAtual !== ''
             ? '🏙️ Municipal (' . $cidadeUsuarioAtual . ')'
             : '🏙️ Municipal',
-
-    'regional' =>
-        $regiaoUsuarioAtual !== ''
-            ? '📌 Regional (' . $regiaoUsuarioAtual . ')'
-            : '📌 Regional'
+    'escola' =>
+        $escolaUsuarioAtual !== ''
+            ? '🏫 Escola (' . $escolaUsuarioAtual . ')'
+            : '🏫 Escola',
+    'serie' =>
+        $serieUsuarioAtual !== ''
+            ? '🎓 Minha série (' . $serieUsuarioAtual . ')'
+            : '🎓 Minha série'
 ];
 
 // ======================================
@@ -840,7 +1042,7 @@ $rankings = [
     'estrelas' => [
 
         'titulo' =>
-            '⭐ Mais Estrelas',
+            'Estrelas',
 
         'icone' =>
             '⭐',
@@ -849,7 +1051,7 @@ $rankings = [
             '#ffd700',
 
         'descricao' =>
-            'Quem tem mais estrelas acumuladas',
+            'Quem conquistou mais estrelas no FOAG',
 
         'niveis' =>
             criarNiveisRanking(
@@ -864,7 +1066,7 @@ $rankings = [
     'pomodoro' => [
 
         'titulo' =>
-            '⏱️ Mais Tempo no Pomodoro',
+            'Foco',
 
         'icone' =>
             '⏱️',
@@ -873,16 +1075,16 @@ $rankings = [
             '#4caf50',
 
         'descricao' =>
-            'Quem estudou mais tempo com Pomodoro',
+            'Quem acumulou mais tempo de estudo focado',
 
         'niveis' =>
             criarNiveisRanking(
                 $usuariosPorNivel,
                 'pomodoro',
                 function ($valor) {
-                    return formatarTempo(
-                        $valor
-                    );
+                    return (int)$valor > 0
+                        ? formatarTempo($valor)
+                        : '—';
                 }
             )
     ],
@@ -890,7 +1092,7 @@ $rankings = [
     'notas' => [
 
         'titulo' =>
-            '📚 Melhores Notas',
+            'Desempenho',
 
         'icone' =>
             '📚',
@@ -899,20 +1101,21 @@ $rankings = [
             '#9c27b0',
 
         'descricao' =>
-            'Quem tem as melhores médias',
+            'As maiores médias escolares cadastradas',
 
         'niveis' =>
             criarNiveisRanking(
                 $usuariosPorNivel,
                 'notas',
                 function ($valor) {
-
-                    return number_format(
-                        (float) $valor,
-                        1,
-                        ',',
-                        ''
-                    );
+                    return (float)$valor > 0
+                        ? number_format(
+                            (float)$valor,
+                            1,
+                            ',',
+                            ''
+                        )
+                        : '—';
                 }
             )
     ]
@@ -950,7 +1153,15 @@ $niveisDisponiveis = [
     'nacional',
     'estadual',
     'municipal',
-    'regional'
+    'escola',
+    'serie'
+];
+
+$niveisPrincipais = [
+    'nacional',
+    'estadual',
+    'municipal',
+    'escola'
 ];
 
 // ======================================
@@ -972,12 +1183,130 @@ foreach (
         );
 }
 
+function encontrarJogadorAtual($jogadores, $codigoUsuario)
+{
+    foreach ($jogadores as $indice => $jogador) {
+        if (($jogador['codigo_usuario'] ?? '') === $codigoUsuario) {
+            return [
+                'indice' => $indice,
+                'posicao' => $indice + 1,
+                'jogador' => $jogador
+            ];
+        }
+    }
+
+    return null;
+}
+
+function calcularDistanciaProximaPosicao($jogadores, $codigoUsuario)
+{
+    $atual = encontrarJogadorAtual($jogadores, $codigoUsuario);
+
+    if (!$atual || $atual['indice'] <= 0) {
+        return null;
+    }
+
+    $acima = $jogadores[$atual['indice'] - 1] ?? null;
+
+    if (!$acima) {
+        return null;
+    }
+
+    $diferenca =
+        (float)($acima['valor_bruto'] ?? 0)
+        - (float)($atual['jogador']['valor_bruto'] ?? 0);
+
+    return max(0, $diferenca);
+}
+
+function dadosAvatarRanking($jogador)
+{
+    $moldura =
+        isset($jogador['moldura']) && is_array($jogador['moldura'])
+            ? $jogador['moldura']
+            : null;
+
+    $temMoldura =
+        $moldura && !empty($moldura['imagem']);
+
+    $ajuste = normalizarAjusteMolduraRanking(
+        $temMoldura
+            ? ($moldura['ajuste_perfil'] ?? [])
+            : []
+    );
+
+    return [
+        'moldura' => $moldura,
+        'tem_moldura' => $temMoldura,
+        'ajuste' => $ajuste,
+        'moldura_x_pct' => deslocamentoRankingPercentual($ajuste['moldura_x']),
+        'moldura_y_pct' => deslocamentoRankingPercentual($ajuste['moldura_y']),
+        'foto_x_pct' => deslocamentoRankingPercentual($ajuste['foto_x']),
+        'foto_y_pct' => deslocamentoRankingPercentual($ajuste['foto_y'])
+    ];
+}
+function renderAvatarRankingHtml($jogador, $classeExtra = '')
+{
+    $dados = dadosAvatarRanking($jogador);
+    $ajuste = $dados['ajuste'];
+    $moldura = $dados['moldura'];
+    $temMoldura = $dados['tem_moldura'];
+
+    $classe = 'avatar avatar-foto'
+        . ($temMoldura ? ' com-moldura' : '')
+        . ($classeExtra !== '' ? ' ' . $classeExtra : '');
+
+    ob_start();
+    ?>
+    <div class="<?= htmlspecialchars($classe, ENT_QUOTES, 'UTF-8') ?>">
+        <div
+            class="avatar-stage<?= $temMoldura ? ' tem-moldura' : '' ?>"
+            style="
+                --rank-moldura-escala: <?= htmlspecialchars((string)$ajuste['moldura_escala'], ENT_QUOTES, 'UTF-8') ?>;
+                --rank-moldura-x: <?= htmlspecialchars((string)$dados['moldura_x_pct'], ENT_QUOTES, 'UTF-8') ?>%;
+                --rank-moldura-y: <?= htmlspecialchars((string)$dados['moldura_y_pct'], ENT_QUOTES, 'UTF-8') ?>%;
+                --rank-foto-escala: <?= htmlspecialchars((string)$ajuste['foto_escala'], ENT_QUOTES, 'UTF-8') ?>;
+                --rank-foto-x: <?= htmlspecialchars((string)$dados['foto_x_pct'], ENT_QUOTES, 'UTF-8') ?>%;
+                --rank-foto-y: <?= htmlspecialchars((string)$dados['foto_y_pct'], ENT_QUOTES, 'UTF-8') ?>%;
+            "
+        >
+            <div class="avatar-foto-recorte">
+                <img
+                    class="avatar-foto-img"
+                    src="<?= htmlspecialchars($jogador['foto'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                    alt="Foto de perfil de <?= htmlspecialchars($jogador['nome'] ?? 'Estudante', ENT_QUOTES, 'UTF-8') ?>"
+                    loading="lazy"
+                    onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+                >
+                <span class="avatar-fallback" aria-hidden="true">
+                    <i class="fa-solid fa-user"></i>
+                </span>
+            </div>
+
+            <?php if ($temMoldura): ?>
+                <img
+                    class="avatar-moldura-img"
+                    src="<?= htmlspecialchars($moldura['imagem'], ENT_QUOTES, 'UTF-8') ?>"
+                    alt=""
+                    aria-hidden="true"
+                    loading="lazy"
+                >
+            <?php endif; ?>
+        </div>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+
 ?>
 
 <!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
+    <script src="../global/js/config.js?v=<?= time() ?>"></script>
+    <script src="../global/js/utils.js?v=<?= time() ?>"></script>
+
 
     <meta charset="UTF-8">
 
@@ -990,7 +1319,7 @@ foreach (
 
     <link
         rel="stylesheet"
-        href="rank.css"
+        href="rank.css?v=6"
     >
 
     <link
@@ -1000,7 +1329,7 @@ foreach (
 
     <link
         rel="stylesheet"
-        href="dark_rank.css"
+        href="dark_rank.css?v=5"
     >
 
     <!-- ACESSIBILIDADE GLOBAL -->
@@ -1022,104 +1351,6 @@ foreach (
     >
 
     <script src="../m.escuro/dark-mode.js"></script>
-
-    <style>
-        /* ==========================================
-           FOTO DE PERFIL NO RANKING
-        ========================================== */
-
-        .rank-full-item .avatar.avatar-foto {
-            width: 44px !important;
-            height: 44px !important;
-            min-width: 44px !important;
-            flex: 0 0 44px !important;
-
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-
-            padding: 0 !important;
-            overflow: hidden !important;
-
-            border-radius: 50% !important;
-            border: 2px solid #ffffff !important;
-
-            background: #eef4fa !important;
-
-            box-shadow:
-                0 2px 8px
-                rgba(0, 0, 0, 0.10) !important;
-
-            font-size: 0 !important;
-        }
-
-        .rank-full-item .avatar.avatar-foto img {
-            width: 100% !important;
-            height: 100% !important;
-
-            display: block;
-
-            object-fit: cover !important;
-            object-position: center !important;
-
-            border-radius: 50% !important;
-        }
-
-        .rank-full-item .avatar-fallback {
-            width: 100%;
-            height: 100%;
-
-            display: none;
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 50%;
-
-            color: #7c8da0;
-            background: #eef4fa;
-
-            font-size: 17px !important;
-        }
-
-        body.dark-mode .rank-full-item .avatar.avatar-foto {
-            border-color: #334155 !important;
-            background: #243247 !important;
-        }
-
-        body.dark-mode .rank-full-item .avatar-fallback {
-            color: #cbd5e1;
-            background: #243247;
-        }
-
-        @media (max-width: 768px) {
-
-            .rank-full-item .avatar.avatar-foto {
-                width: 38px !important;
-                height: 38px !important;
-                min-width: 38px !important;
-                flex-basis: 38px !important;
-            }
-
-        }
-
-        @media (max-width: 480px) {
-
-            .rank-full-item .avatar.avatar-foto {
-                width: 34px !important;
-                height: 34px !important;
-                min-width: 34px !important;
-                flex-basis: 34px !important;
-            }
-
-            .rank-full-item .avatar-fallback {
-                font-size: 14px !important;
-            }
-
-        }
-    </style>
-
-
-
 
 <style>
 /* ==========================================
@@ -1217,83 +1448,30 @@ foreach (
 }
 </style>
 
+    <link rel="stylesheet" href="../global/css/cursor.css">
+    <link rel="stylesheet" href="../global/css/base.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../global/css/components.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../global/css/forms.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../global/css/tables.css?v=<?= time() ?>">
+
+    <link rel="stylesheet" href="../global/css/layout.css?v=<?= time() ?>">
 </head>
 
 <body>
 
-<header class="cabecalho">
-
-    FOAG
-
-    <div class="header-icons">
-
-        <a
-            href="../configuracoes/configuracoes.php"
-            class="link-configuracoes"
-            title="Configurações"
-        >
-            <i class="fa-solid fa-gear"></i>
-        </a>
-
-        <i
-            id="icon-perfil"
-            class="fa-regular fa-user"
-            title="Perfil"
-        ></i>
-
-        <i
-            id="icon-sair"
-            class="fa-solid fa-right-from-bracket"
-            title="Sair"
-        ></i>
-
-    </div>
-
-</header>
+<?php include __DIR__ . '/../components/header.php'; ?>
 
 <div class="container">
 
-<nav class="menu">
-  <a href="../inicioo/inicio.php" class="<?= $current === 'inicio.php' ? 'active' : '' ?>">
-    <i class="fa-solid fa-house"></i> Início
-  </a>
-
-  <a href="../estudos/estudos.php" class="<?= $current === 'estudos.php' ? 'active' : '' ?>">
-    <i class="fa-solid fa-graduation-cap"></i> Estudos
-  </a>
-
-  <a href="../bloco/agenda.php" class="<?= $current === 'agenda.php' ? 'active' : '' ?>">
-    <i class="fa-solid fa-book"></i> Agenda
-  </a>
-
-  <a href="../calend/calendario.php" class="<?= $current === 'calendario.php' ? 'active' : '' ?>">
-    <i class="fa-solid fa-calendar-days"></i> Calendário
-  </a>
-
-  <a href="../notas/notas.php" class="<?= $current === 'notas.php' ? 'active' : '' ?>">
-    <i class="fa-solid fa-check-double"></i> Boletim
-  </a>
-
-  <a href="../comunidade/comunidade.php" class="<?= $current === 'comunidade.php' ? 'active' : '' ?>">
-    <i class="fa-solid fa-comments"></i> Comunidade
-  </a>
-
-  <a href="../rank/rank.php" class="<?= $current === 'rank.php' ? 'active' : '' ?>">
-    <i class="fa-solid fa-trophy"></i> Ranking
-  </a>
-
-  <a href="../loja/loja.php" class="<?= $current === 'loja.php' ? 'active' : '' ?>">
-    <i class="fa-solid fa-store"></i> Loja
-  </a>
-</nav>
+<?php include __DIR__ . '/../components/menu.php'; ?>
 
 <div class="page-area">
 
 <main class="main-content">
 
     <div class="ranking-header">
-
         <div class="ranking-titulo">
+            <span class="ranking-kicker">Competição saudável • progresso real</span>
 
             <h1>
                 <i class="fa-solid fa-trophy"></i>
@@ -1301,299 +1479,228 @@ foreach (
             </h1>
 
             <p>
-                Veja quem está se destacando em cada categoria!
+                Estude, evolua e acompanhe sua posição entre outros estudantes.
             </p>
 
+            <div class="ranking-titulo-pill" id="rankingTituloPill">
+                <i class="fa-solid fa-star"></i>
+                <span>Categoria ativa: Estrelas</span>
+            </div>
         </div>
 
+        <div class="ranking-header-estrelas" aria-live="polite" aria-label="Resumo da sua pontuação no ranking">
+            <span class="header-estrelas-label" id="headerResumoLabel">Suas estrelas</span>
+
+            <strong class="header-estrelas-valor">
+                <i class="fa-solid fa-star" id="headerResumoIcone"></i>
+                <span id="headerResumoValor"><?= number_format($estrelasUsuarioAtual, 0, ',', '.') ?></span>
+            </strong>
+
+            <small id="headerResumoTexto">Categoria Estrelas • Nacional</small>
+        </div>
     </div>
 
-    <!-- ==================================
-         ABAS
-    =================================== -->
-
-    <div
-        class="abas-niveis"
-        id="abasNiveis"
-    >
-
-        <button
-            class="aba-nivel active"
-            data-nivel="nacional"
-            type="button"
-        >
-
-            <i class="fa-solid fa-globe-americas"></i>
-
+    <div class="abas-niveis" id="abasNiveis">
+        <button class="aba-nivel active" data-nivel="nacional" type="button">
+            <i class="fa-solid fa-earth-americas"></i>
             Nacional
-
-            <span class="badge-nivel">
-                <?= $quantidadesNivel['nacional'] ?>
-            </span>
-
+            <span class="badge-nivel"><?= $quantidadesNivel['nacional'] ?></span>
         </button>
 
-        <button
-            class="aba-nivel"
-            data-nivel="estadual"
-            type="button"
-        >
-
-            <i class="fa-solid fa-building"></i>
-
+        <button class="aba-nivel" data-nivel="estadual" type="button">
+            <i class="fa-solid fa-landmark"></i>
             Estadual
-
-            <span class="badge-nivel">
-                <?= $quantidadesNivel['estadual'] ?>
-            </span>
-
+            <span class="badge-nivel"><?= $quantidadesNivel['estadual'] ?></span>
         </button>
 
-        <button
-            class="aba-nivel"
-            data-nivel="municipal"
-            type="button"
-        >
-
+        <button class="aba-nivel" data-nivel="municipal" type="button">
             <i class="fa-solid fa-city"></i>
-
             Municipal
-
-            <span class="badge-nivel">
-                <?= $quantidadesNivel['municipal'] ?>
-            </span>
-
+            <span class="badge-nivel"><?= $quantidadesNivel['municipal'] ?></span>
         </button>
 
-        <button
-            class="aba-nivel"
-            data-nivel="regional"
-            type="button"
-        >
-
-            <i class="fa-solid fa-map-location-dot"></i>
-
-            Regional
-
-            <span class="badge-nivel">
-                <?= $quantidadesNivel['regional'] ?>
-            </span>
-
+        <button class="aba-nivel" data-nivel="escola" type="button" title="<?= htmlspecialchars($escolaUsuarioAtual ?: 'Escola não cadastrada', ENT_QUOTES, 'UTF-8') ?>">
+            <i class="fa-solid fa-school"></i>
+            Escola
+            <span class="badge-nivel"><?= $quantidadesNivel['escola'] ?></span>
         </button>
-
     </div>
 
-    <!-- ==================================
-         RANKING
-    =================================== -->
+    <div class="escola-subfiltros" id="escolaSubfiltros" hidden>
+        <div class="escola-identificacao">
+            <i class="fa-solid fa-school"></i>
+            <span>
+                <?= htmlspecialchars($escolaUsuarioAtual !== '' ? $escolaUsuarioAtual : 'Escola não cadastrada') ?>
+            </span>
+        </div>
+
+        <div class="escola-scope-botoes">
+            <button type="button" class="escola-scope active" data-school-scope="escola">
+                Toda a escola
+            </button>
+
+            <?php if ($escolaUsuarioAtual !== '' && $serieUsuarioAtual !== ''): ?>
+                <button type="button" class="escola-scope" data-school-scope="serie">
+                    Minha série · <?= htmlspecialchars($serieUsuarioAtual) ?>
+                </button>
+            <?php endif; ?>
+        </div>
+    </div>
 
     <div class="rank-layout">
-
-        <!-- MENU DE CATEGORIAS -->
-
-        <div class="rank-menu-lateral">
-
+        <aside class="rank-menu-lateral">
             <div class="menu-titulo">
-
-                <i class="fa-solid fa-list"></i>
-
+                <i class="fa-solid fa-layer-group"></i>
                 Categorias
-
             </div>
 
-            <?php foreach (
-                $categoriasOrdenadas
-                as $index => $key
-            ): ?>
-
+            <?php foreach ($categoriasOrdenadas as $index => $key): ?>
                 <?php
+                $ranking = $rankings[$key];
+                $ativo = $index === 0 ? 'active' : '';
+                $totalEstudantes = count($ranking['niveis']['nacional']['jogadores']);
 
-                $ranking =
-                    $rankings[$key];
-
-                $ativo =
-                    $index === 0
-                    ? 'active'
-                    : '';
-
-                $totalJogadores =
-                    count(
-                        $ranking[
-                            'niveis'
-                        ][
-                            'nacional'
-                        ][
-                            'jogadores'
-                        ]
-                    );
-
+                $descricaoCategoria = [
+                    'estrelas' => 'Conquistas e progresso',
+                    'pomodoro' => 'Tempo de estudo focado',
+                    'notas' => 'Média escolar'
+                ][$key] ?? '';
                 ?>
 
-                <div
+                <button
+                    type="button"
                     class="menu-item <?= $ativo ?>"
                     data-categoria="<?= htmlspecialchars($key) ?>"
                 >
+                    <span class="item-icone"><?= htmlspecialchars($ranking['icone']) ?></span>
 
-                    <span class="item-icone">
-                        <?= htmlspecialchars($ranking['icone']) ?>
+                    <span class="item-textos">
+                        <strong class="item-nome"><?= htmlspecialchars($ranking['titulo']) ?></strong>
+                        <small class="item-descricao"><?= htmlspecialchars($descricaoCategoria) ?></small>
                     </span>
 
-                    <span class="item-nome">
-                        <?= htmlspecialchars($ranking['titulo']) ?>
-                    </span>
-
-                    <span class="item-badge">
-                        <?= $totalJogadores ?>
+                    <span class="item-badge" title="Estudantes neste ranking">
+                        <?= $totalEstudantes ?>
                     </span>
 
                     <span class="indicador-ativo"></span>
-
-                </div>
-
+                </button>
             <?php endforeach; ?>
-
-        </div>
-
-        <!-- CONTEÚDO -->
+        </aside>
 
         <div class="rank-conteudo">
-
-            <?php
-
-            $primeiro = true;
-
-            foreach (
-                $categoriasOrdenadas
-                as $key
-            ):
-
-                $ranking =
-                    $rankings[$key];
-
-                $hidden =
-                    $primeiro
-                    ? ''
-                    : 'hidden';
-
+            <?php $primeiro = true; ?>
+            <?php foreach ($categoriasOrdenadas as $key): ?>
+                <?php
+                $ranking = $rankings[$key];
+                $hidden = $primeiro ? '' : 'hidden';
                 $primeiro = false;
+                $jogadoresNacional = $ranking['niveis']['nacional']['jogadores'];
 
-                $jogadoresNacional =
-                    $ranking[
-                        'niveis'
-                    ][
-                        'nacional'
-                    ][
-                        'jogadores'
-                    ];
+                $rotuloValor = $key === 'estrelas'
+                    ? 'estrelas'
+                    : ($key === 'pomodoro' ? 'tempo focado' : 'média');
+                ?>
 
-            ?>
-
-                <div
+                <section
                     class="rank-full <?= $hidden ?>"
                     data-categoria="<?= htmlspecialchars($key) ?>"
                     id="rank-<?= htmlspecialchars($key) ?>"
                 >
-
-                    <!-- CABEÇALHO -->
-
-                    <div
-                        class="rank-full-header"
-                        style="border-bottom-color: <?= htmlspecialchars($ranking['cor']) ?>;"
-                    >
-
+                    <div class="rank-full-header" style="border-bottom-color: <?= htmlspecialchars($ranking['cor']) ?>;">
                         <div class="rank-info">
-
                             <div
                                 class="icone-grande"
-                                style="
-                                    background: <?= htmlspecialchars($ranking['cor']) ?>22;
-                                    color: <?= htmlspecialchars($ranking['cor']) ?>;
-                                "
+                                style="background: <?= htmlspecialchars($ranking['cor']) ?>22; color: <?= htmlspecialchars($ranking['cor']) ?>;"
                             >
                                 <?= htmlspecialchars($ranking['icone']) ?>
                             </div>
 
                             <div class="titulo">
-
-                                <h2>
-                                    <?= htmlspecialchars($ranking['titulo']) ?>
-                                </h2>
-
-                                <p>
-                                    <?= htmlspecialchars($ranking['descricao']) ?>
-                                </p>
-
+                                <h2><?= htmlspecialchars($ranking['titulo']) ?></h2>
+                                <p><?= htmlspecialchars($ranking['descricao']) ?></p>
                             </div>
-
                         </div>
 
                         <div class="rank-stats">
-
                             <span class="stat">
-
-                                <i class="fa-solid fa-users"></i>
-
-                                <span class="total-jogadores">
-                                    <?= count($jogadoresNacional) ?>
-                                </span>
-
-                                jogadores
-
+                                <i class="fa-solid fa-graduation-cap"></i>
+                                <span class="total-jogadores"><?= count($jogadoresNacional) ?></span>
+                                estudantes
                             </span>
 
                             <span class="stat">
-
-                                <i
-                                    class="fa-solid fa-trophy"
-                                    style="color: <?= htmlspecialchars($ranking['cor']) ?>;"
-                                ></i>
-
-                                Top 1:
-
+                                <i class="fa-solid fa-crown" style="color: <?= htmlspecialchars($ranking['cor']) ?>;"></i>
+                                Líder:
                                 <span class="top1-nome">
-
-                                    <?=
-                                        !empty($jogadoresNacional)
-                                        ? htmlspecialchars(
-                                            $jogadoresNacional[0]['nome']
-                                        )
-                                        : '-'
-                                    ?>
-
+                                    <?= !empty($jogadoresNacional) ? htmlspecialchars($jogadoresNacional[0]['nome']) : '—' ?>
                                 </span>
-
                             </span>
-
                         </div>
-
                     </div>
 
-                    <!-- CORPO -->
+                    <div class="minha-posicao-card">
+                        <div class="minha-posicao-intro">
+                            <div class="minha-posicao-icone">
+                                <i class="fa-solid fa-location-crosshairs"></i>
+                            </div>
+                            <div>
+                                <span class="mini-label">Sua posição</span>
+                                <h3><?= htmlspecialchars($ranking['titulo']) ?></h3>
+                                <p>Veja sua posição nos principais grupos.</p>
+                            </div>
+                        </div>
+
+                        <div class="posicoes-resumo">
+                            <?php foreach ($niveisPrincipais as $nivelResumo): ?>
+                                <?php
+                                $listaResumo = $ranking['niveis'][$nivelResumo]['jogadores'] ?? [];
+                                $atualResumo = encontrarJogadorAtual($listaResumo, $codigoUsuario);
+                                $iconeResumo = [
+                                    'nacional' => 'fa-earth-americas',
+                                    'estadual' => 'fa-landmark',
+                                    'municipal' => 'fa-city',
+                                    'escola' => 'fa-school'
+                                ][$nivelResumo] ?? 'fa-ranking-star';
+                                $nomeResumo = [
+                                    'nacional' => 'Nacional',
+                                    'estadual' => 'Estado',
+                                    'municipal' => 'Cidade',
+                                    'escola' => 'Escola'
+                                ][$nivelResumo] ?? ucfirst($nivelResumo);
+                                ?>
+
+                                <div class="posicao-resumo-item">
+                                    <i class="fa-solid <?= $iconeResumo ?>"></i>
+                                    <span><?= $nomeResumo ?></span>
+                                    <strong><?= $atualResumo ? '#' . $atualResumo['posicao'] : '—' ?></strong>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+
+                        <div class="minha-posicao-acoes">
+                            <span class="progresso-proxima" data-progresso-proxima>
+                                Continue estudando para subir no ranking.
+                            </span>
+
+                            <button
+                                type="button"
+                                class="btn-compartilhar-posicao"
+                                data-share-ranking
+                                data-categoria="<?= htmlspecialchars($key) ?>"
+                            >
+                                <i class="fa-solid fa-share-nodes"></i>
+                                Compartilhar posição
+                            </button>
+                        </div>
+                    </div>
 
                     <div class="rank-full-body">
-
-                        <?php foreach (
-                            $niveisDisponiveis
-                            as $nivelKey
-                        ): ?>
-
+                        <?php foreach ($niveisDisponiveis as $nivelKey): ?>
                             <?php
-
-                            $jogadores =
-                                $ranking[
-                                    'niveis'
-                                ][
-                                    $nivelKey
-                                ][
-                                    'jogadores'
-                                ]
-                                ?? [];
-
-                            $mostrar =
-                                $nivelKey === 'nacional'
-                                ? 'block'
-                                : 'none';
-
+                            $jogadores = $ranking['niveis'][$nivelKey]['jogadores'] ?? [];
+                            $mostrar = $nivelKey === 'nacional' ? 'block' : 'none';
+                            $atual = encontrarJogadorAtual($jogadores, $codigoUsuario);
                             ?>
 
                             <div
@@ -1601,284 +1708,197 @@ foreach (
                                 data-nivel="<?= htmlspecialchars($nivelKey) ?>"
                                 style="display: <?= $mostrar ?>;"
                             >
+                                <div class="nivel-contexto">
+                                    <span><?= htmlspecialchars($ranking['niveis'][$nivelKey]['nome'] ?? ucfirst($nivelKey)) ?></span>
+                                    <strong><?= count($jogadores) ?> estudantes</strong>
+                                </div>
 
                                 <?php if (empty($jogadores)): ?>
-
-                                    <div
-                                        style="
-                                            padding: 35px 20px;
-                                            text-align: center;
-                                            color: #94a3b8;
-                                        "
-                                    >
-
-                                        <i
-                                            class="fa-solid fa-ranking-star"
-                                            style="
-                                                font-size: 30px;
-                                                margin-bottom: 10px;
-                                            "
-                                        ></i>
-
-                                        <p>
-                                            Nenhum usuário encontrado neste ranking.
-                                        </p>
-
-                                    </div>
-
-                                <?php else: ?>
-
-                                    <?php foreach (
-                                        $jogadores
-                                        as $index => $jogador
-                                    ): ?>
-
-                                        <?php
-
-                                        $posicao =
-                                            $index + 1;
-
-                                        $isUsuario =
-                                            $jogador[
-                                                'codigo_usuario'
-                                            ]
-                                            ===
-                                            $codigoUsuario;
-
-                                        $podiumClass = '';
-                                        $medalha = '';
-
-                                        if ($posicao === 1) {
-
-                                            $podiumClass =
-                                                'podium-1';
-
-                                            $medalha =
-                                                '🥇';
-
-                                        } elseif ($posicao === 2) {
-
-                                            $podiumClass =
-                                                'podium-2';
-
-                                            $medalha =
-                                                '🥈';
-
-                                        } elseif ($posicao === 3) {
-
-                                            $podiumClass =
-                                                'podium-3';
-
-                                            $medalha =
-                                                '🥉';
-                                        }
-
-                                        // ==================================
-                                        // LOCALIZAÇÃO MOSTRADA
-                                        // ==================================
-
-                                        $localizacao = '';
-
-                                        if (
-                                            !empty(
-                                                $jogador['cidade']
-                                            )
-                                            &&
-                                            !empty(
-                                                $jogador['estado']
-                                            )
-                                        ) {
-
-                                            $localizacao =
-                                                $jogador['cidade']
-                                                . ' - '
-                                                . $jogador['estado'];
-
-                                        } elseif (
-                                            !empty(
-                                                $jogador['estado']
-                                            )
-                                        ) {
-
-                                            $localizacao =
-                                                $jogador['estado'];
-                                        }
-
-                                        ?>
-
-                                        <div
-                                            class="
-                                                rank-full-item
-                                                <?= $isUsuario ? 'usuario-destaque' : '' ?>
-                                                <?= $podiumClass ?>
-                                            "
-                                        >
-
-                                            <div class="posicao">
-
-                                                <?php if ($medalha): ?>
-
-                                                    <span class="medalha">
-                                                        <?= $medalha ?>
-                                                    </span>
-
-                                                <?php else: ?>
-
-                                                    <span class="numero">
-                                                        #<?= $posicao ?>
-                                                    </span>
-
-                                                <?php endif; ?>
-
-                                            </div>
-
-                                            <div class="avatar avatar-foto">
-
-                                                <img
-                                                    src="<?= htmlspecialchars(
-                                                        $jogador['foto'] ?? '',
-                                                        ENT_QUOTES,
-                                                        'UTF-8'
-                                                    ) ?>"
-                                                    alt="Foto de perfil de <?= htmlspecialchars(
-                                                        $jogador['nome'],
-                                                        ENT_QUOTES,
-                                                        'UTF-8'
-                                                    ) ?>"
-                                                    loading="lazy"
-                                                    onerror="
-                                                        this.style.display='none';
-                                                        this.nextElementSibling.style.display='flex';
-                                                    "
-                                                >
-
-                                                <span
-                                                    class="avatar-fallback"
-                                                    aria-hidden="true"
-                                                >
-                                                    <i class="fa-solid fa-user"></i>
-                                                </span>
-
-                                            </div>
-
-                                            <div class="info">
-
-                                                <div class="nome">
-
-                                                    <?= htmlspecialchars(
-                                                        $jogador['nome']
-                                                    ) ?>
-
-                                                    <?php if ($isUsuario): ?>
-
-                                                        <span class="badge-eu">
-                                                            Você
-                                                        </span>
-
-                                                    <?php endif; ?>
-
-                                                    <?php if ($localizacao !== ''): ?>
-
-                                                        <span class="tag-local">
-
-                                                            <i class="fa-solid fa-location-dot"></i>
-
-                                                            <?= htmlspecialchars(
-                                                                $localizacao
-                                                            ) ?>
-
-                                                        </span>
-
-                                                    <?php endif; ?>
-
-                                                </div>
-
-                                                <div class="detalhes">
-
-                                                    <?= $posicao ?>º lugar
-
-                                                    <?php if (
-                                                        $nivelKey === 'regional'
-                                                        &&
-                                                        !empty(
-                                                            $jogador['regiao']
-                                                        )
-                                                    ): ?>
-
-                                                        • <?= htmlspecialchars(
-                                                            $jogador['regiao']
-                                                        ) ?>
-
-                                                    <?php endif; ?>
-
-                                                </div>
-
-                                            </div>
-
-                                            <div
-                                                class="valor"
-                                                style="color: <?= htmlspecialchars($ranking['cor']) ?>;"
-                                            >
-
-                                                <?= htmlspecialchars(
-                                                    (string)
-                                                    $jogador['valor']
-                                                ) ?>
-
-                                            </div>
-
-                                            <div class="nivel">
-
-                                                <span
-                                                    class="nivel-badge"
-                                                    style="background: <?= htmlspecialchars($ranking['cor']) ?>;"
-                                                >
-
-                                                    #<?= $posicao ?>
-
-                                                </span>
-
-                                            </div>
-
+                                    <div class="rank-vazio">
+                                        <div class="rank-vazio-icone">
+                                            <i class="fa-solid <?= in_array($nivelKey, ['escola', 'serie'], true) ? 'fa-school' : 'fa-ranking-star' ?>"></i>
                                         </div>
 
-                                    <?php endforeach; ?>
+                                        <?php if ($nivelKey === 'escola' && $escolaUsuarioAtual === ''): ?>
+                                            <h3>Cadastre sua escola para liberar este ranking</h3>
+                                            <p>Adicione sua escola no Perfil para comparar sua posição com outros estudantes dela.</p>
+                                        <?php elseif ($nivelKey === 'escola'): ?>
+                                            <h3>Ainda não há outros estudantes da sua escola no FOAG</h3>
+                                            <p>Convide seus colegas e comece o ranking da sua escola.</p>
+                                        <?php elseif ($nivelKey === 'serie' && $serieUsuarioAtual === ''): ?>
+                                            <h3>Cadastre sua série no Perfil</h3>
+                                            <p>Com a série cadastrada, o FOAG poderá montar uma classificação ainda mais próxima de você.</p>
+                                        <?php elseif ($nivelKey === 'serie'): ?>
+                                            <h3>Sua série ainda não tem um ranking ativo</h3>
+                                            <p>Quando colegas da mesma série entrarem no FOAG, eles aparecerão aqui.</p>
+                                        <?php else: ?>
+                                            <h3>Nenhum estudante encontrado</h3>
+                                            <p>Este ranking ainda não tem participantes suficientes.</p>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php else: ?>
+                                    <?php $podio = array_slice($jogadores, 0, 3); ?>
 
+                                    <div class="podio-ranking <?= count($podio) < 3 ? 'podio-incompleto' : '' ?>">
+                                        <?php foreach ($podio as $podioIndex => $jogadorPodio): ?>
+                                            <?php
+                                            $posicaoPodio = $podioIndex + 1;
+                                            $isUsuarioPodio = ($jogadorPodio['codigo_usuario'] ?? '') === $codigoUsuario;
+                                            $medalhaPodio = $posicaoPodio === 1 ? '🥇' : ($posicaoPodio === 2 ? '🥈' : '🥉');
+                                            ?>
+                                            <article class="podio-card lugar-<?= $posicaoPodio ?> <?= $isUsuarioPodio ? 'usuario-destaque' : '' ?>">
+                                                <div class="podio-medalha"><?= $medalhaPodio ?></div>
+                                                <?= renderAvatarRankingHtml($jogadorPodio, 'podio-avatar') ?>
+                                                <div class="podio-posicao">#<?= $posicaoPodio ?></div>
+                                                <h3>
+                                                    <?= htmlspecialchars($jogadorPodio['nome']) ?>
+                                                    <?php if ($isUsuarioPodio): ?><span class="badge-eu">Você</span><?php endif; ?>
+                                                </h3>
+                                                <p class="podio-escola">
+                                                    <?php
+                                                    $linhaPodio = trim((string)($jogadorPodio['escola'] ?? ''));
+                                                    if (!empty($jogadorPodio['serie'])) {
+                                                        $linhaPodio .= ($linhaPodio !== '' ? ' • ' : '') . $jogadorPodio['serie'];
+                                                    }
+                                                    echo htmlspecialchars($linhaPodio !== '' ? $linhaPodio : (($jogadorPodio['cidade'] ?? '') ?: 'FOAG'));
+                                                    ?>
+                                                </p>
+                                                <strong class="podio-valor" style="color: <?= htmlspecialchars($ranking['cor']) ?>;">
+                                                    <?= htmlspecialchars((string)$jogadorPodio['valor']) ?>
+                                                </strong>
+                                                <small><?= htmlspecialchars($rotuloValor) ?></small>
+                                            </article>
+                                        <?php endforeach; ?>
+                                    </div>
+
+                                    <?php if ($atual && $atual['posicao'] > 5): ?>
+                                        <?php
+                                        $inicioPerto = max(0, $atual['indice'] - 2);
+                                        $perto = array_slice($jogadores, $inicioPerto, 5, true);
+                                        ?>
+                                        <section class="perto-de-voce">
+                                            <div class="secao-ranking-titulo">
+                                                <div>
+                                                    <span>Perto de você</span>
+                                                    <h3>Sua disputa mais próxima</h3>
+                                                </div>
+                                                <i class="fa-solid fa-bullseye"></i>
+                                            </div>
+
+                                            <div class="perto-lista">
+                                                <?php foreach ($perto as $indicePerto => $jogadorPerto): ?>
+                                                    <?php
+                                                    $posicaoPerto = $indicePerto + 1;
+                                                    $isUsuarioPerto = ($jogadorPerto['codigo_usuario'] ?? '') === $codigoUsuario;
+                                                    ?>
+                                                    <div class="perto-item <?= $isUsuarioPerto ? 'usuario-destaque' : '' ?>">
+                                                        <span class="perto-posicao">#<?= $posicaoPerto ?></span>
+                                                        <?= renderAvatarRankingHtml($jogadorPerto, 'avatar-compacto') ?>
+                                                        <div class="perto-info">
+                                                            <strong>
+                                                                <?= htmlspecialchars($jogadorPerto['nome']) ?>
+                                                                <?php if ($isUsuarioPerto): ?><span class="badge-eu">Você</span><?php endif; ?>
+                                                            </strong>
+                                                            <small><?= htmlspecialchars(($jogadorPerto['serie'] ?? '') ?: (($jogadorPerto['cidade'] ?? '') ?: 'Estudante FOAG')) ?></small>
+                                                        </div>
+                                                        <span class="perto-valor" style="color: <?= htmlspecialchars($ranking['cor']) ?>;">
+                                                            <?= htmlspecialchars((string)$jogadorPerto['valor']) ?>
+                                                        </span>
+                                                    </div>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        </section>
+                                    <?php endif; ?>
+
+                                    <?php if (count($jogadores) > 3): ?>
+                                        <section class="ranking-lista-secao">
+                                            <div class="secao-ranking-titulo lista-titulo">
+                                                <div>
+                                                    <span>Classificação</span>
+                                                    <h3>Ranking completo</h3>
+                                                </div>
+                                            </div>
+
+                                            <div class="ranking-lista">
+                                                <?php foreach (array_slice($jogadores, 3, null, true) as $index => $jogador): ?>
+                                                    <?php
+                                                    $posicao = $index + 1;
+                                                    $isUsuario = ($jogador['codigo_usuario'] ?? '') === $codigoUsuario;
+
+                                                    $localizacao = '';
+                                                    if (!empty($jogador['cidade']) && !empty($jogador['estado'])) {
+                                                        $localizacao = $jogador['cidade'] . ' - ' . $jogador['estado'];
+                                                    } elseif (!empty($jogador['estado'])) {
+                                                        $localizacao = $jogador['estado'];
+                                                    }
+
+                                                    $linhaEscolar = trim((string)($jogador['escola'] ?? ''));
+                                                    if (!empty($jogador['serie'])) {
+                                                        $linhaEscolar .= ($linhaEscolar !== '' ? ' • ' : '') . $jogador['serie'];
+                                                    }
+                                                    ?>
+
+                                                    <article class="rank-full-item <?= $isUsuario ? 'usuario-destaque' : '' ?> <?= $posicao > 10 ? 'ranking-extra' : '' ?>">
+                                                        <div class="posicao">
+                                                            <span class="numero">#<?= $posicao ?></span>
+                                                        </div>
+
+                                                        <?= renderAvatarRankingHtml($jogador) ?>
+
+                                                        <div class="info">
+                                                            <div class="nome">
+                                                                <?= htmlspecialchars($jogador['nome']) ?>
+                                                                <?php if ($isUsuario): ?><span class="badge-eu">Você</span><?php endif; ?>
+                                                            </div>
+
+                                                            <div class="detalhes">
+                                                                <?php if ($linhaEscolar !== ''): ?>
+                                                                    <span class="detalhe-escola">
+                                                                        <i class="fa-solid fa-school"></i>
+                                                                        <?= htmlspecialchars($linhaEscolar) ?>
+                                                                    </span>
+                                                                <?php endif; ?>
+
+                                                                <?php if ($localizacao !== ''): ?>
+                                                                    <span class="tag-local">
+                                                                        <i class="fa-solid fa-location-dot"></i>
+                                                                        <?= htmlspecialchars($localizacao) ?>
+                                                                    </span>
+                                                                <?php endif; ?>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="valor-bloco">
+                                                            <strong class="valor" style="color: <?= htmlspecialchars($ranking['cor']) ?>;">
+                                                                <?= htmlspecialchars((string)$jogador['valor']) ?>
+                                                            </strong>
+                                                            <span><?= htmlspecialchars($rotuloValor) ?></span>
+                                                        </div>
+                                                    </article>
+                                                <?php endforeach; ?>
+                                            </div>
+
+                                            <?php if (count($jogadores) > 10): ?>
+                                                <button type="button" class="btn-ver-ranking-completo" data-toggle-ranking>
+                                                    <i class="fa-solid fa-chevron-down"></i>
+                                                    Ver ranking completo
+                                                </button>
+                                            <?php endif; ?>
+                                        </section>
+                                    <?php endif; ?>
                                 <?php endif; ?>
-
                             </div>
-
                         <?php endforeach; ?>
-
                     </div>
-
-                </div>
-
+                </section>
             <?php endforeach; ?>
-
         </div>
-
     </div>
 
 </main>
 
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-left">
-                <span class="footer-brand">FOAG</span>
 
-                <nav class="footer-links">
-                    <a href="../sobre/sobre.php">Sobre</a>
-                    <a href="../contato/contato.php">Contato</a>
-                    <a href="../privacidade/privacidade.php">Privacidade</a>
-                </nav>
-            </div>
-
-            <span class="footer-copy">
-                © <?= date('Y') ?> FOAG
-            </span>
-        </div>
-    </footer>
+    <?php include __DIR__ . '/../components/footer.php'; ?>
 
 </div>
 
@@ -1887,6 +1907,86 @@ foreach (
 <!-- ======================================
      LOGOUT
 ======================================= -->
+
+<div
+    id="share-ranking-modal"
+    class="modal share-modal"
+>
+    <div class="modal-content share-modal-content">
+        <button type="button" class="share-modal-close" id="share-modal-close" aria-label="Fechar modal de compartilhamento">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <div class="share-modal-topo">
+            <span class="share-modal-kicker">Compartilhar posição</span>
+            <h3>Seu destaque no Ranking FOAG</h3>
+            <p>Visualize seu card e compartilhe sua conquista.</p>
+        </div>
+
+        <div class="share-card-preview share-card--estrelas" id="share-card-preview">
+            <div class="share-card-fundo-decor"></div>
+
+            <div class="share-card-brand-row">
+                <div class="share-card-brand">
+                    <span class="share-card-logo">FOAG</span>
+                    <span class="share-card-brand-sub">RANKING</span>
+                </div>
+
+                <div class="share-card-posicao-badge" id="share-card-posicao">#1</div>
+            </div>
+
+            <div class="share-card-categoria-row">
+                <span class="share-card-label">Categoria</span>
+                <strong id="share-card-categoria">Estrelas • Nacional</strong>
+            </div>
+
+            <div class="share-card-corpo">
+                <div class="share-card-avatar" id="share-card-avatar"></div>
+
+                <div class="share-card-info">
+                    <strong id="share-card-nome">Seu nome</strong>
+                    <span id="share-card-escola">Sua escola</span>
+                </div>
+            </div>
+
+            <div class="share-card-valor-box">
+                <span id="share-card-valor-label">Suas estrelas</span>
+                <strong id="share-card-valor">0</strong>
+            </div>
+
+            <div class="share-card-rodape">
+                <span>Estude • evolua • suba no ranking</span>
+                <i class="fa-solid fa-trophy"></i>
+            </div>
+        </div>
+
+        <div class="share-modal-texto">
+            <label for="share-texto-preview">Texto para compartilhar</label>
+            <textarea id="share-texto-preview" readonly></textarea>
+        </div>
+
+        <div class="share-modal-actions">
+            <button type="button" class="btn-share-copy" id="share-copy-btn">
+                <i class="fa-solid fa-copy"></i>
+                Copiar texto
+            </button>
+
+            <button type="button" class="btn-share-native" id="share-native-btn">
+                <i class="fa-solid fa-paper-plane"></i>
+                Compartilhar imagem
+            </button>
+
+            <button type="button" class="btn-share-download" id="share-download-btn">
+                <i class="fa-solid fa-download"></i>
+                Baixar imagem
+            </button>
+
+            <button type="button" class="btn-share-cancel" id="share-cancel-btn">
+                Fechar
+            </button>
+        </div>
+    </div>
+</div>
 
 <div
     id="logout-modal"
@@ -1917,6 +2017,8 @@ foreach (
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
 <script>
 
 const rankingsData =
@@ -1930,394 +2032,778 @@ const rankingsData =
         | JSON_HEX_QUOT
     ) ?>;
 
-document.addEventListener(
-    'DOMContentLoaded',
-    function () {
+const codigoUsuarioAtual =
+    <?= json_encode((string)$codigoUsuario, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
 
-        const abasNivel =
-            document.querySelectorAll(
-                '.aba-nivel'
-            );
+const nomesNivelCurto = {
+    nacional: 'Nacional',
+    estadual: 'Estado',
+    municipal: 'Cidade',
+    escola: 'Escola',
+    serie: 'Minha série'
+};
 
-        const menuItems =
-            document.querySelectorAll(
-                '.rank-menu-lateral .menu-item'
-            );
+const nomesCategoriaCurto = {
+    estrelas: 'Estrelas',
+    pomodoro: 'Foco',
+    notas: 'Desempenho'
+};
 
-        const categorias =
-            document.querySelectorAll(
-                '.rank-full'
-            );
+document.addEventListener('DOMContentLoaded', function () {
+    const abasNivel = document.querySelectorAll('.aba-nivel');
+    const menuItems = document.querySelectorAll('.rank-menu-lateral .menu-item');
+    const categorias = document.querySelectorAll('.rank-full');
+    const escolaSubfiltros = document.getElementById('escolaSubfiltros');
+    const escolaScopes = document.querySelectorAll('.escola-scope');
+    const headerMinhaPosicao = document.getElementById('headerMinhaPosicao');
+    const headerMinhaPosicaoLegenda = document.getElementById('headerMinhaPosicaoLegenda');
+    const headerResumoLabel = document.getElementById('headerResumoLabel');
+    const headerResumoValor = document.getElementById('headerResumoValor');
+    const headerResumoTexto = document.getElementById('headerResumoTexto');
+    const headerResumoIcone = document.getElementById('headerResumoIcone');
+    const rankingTituloPill = document.getElementById('rankingTituloPill');
+    const shareModal = document.getElementById('share-ranking-modal');
+    const shareModalClose = document.getElementById('share-modal-close');
+    const shareCancelBtn = document.getElementById('share-cancel-btn');
+    const shareCopyBtn = document.getElementById('share-copy-btn');
+    const shareNativeBtn = document.getElementById('share-native-btn');
+    const shareDownloadBtn = document.getElementById('share-download-btn');
+    const shareTextoPreview = document.getElementById('share-texto-preview');
+    const shareCardPreview = document.getElementById('share-card-preview');
+    const shareCardCategoria = document.getElementById('share-card-categoria');
+    const shareCardPosicao = document.getElementById('share-card-posicao');
+    const shareCardAvatar = document.getElementById('share-card-avatar');
+    const shareCardNome = document.getElementById('share-card-nome');
+    const shareCardEscola = document.getElementById('share-card-escola');
+    const shareCardValorLabel = document.getElementById('share-card-valor-label');
+    const shareCardValor = document.getElementById('share-card-valor');
 
-        // ==================================
-        // NÍVEL ATUAL
-        // ==================================
+    const resumoCategoria = {
+        estrelas: {
+            label: 'Suas estrelas',
+            icon: 'fa-star',
+            texto: 'Total acumulado nesta categoria',
+            shareClass: 'share-card--estrelas'
+        },
+        pomodoro: {
+            label: 'Seu tempo de foco',
+            icon: 'fa-clock',
+            texto: 'Tempo acumulado em sessões focadas',
+            shareClass: 'share-card--pomodoro'
+        },
+        notas: {
+            label: 'Sua média',
+            icon: 'fa-book-open',
+            texto: 'Desempenho escolar cadastrado',
+            shareClass: 'share-card--notas'
+        }
+    };
 
-        let nivelAtual =
-            'nacional';
+    let nivelAtual = 'nacional';
+    let escolaScopeAtual = 'escola';
+    let categoriaAtual = 'estrelas';
+    let currentShareText = '';
+    let currentShareImageName = 'ranking-foag.png';
 
-        // ==================================
-        // ATUALIZAR NÍVEL
-        // ==================================
+    function nivelEfetivo() {
+        return nivelAtual === 'escola'
+            ? escolaScopeAtual
+            : nivelAtual;
+    }
 
-        function atualizarNivel(
-            nivel
-        ) {
+    function jogadoresDa(categoria, nivel) {
+        return rankingsData?.[categoria]?.niveis?.[nivel]?.jogadores || [];
+    }
 
-            nivelAtual =
-                nivel;
+    function encontrarUsuario(jogadores) {
+        const indice = jogadores.findIndex(
+            jogador => String(jogador.codigo_usuario) === String(codigoUsuarioAtual)
+        );
 
-            // ==============================
-            // ABAS
-            // ==============================
+        return indice >= 0
+            ? { indice, jogador: jogadores[indice], posicao: indice + 1 }
+            : null;
+    }
 
-            abasNivel.forEach(
-                function (aba) {
+    function obterResumoUsuario(categoria, nivel) {
+        const listaAtual = jogadoresDa(categoria, nivel);
+        const atualNoNivel = encontrarUsuario(listaAtual);
 
-                    aba.classList.toggle(
-                        'active',
-                        aba.dataset.nivel
-                        === nivel
-                    );
-                }
-            );
-
-            // ==============================
-            // CONTEÚDO
-            // ==============================
-
-            categorias.forEach(
-                function (categoria) {
-
-                    const categoriaKey =
-                        categoria.dataset
-                            .categoria;
-
-                    const niveis =
-                        categoria.querySelectorAll(
-                            '.nivel-conteudo'
-                        );
-
-                    niveis.forEach(
-                        function (conteudo) {
-
-                            conteudo.style.display =
-                                conteudo.dataset.nivel
-                                === nivel
-                                ? 'block'
-                                : 'none';
-                        }
-                    );
-
-                    // ==========================
-                    // STATS
-                    // ==========================
-
-                    const ranking =
-                        rankingsData[
-                            categoriaKey
-                        ];
-
-                    if (
-                        !ranking
-                        ||
-                        !ranking.niveis
-                        ||
-                        !ranking.niveis[nivel]
-                    ) {
-                        return;
-                    }
-
-                    const jogadores =
-                        ranking
-                            .niveis[nivel]
-                            .jogadores
-                        || [];
-
-                    const totalSpan =
-                        categoria.querySelector(
-                            '.total-jogadores'
-                        );
-
-                    const top1Span =
-                        categoria.querySelector(
-                            '.top1-nome'
-                        );
-
-                    if (totalSpan) {
-
-                        totalSpan.textContent =
-                            jogadores.length;
-                    }
-
-                    if (top1Span) {
-
-                        top1Span.textContent =
-                            jogadores.length > 0
-                            ? jogadores[0].nome
-                            : '-';
-                    }
-                }
-            );
-
-            // ==============================
-            // BADGES DO MENU
-            // ==============================
-
-            menuItems.forEach(
-                function (item) {
-
-                    const categoria =
-                        item.dataset.categoria;
-
-                    const badge =
-                        item.querySelector(
-                            '.item-badge'
-                        );
-
-                    const ranking =
-                        rankingsData[
-                            categoria
-                        ];
-
-                    if (
-                        badge
-                        &&
-                        ranking
-                        &&
-                        ranking.niveis
-                        &&
-                        ranking.niveis[nivel]
-                    ) {
-
-                        badge.textContent =
-                            ranking
-                                .niveis[nivel]
-                                .jogadores
-                                .length;
-                    }
-                }
-            );
+        if (atualNoNivel) {
+            return atualNoNivel;
         }
 
-        // ==================================
-        // CLIQUE NAS ABAS
-        // ==================================
+        if (nivel !== 'nacional') {
+            const listaNacional = jogadoresDa(categoria, 'nacional');
+            return encontrarUsuario(listaNacional);
+        }
 
-        abasNivel.forEach(
-            function (aba) {
+        return null;
+    }
 
-                aba.addEventListener(
-                    'click',
-                    function () {
+    function normalizarAjusteMolduraRankingJs(ajuste) {
+        const padrao = {
+            moldura_escala: 1.28,
+            moldura_x: 0,
+            moldura_y: 0,
+            foto_escala: 1,
+            foto_x: 0,
+            foto_y: 0
+        };
 
-                        atualizarNivel(
-                            aba.dataset.nivel
-                        );
-                    }
-                );
+        if (!ajuste || typeof ajuste !== 'object') {
+            return padrao;
+        }
+
+        Object.keys(padrao).forEach(chave => {
+            const valor = Number(ajuste[chave]);
+            if (!Number.isNaN(valor)) {
+                padrao[chave] = valor;
             }
-        );
+        });
 
-        // ==================================
-        // CATEGORIAS
-        // ==================================
+        return padrao;
+    }
 
-        menuItems.forEach(
-            function (item) {
+    function deslocamentoRankingPercentualJs(valorPx) {
+        const numero = Number(valorPx);
+        if (Number.isNaN(numero)) {
+            return 0;
+        }
+        return (numero / 132) * 100;
+    }
 
-                item.addEventListener(
-                    'click',
-                    function () {
-
-                        menuItems.forEach(
-                            function (menu) {
-
-                                menu.classList.remove(
-                                    'active'
-                                );
-                            }
-                        );
-
-                        item.classList.add(
-                            'active'
-                        );
-
-                        const categoria =
-                            item.dataset
-                                .categoria;
-
-                        categorias.forEach(
-                            function (rank) {
-
-                                rank.classList.add(
-                                    'hidden'
-                                );
-                            }
-                        );
-
-                        const selecionado =
-                            document.getElementById(
-                                'rank-'
-                                + categoria
-                            );
-
-                        if (selecionado) {
-
-                            selecionado
-                                .classList
-                                .remove(
-                                    'hidden'
-                                );
-
-                            selecionado
-                                .style
-                                .animation =
-                                    'none';
-
-                            selecionado
-                                .offsetHeight;
-
-                            selecionado
-                                .style
-                                .animation =
-                                    'slideIn 0.4s ease forwards';
-                        }
-
-                        atualizarNivel(
-                            nivelAtual
-                        );
-                    }
-                );
+    function carregarImagemCompartilhamento(src) {
+        return new Promise((resolve, reject) => {
+            if (!src) {
+                reject(new Error('Imagem sem caminho.'));
+                return;
             }
-        );
 
-        // ==================================
-        // PERFIL
-        // ==================================
+            const imagem = new Image();
+            imagem.decoding = 'async';
 
-        const perfilIcon =
-            document.getElementById(
-                'icon-perfil'
-            );
+            imagem.onload = () => resolve(imagem);
+            imagem.onerror = () => reject(new Error(`Não foi possível carregar: ${src}`));
+            imagem.src = src;
+        });
+    }
 
-        perfilIcon?.addEventListener(
-            'click',
-            function () {
+    function desenharImagemCover(ctx, imagem, x, y, largura, altura) {
+        const proporcaoDestino = largura / altura;
+        const proporcaoOrigem = imagem.naturalWidth / imagem.naturalHeight;
 
-                window.location.href =
-                    '../perfil/perfil.php';
-            }
-        );
+        let sx = 0;
+        let sy = 0;
+        let sw = imagem.naturalWidth;
+        let sh = imagem.naturalHeight;
 
-        // ==================================
-        // LOGOUT
-        // ==================================
+        if (proporcaoOrigem > proporcaoDestino) {
+            sw = imagem.naturalHeight * proporcaoDestino;
+            sx = (imagem.naturalWidth - sw) / 2;
+        } else {
+            sh = imagem.naturalWidth / proporcaoDestino;
+            sy = (imagem.naturalHeight - sh) / 2;
+        }
 
-        const logoutModal =
-            document.getElementById(
-                'logout-modal'
-            );
-
-        const iconSair =
-            document.getElementById(
-                'icon-sair'
-            );
-
-        const confirmarLogout =
-            document.getElementById(
-                'confirm-logout'
-            );
-
-        const cancelarLogout =
-            document.getElementById(
-                'cancel-logout'
-            );
-
-        iconSair?.addEventListener(
-            'click',
-            function () {
-
-                if (logoutModal) {
-
-                    logoutModal.style.display =
-                        'flex';
-                }
-            }
-        );
-
-        confirmarLogout?.addEventListener(
-            'click',
-            function () {
-
-                window.location.href =
-                    '../login/logout.php';
-            }
-        );
-
-        cancelarLogout?.addEventListener(
-            'click',
-            function () {
-
-                if (logoutModal) {
-
-                    logoutModal.style.display =
-                        'none';
-                }
-            }
-        );
-
-        logoutModal?.addEventListener(
-            'click',
-            function (evento) {
-
-                if (
-                    evento.target
-                    === logoutModal
-                ) {
-
-                    logoutModal.style.display =
-                        'none';
-                }
-            }
-        );
-
-        document.addEventListener(
-            'keydown',
-            function (evento) {
-
-                if (
-                    evento.key ===
-                    'Escape'
-                ) {
-
-                    if (
-                        logoutModal?.style
-                            .display
-                        === 'flex'
-                    ) {
-
-                        logoutModal.style.display =
-                            'none';
-                    }
-                }
-            }
-        );
-
-        // ==================================
-        // INICIALIZAR
-        // ==================================
-
-        atualizarNivel(
-            'nacional'
+        ctx.drawImage(
+            imagem,
+            sx,
+            sy,
+            sw,
+            sh,
+            x,
+            y,
+            largura,
+            altura
         );
     }
-);
+
+    async function gerarAvatarCompartilhamentoDataUrl(jogador) {
+        const tamanhoCanvas = 360;
+        const centro = tamanhoCanvas / 2;
+        const baseAvatar = 180;
+
+        const canvas = document.createElement('canvas');
+        canvas.width = tamanhoCanvas;
+        canvas.height = tamanhoCanvas;
+
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, tamanhoCanvas, tamanhoCanvas);
+
+        if (!jogador) {
+            ctx.fillStyle = '#eef4fa';
+            ctx.beginPath();
+            ctx.arc(centro, centro, baseAvatar / 2, 0, Math.PI * 2);
+            ctx.fill();
+            return canvas.toDataURL('image/png');
+        }
+
+        const moldura = jogador.moldura && typeof jogador.moldura === 'object'
+            ? jogador.moldura
+            : null;
+
+        const ajuste = normalizarAjusteMolduraRankingJs(
+            moldura?.ajuste_share
+            || moldura?.ajuste_perfil
+            || {}
+        );
+
+        const temMoldura = !!(moldura && moldura.imagem);
+
+        const fotoEscala = Number(ajuste.foto_escala || 1);
+        const fotoTamanho = baseAvatar * fotoEscala;
+        const fotoX = centro + ((Number(ajuste.foto_x || 0) / 132) * baseAvatar);
+        const fotoY = centro + ((Number(ajuste.foto_y || 0) / 132) * baseAvatar);
+
+        // Fundo neutro do círculo para evitar qualquer "buraco" branco estranho.
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(fotoX, fotoY, fotoTamanho / 2, 0, Math.PI * 2);
+        ctx.clip();
+        ctx.fillStyle = '#eef4fa';
+        ctx.fillRect(
+            fotoX - fotoTamanho / 2,
+            fotoY - fotoTamanho / 2,
+            fotoTamanho,
+            fotoTamanho
+        );
+
+        try {
+            const foto = await carregarImagemCompartilhamento(jogador.foto || '');
+            desenharImagemCover(
+                ctx,
+                foto,
+                fotoX - fotoTamanho / 2,
+                fotoY - fotoTamanho / 2,
+                fotoTamanho,
+                fotoTamanho
+            );
+        } catch (erro) {
+            // Mantém somente o fundo neutro caso a foto falhe.
+            console.warn('Foto do avatar não carregou no card de compartilhamento.', erro);
+        }
+        ctx.restore();
+
+        // Sem moldura: adiciona apenas um contorno sutil.
+        if (!temMoldura) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(fotoX, fotoY, fotoTamanho / 2 - 2, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(255,255,255,.95)';
+            ctx.lineWidth = 5;
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        // Moldura desenhada POR CIMA da foto, já no mesmo canvas.
+        if (temMoldura) {
+            try {
+                const imagemMoldura = await carregarImagemCompartilhamento(moldura.imagem);
+                const molduraEscala = Number(ajuste.moldura_escala || 1.28);
+                const molduraTamanho = baseAvatar * molduraEscala;
+                const molduraX = centro + ((Number(ajuste.moldura_x || 0) / 132) * baseAvatar);
+                const molduraY = centro + ((Number(ajuste.moldura_y || 0) / 132) * baseAvatar);
+
+                ctx.drawImage(
+                    imagemMoldura,
+                    molduraX - molduraTamanho / 2,
+                    molduraY - molduraTamanho / 2,
+                    molduraTamanho,
+                    molduraTamanho
+                );
+            } catch (erro) {
+                console.warn('Moldura não carregou no card de compartilhamento.', erro);
+            }
+        }
+
+        return canvas.toDataURL('image/png');
+    }
+
+    async function renderAvatarCompartilhar(jogador) {
+        const dataUrl = await gerarAvatarCompartilhamentoDataUrl(jogador);
+        const nome = jogador?.nome || 'Estudante';
+
+        return `
+            <img
+                class="share-avatar-composta"
+                src="${dataUrl}"
+                alt="Foto de perfil de ${nome}"
+            >
+        `;
+    }
+
+    function montarTextoCompartilhamento(categoria, nivel, atual) {
+        if (!atual || !atual.jogador) {
+            return '';
+        }
+
+        const nomeCategoria = nomesCategoriaCurto[categoria] || categoria;
+        const nomeNivel = nomesNivelCurto[nivel] || nivel;
+        return `🏆 Estou em ${atual.posicao}º lugar no Ranking FOAG — ${nomeCategoria} / ${nomeNivel}! Minha marca atual é ${atual.jogador.valor}.`;
+    }
+
+    async function abrirModalCompartilhar(categoria, nivel, atual) {
+        if (!shareModal || !atual || !atual.jogador) return;
+
+        const configResumo = resumoCategoria[categoria] || resumoCategoria.estrelas;
+        const nomeCategoria = nomesCategoriaCurto[categoria] || categoria;
+        const nomeNivel = nomesNivelCurto[nivel] || nivel;
+        const jogador = atual.jogador;
+        currentShareText = montarTextoCompartilhamento(categoria, nivel, atual);
+        currentShareImageName = `ranking-foag-${categoria}-${nivel}.png`;
+
+        if (shareCardPreview) {
+            shareCardPreview.classList.remove('share-card--estrelas', 'share-card--pomodoro', 'share-card--notas');
+            shareCardPreview.classList.add(configResumo.shareClass || 'share-card--estrelas');
+        }
+
+        if (shareCardCategoria) {
+            shareCardCategoria.textContent = `${nomeCategoria} • ${nomeNivel}`;
+        }
+
+        if (shareCardPosicao) {
+            shareCardPosicao.textContent = `#${atual.posicao}`;
+        }
+
+        if (shareCardAvatar) {
+            shareCardAvatar.innerHTML = '<div class="share-avatar-loading"><i class="fa-solid fa-spinner fa-spin"></i></div>';
+
+            try {
+                shareCardAvatar.innerHTML = await renderAvatarCompartilhar(jogador);
+            } catch (erro) {
+                console.warn('Não foi possível montar o avatar do compartilhamento.', erro);
+                shareCardAvatar.innerHTML = '<div class="share-avatar-fallback"><i class="fa-solid fa-user"></i></div>';
+            }
+        }
+
+        if (shareCardNome) {
+            shareCardNome.textContent = jogador.nome || 'Estudante';
+        }
+
+        if (shareCardEscola) {
+            const detalhes = [jogador.escola || '', jogador.serie || ''].filter(Boolean).join(' • ');
+            shareCardEscola.textContent = detalhes || 'Ranking FOAG';
+        }
+
+        if (shareCardValorLabel) {
+            shareCardValorLabel.textContent = configResumo.label;
+        }
+
+        if (shareCardValor) {
+            shareCardValor.innerHTML = `<i class="fa-solid ${configResumo.icon}"></i><span>${jogador.valor || '—'}</span>`;
+        }
+
+        if (shareTextoPreview) {
+            shareTextoPreview.value = currentShareText;
+        }
+
+        if (shareNativeBtn) {
+            shareNativeBtn.style.display = 'inline-flex';
+            shareNativeBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Compartilhar imagem';
+        }
+
+        if (shareDownloadBtn) {
+            shareDownloadBtn.style.display = 'inline-flex';
+        }
+
+        shareModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    async function gerarImagemCompartilhamento() {
+        if (!shareCardPreview || typeof html2canvas === 'undefined') {
+            throw new Error('html2canvas não disponível');
+        }
+
+        if (document.fonts?.ready) {
+            await document.fonts.ready;
+        }
+
+        const clone = shareCardPreview.cloneNode(true);
+        clone.removeAttribute('id');
+        clone.classList.add('share-card-render-target');
+        clone.style.position = 'fixed';
+        clone.style.left = '-9999px';
+        clone.style.top = '0';
+        clone.style.width = '432px';
+        clone.style.height = '432px';
+        clone.style.maxWidth = 'none';
+        clone.style.margin = '0';
+        clone.style.transform = 'none';
+
+        document.body.appendChild(clone);
+
+        const imagens = Array.from(clone.querySelectorAll('img'));
+        await Promise.all(
+            imagens.map(img => {
+                if (img.complete) return Promise.resolve();
+                return new Promise(resolve => {
+                    img.addEventListener('load', resolve, { once: true });
+                    img.addEventListener('error', resolve, { once: true });
+                });
+            })
+        );
+
+        try {
+            const canvas = await html2canvas(clone, {
+                backgroundColor: null,
+                scale: 2.5,
+                width: 432,
+                height: 432,
+                useCORS: true,
+                logging: false
+            });
+
+            return await new Promise((resolve, reject) => {
+                canvas.toBlob(blob => {
+                    if (!blob) {
+                        reject(new Error('Não foi possível gerar a imagem.'));
+                        return;
+                    }
+                    resolve(blob);
+                }, 'image/png');
+            });
+        } finally {
+            clone.remove();
+        }
+    }
+
+    function baixarBlobImagem(blob, nomeArquivo) {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = nomeArquivo || 'ranking-foag.png';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    function fecharModalCompartilhar() {
+        if (!shareModal) return;
+        shareModal.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+
+    function formatarDiferenca(categoria, diferenca) {
+        if (categoria === 'estrelas') {
+            return `${Math.max(1, Math.ceil(diferenca))} ⭐ para subir uma posição`;
+        }
+
+        if (categoria === 'pomodoro') {
+            const minutos = Math.max(1, Math.ceil(diferenca));
+            const horas = Math.floor(minutos / 60);
+            const resto = minutos % 60;
+            const texto = horas > 0
+                ? `${horas}h${resto ? ` ${resto}min` : ''}`
+                : `${resto}min`;
+            return `${texto} de foco para subir uma posição`;
+        }
+
+        const pontos = Math.max(0.1, diferenca).toFixed(1).replace('.', ',');
+        return `${pontos} ponto(s) de média para subir uma posição`;
+    }
+
+    function atualizarProgresso(categoriaEl, categoriaKey, nivel) {
+        const progresso = categoriaEl.querySelector('[data-progresso-proxima]');
+        if (!progresso) return;
+
+        const jogadores = jogadoresDa(categoriaKey, nivel);
+        const atual = encontrarUsuario(jogadores);
+
+        if (!atual) {
+            progresso.textContent = 'Participe das atividades do FOAG para entrar neste ranking.';
+            return;
+        }
+
+        if (atual.posicao === 1) {
+            progresso.textContent = 'Você está em 1º lugar. Continue mantendo sua posição!';
+            return;
+        }
+
+        const acima = jogadores[atual.indice - 1];
+        const diferenca = Math.max(
+            0,
+            Number(acima?.valor_bruto || 0) - Number(atual.jogador?.valor_bruto || 0)
+        );
+
+        progresso.textContent = diferenca <= 0
+            ? 'Você está muito perto de subir uma posição.'
+            : formatarDiferenca(categoriaKey, diferenca);
+    }
+
+    function atualizarCabecalho() {
+        const nivel = nivelEfetivo();
+        const jogadores = jogadoresDa(categoriaAtual, nivel);
+        const atual = encontrarUsuario(jogadores);
+        const resumoAtual = obterResumoUsuario(categoriaAtual, nivel);
+        const configResumo = resumoCategoria[categoriaAtual] || resumoCategoria.estrelas;
+        const nomeNivel = nomesNivelCurto[nivel] || nivel;
+        const nomeCategoria = nomesCategoriaCurto[categoriaAtual] || categoriaAtual;
+
+        if (headerMinhaPosicao) {
+            headerMinhaPosicao.textContent = atual ? `#${atual.posicao}` : '—';
+        }
+
+        if (headerMinhaPosicaoLegenda) {
+            headerMinhaPosicaoLegenda.textContent =
+                `${nomeNivel} • ${nomeCategoria}`;
+        }
+
+        if (headerResumoLabel) {
+            headerResumoLabel.textContent = configResumo.label;
+        }
+
+        if (headerResumoValor) {
+            headerResumoValor.textContent = resumoAtual?.jogador?.valor ?? '—';
+        }
+
+        if (headerResumoTexto) {
+            headerResumoTexto.textContent = `${nomeCategoria} • ${nomeNivel}`;
+        }
+
+        if (headerResumoIcone) {
+            headerResumoIcone.className = `fa-solid ${configResumo.icon}`;
+        }
+
+        if (rankingTituloPill) {
+            rankingTituloPill.innerHTML = `
+                <i class="fa-solid ${configResumo.icon}"></i>
+                <span>Categoria ativa: ${nomeCategoria}</span>
+            `;
+        }
+    }
+
+    function atualizarNivel(nivel) {
+        nivelAtual = nivel;
+        const efetivo = nivelEfetivo();
+
+        abasNivel.forEach(aba => {
+            aba.classList.toggle('active', aba.dataset.nivel === nivelAtual);
+        });
+
+        if (escolaSubfiltros) {
+            escolaSubfiltros.hidden = nivelAtual !== 'escola';
+        }
+
+        categorias.forEach(categoriaEl => {
+            const categoriaKey = categoriaEl.dataset.categoria;
+
+            categoriaEl.querySelectorAll('.nivel-conteudo').forEach(conteudo => {
+                conteudo.style.display = conteudo.dataset.nivel === efetivo ? 'block' : 'none';
+            });
+
+            const jogadores = jogadoresDa(categoriaKey, efetivo);
+            const total = categoriaEl.querySelector('.total-jogadores');
+            const top1 = categoriaEl.querySelector('.top1-nome');
+
+            if (total) total.textContent = jogadores.length;
+            if (top1) top1.textContent = jogadores.length ? jogadores[0].nome : '—';
+
+            atualizarProgresso(categoriaEl, categoriaKey, efetivo);
+        });
+
+        menuItems.forEach(item => {
+            const categoriaKey = item.dataset.categoria;
+            const badge = item.querySelector('.item-badge');
+            if (badge) badge.textContent = jogadoresDa(categoriaKey, efetivo).length;
+        });
+
+        atualizarCabecalho();
+    }
+
+    abasNivel.forEach(aba => {
+        aba.addEventListener('click', function () {
+            atualizarNivel(aba.dataset.nivel || 'nacional');
+        });
+    });
+
+    escolaScopes.forEach(botao => {
+        botao.addEventListener('click', function () {
+            escolaScopes.forEach(item => item.classList.remove('active'));
+            botao.classList.add('active');
+            escolaScopeAtual = botao.dataset.schoolScope || 'escola';
+            atualizarNivel('escola');
+        });
+    });
+
+    menuItems.forEach(item => {
+        item.addEventListener('click', function () {
+            menuItems.forEach(menu => menu.classList.remove('active'));
+            item.classList.add('active');
+
+            categoriaAtual = item.dataset.categoria || 'estrelas';
+
+            categorias.forEach(rank => rank.classList.add('hidden'));
+            const selecionado = document.getElementById(`rank-${categoriaAtual}`);
+
+            if (selecionado) {
+                selecionado.classList.remove('hidden');
+                selecionado.style.animation = 'none';
+                void selecionado.offsetHeight;
+                selecionado.style.animation = 'slideIn 0.35s ease forwards';
+            }
+
+            atualizarNivel(nivelAtual);
+        });
+    });
+
+    document.querySelectorAll('[data-share-ranking]').forEach(botao => {
+        botao.addEventListener('click', function () {
+            const categoria = botao.dataset.categoria || categoriaAtual;
+            const nivel = nivelEfetivo();
+            const jogadores = jogadoresDa(categoria, nivel);
+            const atual = encontrarUsuario(jogadores);
+
+            if (!atual) return;
+
+            abrirModalCompartilhar(categoria, nivel, atual);
+        });
+    });
+
+    shareModalClose?.addEventListener('click', fecharModalCompartilhar);
+    shareCancelBtn?.addEventListener('click', fecharModalCompartilhar);
+
+    shareModal?.addEventListener('click', function (event) {
+        if (event.target === shareModal) {
+            fecharModalCompartilhar();
+        }
+    });
+
+    shareCopyBtn?.addEventListener('click', async function () {
+        if (!currentShareText) return;
+
+        try {
+            if (navigator.clipboard) {
+                await navigator.clipboard.writeText(currentShareText);
+            } else if (shareTextoPreview) {
+                shareTextoPreview.focus();
+                shareTextoPreview.select();
+                document.execCommand('copy');
+            }
+
+            const original = shareCopyBtn.innerHTML;
+            shareCopyBtn.innerHTML = '<i class="fa-solid fa-check"></i> Copiado!';
+            setTimeout(() => { shareCopyBtn.innerHTML = original; }, 1800);
+        } catch (erro) {
+            console.log('Não foi possível copiar o texto.', erro);
+        }
+    });
+
+    shareDownloadBtn?.addEventListener('click', async function () {
+        if (!shareCardPreview) return;
+
+        const original = shareDownloadBtn.innerHTML;
+
+        try {
+            shareDownloadBtn.disabled = true;
+            shareDownloadBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Gerando...';
+
+            const blob = await gerarImagemCompartilhamento();
+            baixarBlobImagem(blob, currentShareImageName);
+
+            shareDownloadBtn.innerHTML = '<i class="fa-solid fa-check"></i> Imagem baixada';
+            setTimeout(() => {
+                shareDownloadBtn.innerHTML = original;
+            }, 1800);
+        } catch (erro) {
+            console.log('Não foi possível baixar a imagem.', erro);
+            shareDownloadBtn.innerHTML = original;
+        } finally {
+            shareDownloadBtn.disabled = false;
+        }
+    });
+
+    shareNativeBtn?.addEventListener('click', async function () {
+        if (!shareCardPreview) return;
+
+        const original = shareNativeBtn.innerHTML;
+
+        try {
+            shareNativeBtn.disabled = true;
+            shareNativeBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Gerando imagem...';
+
+            const blob = await gerarImagemCompartilhamento();
+            const arquivo = new File([blob], currentShareImageName, { type: 'image/png' });
+
+            if (navigator.share && navigator.canShare && navigator.canShare({ files: [arquivo] })) {
+                await navigator.share({
+                    title: 'Ranking FOAG',
+                    text: currentShareText,
+                    files: [arquivo]
+                });
+            } else {
+                baixarBlobImagem(blob, currentShareImageName);
+            }
+        } catch (erro) {
+            console.log('Não foi possível compartilhar a imagem.', erro);
+        } finally {
+            shareNativeBtn.disabled = false;
+            shareNativeBtn.innerHTML = original;
+        }
+    });
+
+    document.querySelectorAll('[data-toggle-ranking]').forEach(botao => {
+        botao.addEventListener('click', function () {
+            const secao = botao.closest('.ranking-lista-secao');
+            const aberta = secao?.classList.toggle('ranking-aberto');
+
+            botao.innerHTML = aberta
+                ? '<i class="fa-solid fa-chevron-up"></i> Mostrar apenas Top 10'
+                : '<i class="fa-solid fa-chevron-down"></i> Ver ranking completo';
+        });
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && shareModal?.style.display === 'flex') {
+            fecharModalCompartilhar();
+        }
+    });
+
+    const perfilIcon = document.getElementById('icon-perfil');
+    perfilIcon?.addEventListener('click', function () {
+        window.location.href = '../perfil/perfil.php';
+    });
+
+    const logoutModal = document.getElementById('logout-modal');
+    const iconSair = document.getElementById('icon-sair');
+    const confirmarLogout = document.getElementById('confirm-logout');
+    const cancelarLogout = document.getElementById('cancel-logout');
+
+    iconSair?.addEventListener('click', function () {
+        if (logoutModal) logoutModal.style.display = 'flex';
+    });
+
+    confirmarLogout?.addEventListener('click', function () {
+        window.location.href = FOAG_CONFIG.pages.logout;
+    });
+
+    cancelarLogout?.addEventListener('click', function () {
+        if (logoutModal) logoutModal.style.display = 'none';
+    });
+
+    logoutModal?.addEventListener('click', function (evento) {
+        if (evento.target === logoutModal) logoutModal.style.display = 'none';
+    });
+
+    document.addEventListener('keydown', function (evento) {
+        if (evento.key === 'Escape' && logoutModal?.style.display === 'flex') {
+            logoutModal.style.display = 'none';
+        }
+    });
+
+    atualizarNivel('nacional');
+});
 
 </script>
+
 
 <script src="../configuracoes/aparencia.js?v=5"></script>
 <script src="../configuracoes/acessibilidade.js?v=25" defer></script>
 
+    <script src="../global/js/cursor.js?v=<?= time() ?>"></script>
+
 </body>
+
 </html>

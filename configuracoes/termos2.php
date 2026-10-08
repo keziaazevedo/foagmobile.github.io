@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
+    <script src="../global/js/config.js?v=<?= time() ?>"></script>
+    <script src="../global/js/utils.js?v=<?= time() ?>"></script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Termos de Uso da plataforma FOAG - Ferramenta de Organização Acadêmica Geral.">
@@ -611,31 +614,20 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="../global/css/cursor.css">
+    <link rel="stylesheet" href="../global/css/base.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../global/css/components.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../global/css/forms.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../global/css/tables.css?v=<?= time() ?>">
+
+    <link rel="stylesheet" href="../global/css/layout.css?v=<?= time() ?>">
 </head>
 
 <body>
     <div class="barra-progresso" id="barra-progresso"></div>
 
     <div class="pagina">
-        <header class="cabecalho">
-            <div class="cabecalho-conteudo">
-                <span class="identificacao">
-                    <span class="identificacao-ponto"></span>
-                    Documento oficial do FOAG
-                </span>
-
-                <h1>Termos de Uso</h1>
-
-                <p>
-                    Regras, direitos e responsabilidades relacionados ao uso
-                    da plataforma FOAG — Ferramenta de Organização Acadêmica Geral.
-                </p>
-
-                <span class="data-atualizacao">
-                    Última atualização: 06 de agosto de 2026
-                </span>
-            </div>
-        </header>
+        <?php include __DIR__ . '/../components/header.php'; ?>
 
         <div class="acoes">
             <a class="botao botao-principal" href="configuracoes.php">
@@ -1445,5 +1437,8 @@
         window.addEventListener("scroll", atualizarPagina);
         window.addEventListener("load", atualizarPagina);
     </script>
+    <script src="../global/js/cursor.js?v=<?= time() ?>"></script>
+
 </body>
+
 </html>

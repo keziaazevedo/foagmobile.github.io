@@ -1,5 +1,5 @@
 {
-    "estrelas": 130,
+    "estrelas": 172,
     "historico": [
         {
             "id": "estrela_d4aa1f5181ba",
@@ -180,6 +180,186 @@
             "data": "2026-09-17 07:37:08",
             "timestamp": 1789645028,
             "chave": "compra_loja_emoji_freddy"
+        },
+        {
+            "id": "estrela_08ca9fbf2520",
+            "tipo": "nota",
+            "descricao": "Nota 8,50 em matemática — 1º Bimestre",
+            "estrelas": 5,
+            "data": "2026-10-05 18:52:50",
+            "timestamp": 1791240770,
+            "chave": "nota_MAT_0D15E9A1_0758c00e6ea0_avaliacao_1"
+        },
+        {
+            "id": "estrela_99dc97287bda",
+            "tipo": "nota",
+            "descricao": "Nota 8,00 em matemática — 3º Bimestre",
+            "estrelas": 5,
+            "data": "2026-10-05 18:52:59",
+            "timestamp": 1791240779,
+            "chave": "nota_MAT_0D15E9A1_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_eaa5ae88a5ed",
+            "tipo": "evolucao_nota",
+            "descricao": "Evolução em matemática: nota maior que na avaliação anterior",
+            "estrelas": 5,
+            "data": "2026-10-05 18:52:59",
+            "timestamp": 1791240779,
+            "chave": "evolucao_nota_MAT_0D15E9A1_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_724d0e3829c9",
+            "tipo": "nota",
+            "descricao": "Nota 7,50 em biologia — 3º Bimestre",
+            "estrelas": 3,
+            "data": "2026-10-05 18:53:31",
+            "timestamp": 1791240811,
+            "chave": "nota_MAT_9196C6D0_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_62e2276940c7",
+            "tipo": "nota",
+            "descricao": "Nota 8,50 em filosofia — 3º Bimestre",
+            "estrelas": 5,
+            "data": "2026-10-05 18:53:43",
+            "timestamp": 1791240823,
+            "chave": "nota_mat_19b2fd97133e_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_88f02154667e",
+            "tipo": "evolucao_nota",
+            "descricao": "Evolução em filosofia: nota maior que na avaliação anterior",
+            "estrelas": 5,
+            "data": "2026-10-05 18:53:43",
+            "timestamp": 1791240823,
+            "chave": "evolucao_nota_mat_19b2fd97133e_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_046a2027521b",
+            "tipo": "nota",
+            "descricao": "Nota 8,00 em sociologia — 3º Bimestre",
+            "estrelas": 5,
+            "data": "2026-10-05 18:54:07",
+            "timestamp": 1791240847,
+            "chave": "nota_mat_08e950fb6015_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_3c4811d6503a",
+            "tipo": "evolucao_nota",
+            "descricao": "Evolução em sociologia: nota maior que na avaliação anterior",
+            "estrelas": 5,
+            "data": "2026-10-05 18:54:07",
+            "timestamp": 1791240847,
+            "chave": "evolucao_nota_mat_08e950fb6015_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_8b321f6f5405",
+            "tipo": "nota",
+            "descricao": "Nota 10,00 em artes — 3º Bimestre",
+            "estrelas": 10,
+            "data": "2026-10-05 18:54:21",
+            "timestamp": 1791240861,
+            "chave": "nota_mat_663b34c602d8_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_50a0de60d2d6",
+            "tipo": "nota",
+            "descricao": "Nota 7,00 em ed fisica — 3º Bimestre",
+            "estrelas": 3,
+            "data": "2026-10-05 18:54:30",
+            "timestamp": 1791240870,
+            "chave": "nota_mat_7267383c099c_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_768b3c93b363",
+            "tipo": "nota",
+            "descricao": "Nota 10,00 em ingles — 3º Bimestre",
+            "estrelas": 10,
+            "data": "2026-10-05 18:54:36",
+            "timestamp": 1791240876,
+            "chave": "nota_mat_27c5198bc062_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_65446baeb632",
+            "tipo": "evolucao_nota",
+            "descricao": "Evolução em ingles: nota maior que na avaliação anterior",
+            "estrelas": 5,
+            "data": "2026-10-05 18:54:36",
+            "timestamp": 1791240876,
+            "chave": "evolucao_nota_mat_27c5198bc062_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_90df3bb65253",
+            "tipo": "nota",
+            "descricao": "Nota 7,00 em português — 3º Bimestre",
+            "estrelas": 3,
+            "data": "2026-10-05 18:54:50",
+            "timestamp": 1791240890,
+            "chave": "nota_mat_cffc485dc696_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_219af8b2b3c0",
+            "tipo": "evolucao_nota",
+            "descricao": "Evolução em português: nota maior que na avaliação anterior",
+            "estrelas": 5,
+            "data": "2026-10-05 18:54:54",
+            "timestamp": 1791240894,
+            "chave": "evolucao_nota_mat_cffc485dc696_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_0c689fd71d83",
+            "tipo": "nota",
+            "descricao": "Nota 8,00 em física — 3º Bimestre",
+            "estrelas": 5,
+            "data": "2026-10-05 18:55:07",
+            "timestamp": 1791240907,
+            "chave": "nota_mat_cbde08cd25a3_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_269f314e318a",
+            "tipo": "nota",
+            "descricao": "Nota 7,00 em história — 3º Bimestre",
+            "estrelas": 3,
+            "data": "2026-10-05 18:56:53",
+            "timestamp": 1791241013,
+            "chave": "nota_mat_45eda0a19c17_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_21026314becd",
+            "tipo": "boletim_completo",
+            "descricao": "3º Bimestre com todas as notas preenchidas",
+            "estrelas": 10,
+            "data": "2026-10-05 18:57:00",
+            "timestamp": 1791241020,
+            "chave": "boletim_completo_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_108fd271bf29",
+            "tipo": "evolucao_nota",
+            "descricao": "Evolução em história: nota maior que na avaliação anterior",
+            "estrelas": 5,
+            "data": "2026-10-05 18:58:28",
+            "timestamp": 1791241108,
+            "chave": "evolucao_nota_mat_45eda0a19c17_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_74d8d2634a39",
+            "tipo": "evolucao_nota",
+            "descricao": "Evolução em biologia: nota maior que na avaliação anterior",
+            "estrelas": 5,
+            "data": "2026-10-05 19:34:29",
+            "timestamp": 1791243269,
+            "chave": "evolucao_nota_MAT_9196C6D0_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "gasto_594406f25445",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Tema Rosa",
+            "estrelas": -60,
+            "data": "2026-10-05 20:12:41",
+            "timestamp": 1791245561,
+            "chave": "compra_loja_tema_rosa"
         }
     ],
     "controle": {
@@ -212,7 +392,26 @@
                 "boletim_completo_0758c00e6ea0_avaliacao_2",
                 "boletim_aprovado_0758c00e6ea0_avaliacao_2",
                 "nota_MAT_0D15E9A1_0758c00e6ea0_avaliacao_2",
-                "nota_mat_45eda0a19c17_0758c00e6ea0_avaliacao_1"
+                "nota_mat_45eda0a19c17_0758c00e6ea0_avaliacao_1",
+                "nota_MAT_0D15E9A1_0758c00e6ea0_avaliacao_1",
+                "nota_MAT_0D15E9A1_0758c00e6ea0_avaliacao_3",
+                "evolucao_nota_MAT_0D15E9A1_0758c00e6ea0_avaliacao_3",
+                "nota_MAT_9196C6D0_0758c00e6ea0_avaliacao_3",
+                "nota_mat_19b2fd97133e_0758c00e6ea0_avaliacao_3",
+                "evolucao_nota_mat_19b2fd97133e_0758c00e6ea0_avaliacao_3",
+                "nota_mat_08e950fb6015_0758c00e6ea0_avaliacao_3",
+                "evolucao_nota_mat_08e950fb6015_0758c00e6ea0_avaliacao_3",
+                "nota_mat_663b34c602d8_0758c00e6ea0_avaliacao_3",
+                "nota_mat_7267383c099c_0758c00e6ea0_avaliacao_3",
+                "nota_mat_27c5198bc062_0758c00e6ea0_avaliacao_3",
+                "evolucao_nota_mat_27c5198bc062_0758c00e6ea0_avaliacao_3",
+                "nota_mat_cffc485dc696_0758c00e6ea0_avaliacao_3",
+                "evolucao_nota_mat_cffc485dc696_0758c00e6ea0_avaliacao_3",
+                "nota_mat_cbde08cd25a3_0758c00e6ea0_avaliacao_3",
+                "nota_mat_45eda0a19c17_0758c00e6ea0_avaliacao_3",
+                "boletim_completo_0758c00e6ea0_avaliacao_3",
+                "evolucao_nota_mat_45eda0a19c17_0758c00e6ea0_avaliacao_3",
+                "evolucao_nota_MAT_9196C6D0_0758c00e6ea0_avaliacao_3"
             ]
         },
         "sequencia_estudo": {
@@ -235,7 +434,26 @@
             "boletim_aprovado_0758c00e6ea0_avaliacao_2",
             "pomodoro_38d75df2-4f89-41df-a359-0674d86fe5a7",
             "nota_MAT_0D15E9A1_0758c00e6ea0_avaliacao_2",
-            "nota_mat_45eda0a19c17_0758c00e6ea0_avaliacao_1"
+            "nota_mat_45eda0a19c17_0758c00e6ea0_avaliacao_1",
+            "nota_MAT_0D15E9A1_0758c00e6ea0_avaliacao_1",
+            "nota_MAT_0D15E9A1_0758c00e6ea0_avaliacao_3",
+            "evolucao_nota_MAT_0D15E9A1_0758c00e6ea0_avaliacao_3",
+            "nota_MAT_9196C6D0_0758c00e6ea0_avaliacao_3",
+            "nota_mat_19b2fd97133e_0758c00e6ea0_avaliacao_3",
+            "evolucao_nota_mat_19b2fd97133e_0758c00e6ea0_avaliacao_3",
+            "nota_mat_08e950fb6015_0758c00e6ea0_avaliacao_3",
+            "evolucao_nota_mat_08e950fb6015_0758c00e6ea0_avaliacao_3",
+            "nota_mat_663b34c602d8_0758c00e6ea0_avaliacao_3",
+            "nota_mat_7267383c099c_0758c00e6ea0_avaliacao_3",
+            "nota_mat_27c5198bc062_0758c00e6ea0_avaliacao_3",
+            "evolucao_nota_mat_27c5198bc062_0758c00e6ea0_avaliacao_3",
+            "nota_mat_cffc485dc696_0758c00e6ea0_avaliacao_3",
+            "evolucao_nota_mat_cffc485dc696_0758c00e6ea0_avaliacao_3",
+            "nota_mat_cbde08cd25a3_0758c00e6ea0_avaliacao_3",
+            "nota_mat_45eda0a19c17_0758c00e6ea0_avaliacao_3",
+            "boletim_completo_0758c00e6ea0_avaliacao_3",
+            "evolucao_nota_mat_45eda0a19c17_0758c00e6ea0_avaliacao_3",
+            "evolucao_nota_MAT_9196C6D0_0758c00e6ea0_avaliacao_3"
         ]
     }
 }

@@ -75,19 +75,6 @@ header.cabecalho {
     user-select: none;
 }
 
-.header-icons i {
-    color: #ffffff;
-    cursor: pointer;
-    transition:
-        color 0.2s ease,
-        transform 0.2s ease;
-}
-
-.header-icons i:hover {
-    color: #006cc5;
-    transform: translateY(-2px) scale(1.08);
-}
-
 /* =========================
    ESTRUTURA PRINCIPAL
 ========================= */
@@ -121,38 +108,6 @@ nav.menu {
     gap: 10px;
     background: #38a5ff;
     box-shadow: 4px 0 12px rgba(0, 0, 0, 0.08);
-}
-
-nav.menu a {
-    width: 100%;
-    padding: 11px 12px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: #ffffff;
-    background: transparent;
-    font-size: 15px;
-    font-weight: 500;
-    text-decoration: none;
-    border-radius: 8px;
-    transition:
-        background-color 0.2s ease,
-        transform 0.2s ease;
-}
-
-nav.menu a i {
-    width: 22px;
-    text-align: center;
-    font-size: 16px;
-}
-
-nav.menu a:hover,
-nav.menu a.active {
-    background: rgba(255, 255, 255, 0.18);
-}
-
-nav.menu a:hover {
-    transform: translateX(2px);
 }
 
 /* =========================
@@ -1026,85 +981,6 @@ nav.menu a:hover {
     border-top: 1px solid #e5edf5;
 }
 
-.footer-content {
-    width: 100%;
-    max-width: 1180px;
-    min-height: 50px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 30px;
-}
-
-.footer-left {
-    display: flex;
-    align-items: center;
-    gap: 38px;
-}
-
-.footer-brand {
-    color: #38a5ff;
-    font-size: 19px;
-    font-weight: 700;
-}
-
-.footer-links {
-    display: flex;
-    align-items: center;
-    gap: 28px;
-}
-
-.footer-links a {
-    color: #667085;
-    font-size: 13px;
-    font-weight: 500;
-    text-decoration: none;
-    transition: color 0.2s ease;
-}
-
-.footer-links a:hover {
-    color: #38a5ff;
-}
-
-.footer-copy {
-    color: #98a2b3;
-    font-size: 11px;
-    white-space: nowrap;
-}
-
-@media (max-width: 900px) {
-    .footer {
-        padding: 0 20px;
-    }
-}
-
-@media (max-width: 768px) {
-    .footer {
-        padding: 0 12px;
-    }
-
-    .footer-content {
-        min-height: auto;
-        padding: 20px 0;
-        flex-direction: column;
-        justify-content: center;
-        gap: 13px;
-        text-align: center;
-    }
-
-    .footer-left {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .footer-links {
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 16px 22px;
-    }
-}
-
 /* =========================
    RESPONSIVIDADE
 ========================= */
@@ -1125,38 +1001,6 @@ nav.menu a:hover {
 }
 
 @media (max-width: 768px) {
-    header.cabecalho {
-        height: 60px;
-        padding: 12px 15px;
-        font-size: 1.75em;
-    }
-
-    .header-icons {
-        right: 15px;
-        gap: 12px;
-        font-size: 18px;
-    }
-
-    .container {
-        flex-direction: column;
-    }
-
-    nav.menu {
-        width: 100%;
-        min-width: 100%;
-        padding: 10px;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 6px;
-        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
-    }
-
-    nav.menu a {
-        width: auto;
-        padding: 8px 10px;
-        font-size: 13px;
-    }
 
     .main-content {
         padding: 16px 12px 20px;
@@ -1209,27 +1053,6 @@ nav.menu a:hover {
 }
 
 @media (max-width: 520px) {
-    header.cabecalho {
-        height: 56px;
-        padding: 10px;
-        font-size: 1.55em;
-    }
-
-    .header-icons {
-        right: 10px;
-        gap: 9px;
-        font-size: 16px;
-    }
-
-    nav.menu {
-        justify-content: flex-start;
-        overflow-x: auto;
-        flex-wrap: nowrap;
-    }
-
-    nav.menu a {
-        flex-shrink: 0;
-    }
 
     .main-content {
         padding: 10px 7px 16px;
@@ -1471,4 +1294,313 @@ body.dark-mode .btn-responder {
 body.dark-mode .btn-responder:hover {
     background: rgba(74, 222, 128, 0.15) !important;
     color: #4ade80 !important;
+}
+
+
+/* =====================================================
+   FOTO DE PERFIL + MOLDURA — COMUNIDADE
+   ===================================================== */
+
+/*
+   Os avatares antigos eram apenas círculos com iniciais.
+   Agora foto e moldura são camadas independentes.
+*/
+
+.avatar-comunidade {
+    --comu-avatar-size: 38px;
+
+    --comu-moldura-escala: 1.28;
+    --comu-moldura-x: 0%;
+    --comu-moldura-y: 0%;
+
+    --comu-foto-escala: 1;
+    --comu-foto-x: 0%;
+    --comu-foto-y: 0%;
+
+    width: var(--comu-avatar-size);
+    height: var(--comu-avatar-size);
+    min-width: var(--comu-avatar-size);
+
+    position: relative;
+    flex: 0 0 var(--comu-avatar-size);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: visible;
+}
+
+/* Avatar das perguntas */
+.avatar-comunidade-pergunta {
+    --comu-avatar-size: 38px;
+}
+
+/* Avatar menor das respostas */
+.avatar-comunidade-resposta {
+    --comu-avatar-size: 27px;
+}
+
+/* Área recortada da foto */
+.avatar-comunidade-foto-wrap {
+    width: 100%;
+    height: 100%;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 1;
+
+    overflow: hidden;
+
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+
+    background: #eaf6ff;
+
+    box-shadow:
+        0 2px 7px
+        rgba(20, 70, 110, 0.14);
+
+    transform:
+        translate(-50%, -50%);
+
+    transform-origin: center;
+}
+
+/*
+   Se há moldura, o recorte da foto também pode ter
+   escala e posição independentes.
+*/
+.avatar-comunidade.tem-moldura
+.avatar-comunidade-foto-wrap {
+    width:
+        calc(
+            100% *
+            var(--comu-foto-escala)
+        );
+
+    height:
+        calc(
+            100% *
+            var(--comu-foto-escala)
+        );
+
+    top:
+        calc(
+            50% +
+            var(--comu-foto-y)
+        );
+
+    left:
+        calc(
+            50% +
+            var(--comu-foto-x)
+        );
+
+    border: 0;
+    box-shadow: none;
+}
+
+/* Foto real */
+.avatar-comunidade-foto {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+    object-position: center;
+
+    border: 0 !important;
+    border-radius: 50% !important;
+    box-shadow: none !important;
+}
+
+/* Iniciais caso a imagem falhe */
+.avatar-comunidade-fallback {
+    width: 100%;
+    height: 100%;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #38a5ff;
+    color: #ffffff;
+
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.avatar-comunidade.sem-foto
+.avatar-comunidade-fallback {
+    display: flex;
+}
+
+.avatar-comunidade-resposta
+.avatar-comunidade-fallback {
+    font-size: 8px;
+}
+
+/* PNG da moldura */
+.avatar-comunidade-moldura {
+    width:
+        calc(
+            100% *
+            var(--comu-moldura-escala)
+        ) !important;
+
+    height:
+        calc(
+            100% *
+            var(--comu-moldura-escala)
+        ) !important;
+
+    position: absolute;
+
+    top:
+        calc(
+            50% +
+            var(--comu-moldura-y)
+        );
+
+    left:
+        calc(
+            50% +
+            var(--comu-moldura-x)
+        );
+
+    z-index: 4;
+
+    display: block;
+
+    object-fit: contain !important;
+    object-position: center !important;
+
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+
+    pointer-events: none;
+    user-select: none;
+
+    transform:
+        translate(-50%, -50%);
+
+    transform-origin: center;
+}
+
+/*
+   Sobrescreve os estilos antigos de avatar por iniciais.
+*/
+.pergunta-item
+.pergunta-autor
+.avatar-comunidade {
+    background: transparent;
+    color: inherit;
+    border-radius: 0;
+    font-size: inherit;
+    font-weight: inherit;
+}
+
+.resposta-item
+.resposta-header
+.avatar-comunidade {
+    background: transparent;
+    color: inherit;
+    border-radius: 0;
+    font-size: inherit;
+    font-weight: inherit;
+}
+
+/*
+   Um pouco mais de espaço para artes que ultrapassam
+   bastante a foto, como gatos/cachorro.
+*/
+.pergunta-item .pergunta-autor {
+    gap: 12px;
+}
+
+.resposta-item .resposta-header {
+    gap: 10px;
+}
+
+/* Dark mode */
+body.dark-mode
+.avatar-comunidade-foto-wrap {
+    border-color: #334155;
+    background: #243247;
+}
+
+body.dark-mode
+.avatar-comunidade-fallback {
+    background: #3b82f6;
+    color: #ffffff;
+}
+
+/* Responsivo */
+@media (max-width: 520px) {
+    .avatar-comunidade-pergunta {
+        --comu-avatar-size: 36px;
+    }
+
+    .avatar-comunidade-resposta {
+        --comu-avatar-size: 26px;
+    }
+}
+/* =====================================================
+   EMOJI DO NOME — COMUNIDADE
+   ===================================================== */
+
+.emoji-nome-comunidade {
+    width: 18px;
+    height: 18px;
+
+    display: inline-block;
+    vertical-align: -3px;
+
+    margin-left: 5px;
+
+    object-fit: contain;
+    object-position: center;
+
+    border-radius: 0;
+    background: transparent;
+
+    pointer-events: none;
+    user-select: none;
+
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .15));
+}
+
+/* Respostas usam um emoji ligeiramente menor */
+.resposta-item .emoji-nome-comunidade {
+    width: 15px;
+    height: 15px;
+    vertical-align: -2px;
+    margin-left: 4px;
+}
+
+/* Dark mode */
+body.dark-mode .emoji-nome-comunidade {
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .35));
+}
+
+/* Mobile */
+@media (max-width: 520px) {
+    .emoji-nome-comunidade {
+        width: 16px;
+        height: 16px;
+        vertical-align: -3px;
+        margin-left: 4px;
+    }
+
+    .resposta-item .emoji-nome-comunidade {
+        width: 13px;
+        height: 13px;
+    }
 }

@@ -1,12 +1,24 @@
 {
     "itens_comprados": [
         "tema_verde",
-        "moldura_dragao"
+        "moldura_dragao",
+        "moldura_estrelas",
+        "moldura_sakura",
+        "moldura_agua",
+        "moldura_rei",
+        "cursor_sakura",
+        "cursor_dragao",
+        "cursor_galaxia",
+        "cursor_gato",
+        "cursor_serafim",
+        "cursor_natureza",
+        "cursor_neon",
+        "cursor_fogo"
     ],
     "itens_ativos": {
         "tema": "tema_verde",
         "fundo": null,
-        "moldura": "moldura_dragao",
-        "cursor": null
+        "moldura": "moldura_sakura",
+        "cursor": "cursor_serafim"
     }
 }

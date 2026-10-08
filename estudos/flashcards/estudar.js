@@ -13,7 +13,7 @@ document.addEventListener(
 
     const SAVE_URL =
       window.REVISAO_SAVE_URL ||
-      'salvar_revisao.php';
+      FOAG_CONFIG.endpoints.flashcardsRevisaoSalvar;
 
     let cartoes =
       Array.isArray(baralho.cartoes)
@@ -142,31 +142,24 @@ document.addEventListener(
     // ==========================================
 
     function showToast(message) {
-
       if (!toast) {
         return;
       }
 
-      toast.textContent =
-        message;
+      clearTimeout(toastTimer);
 
-      toast.classList.add(
-        'show'
-      );
+      if (window.FOAG?.ui?.showSimpleToast) {
+        toastTimer = FOAG.ui.showSimpleToast(
+          toast,
+          message,
+          { duracao: 2500, classe: 'show' }
+        );
+        return;
+      }
 
-      clearTimeout(
-        toastTimer
-      );
-
-      toastTimer =
-        setTimeout(() => {
-
-          toast.classList.remove(
-            'show'
-          );
-
-        }, 2500);
-
+      toast.textContent = message;
+      toast.classList.add('show');
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
     }
 
 
@@ -786,7 +779,7 @@ document.addEventListener(
         () => {
 
           window.location.href =
-            '../../perfil/perfil.php';
+            FOAG_CONFIG.pages.perfil;
 
         }
       );
@@ -801,7 +794,7 @@ document.addEventListener(
         () => {
 
           window.location.href =
-            '../../configuracoes/configuracoes.php';
+            FOAG_CONFIG.pages.configuracoes;
 
         }
       );
@@ -848,7 +841,7 @@ document.addEventListener(
         () => {
 
           window.location.href =
-            '../../login/logout.php';
+            FOAG_CONFIG.pages.logout;
 
         }
       );

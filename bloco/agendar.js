@@ -11,10 +11,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // =================================================
 
     const AGENDA_SAVE_URL =
-        window.AGENDA_SAVE_URL || 'salvar_agenda.php';
+        window.AGENDA_SAVE_URL || FOAG_CONFIG.endpoints.agendaSalvar;
 
     const HORARIO_SAVE_URL =
-        window.HORARIO_SAVE_URL || 'salvar_agenda.php';
+        window.HORARIO_SAVE_URL || FOAG_CONFIG.endpoints.agendaSalvar;
 
     const HORARIO_HTML =
         typeof window.HORARIO_HTML === 'string'
@@ -126,29 +126,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function escaparHtml(valor) {
-        return String(
-            valor ?? ''
-        )
-            .replaceAll(
-                '&',
-                '&amp;'
-            )
-            .replaceAll(
-                '<',
-                '&lt;'
-            )
-            .replaceAll(
-                '>',
-                '&gt;'
-            )
-            .replaceAll(
-                '"',
-                '&quot;'
-            )
-            .replaceAll(
-                "'",
-                '&#039;'
-            );
+        return window.FOAG?.utils?.escapeHtml
+            ? FOAG.utils.escapeHtml(valor)
+            : String(valor ?? '');
     }
 
     function nomeArquivoSeguro(nome) {
@@ -817,51 +797,81 @@ document.addEventListener('DOMContentLoaded', function () {
         return resultado;
     }
 
-    function ordenarLinhasTarefas() {
-        if (
-            !listaTarefas
-        ) {
-            return;
+
+    function compararPorDataProxima(linhaA, linhaB) {
+        const a = dadosDaLinha(linhaA);
+        const b = dadosDaLinha(linhaB);
+        const dataA = String(a.data || '');
+        const dataB = String(b.data || '');
+
+        if (dataA && dataB && dataA !== dataB) {
+            return dataA.localeCompare(dataB);
         }
+        if (dataA && !dataB) return -1;
+        if (!dataA && dataB) return 1;
 
-        const linhas =
-            Array.from(
-                listaTarefas.rows
-            );
+        // Em tarefas, concluídas ficam depois apenas quando a data empata.
+        const concluidaA = Boolean(a.concluida);
+        const concluidaB = Boolean(b.concluida);
+        if (concluidaA !== concluidaB) return concluidaA ? 1 : -1;
 
-        linhas.sort(
-            function (
-                linhaA,
-                linhaB
-            ) {
-                return compararTarefas(
-                    dadosDaLinha(
-                        linhaA
-                    ),
+        return String(a.texto || '').localeCompare(String(b.texto || ''), 'pt-BR');
+    }
 
-                    dadosDaLinha(
-                        linhaB
-                    )
-                );
-            }
-        );
+    function ordenarListaPorData(lista) {
+        if (!lista) return;
+        const linhas = Array.from(lista.rows);
+        linhas.sort(compararPorDataProxima);
+        linhas.forEach((linha) => lista.appendChild(linha));
+        atualizarIndices(lista);
+    }
 
-        linhas.forEach(
-            function (linha) {
-                listaTarefas
-                    .appendChild(
-                        linha
-                    );
+    const estadoExpandido = {
+        tarefas: false,
+        lembretes: false
+    };
 
-                aplicarEstadoTarefa(
-                    linha
-                );
-            }
-        );
+    function atualizarVisibilidadeLista(tipo) {
+        const lista = tipo === 'tarefas' ? listaTarefas : listaNaoEsquecer;
+        const painel = document.getElementById(tipo === 'tarefas' ? 'tarefas' : 'lembretes');
+        const botao = document.getElementById(tipo === 'tarefas' ? 'expandir-tarefas' : 'expandir-lembretes');
+        if (!lista || !painel || !botao) return;
 
-        atualizarIndices(
-            listaTarefas
-        );
+        const linhas = Array.from(lista.rows);
+        const emSelecao = painel.classList.contains('modo-selecao');
+        const expandido = estadoExpandido[tipo] || emSelecao;
+        const precisaExpandir = linhas.length > 3;
+
+        botao.hidden = !precisaExpandir || emSelecao;
+        botao.setAttribute('aria-expanded', expandido ? 'true' : 'false');
+        botao.innerHTML = expandido
+            ? '<i class="fa-solid fa-down-left-and-up-right-to-center" aria-hidden="true"></i> Recolher'
+            : '<i class="fa-solid fa-up-right-and-down-left-from-center" aria-hidden="true"></i> Expandir';
+
+        linhas.forEach((linha, index) => {
+            const ocultar = !expandido && index >= 3;
+            linha.classList.toggle('agenda-item-oculto', ocultar);
+        });
+
+        painel.classList.toggle('agenda-painel-expandido', expandido && precisaExpandir);
+    }
+
+    function atualizarListasAgenda() {
+        ordenarListaPorData(listaTarefas);
+        ordenarListaPorData(listaNaoEsquecer);
+        atualizarVisibilidadeLista('tarefas');
+        atualizarVisibilidadeLista('lembretes');
+    }
+
+    function ordenarLinhasTarefas() {
+        ordenarListaPorData(listaTarefas);
+        Array.from(listaTarefas?.rows || []).forEach(aplicarEstadoTarefa);
+        atualizarVisibilidadeLista('tarefas');
+    }
+
+    function ordenarLinhasLembretes() {
+        ordenarListaPorData(listaNaoEsquecer);
+        atualizarVisibilidadeLista('lembretes');
     }
 
     function criarLinhaAgenda(
@@ -994,114 +1004,211 @@ document.addEventListener('DOMContentLoaded', function () {
                 );
         }
 
-        // Data
+        // Data — entrada visual DD / MM / AAAA.
+        // O valor real continua em ISO no input escondido, preservando o JSON atual.
         const celulaData =
             linha.insertCell(
                 2
             );
 
-        const inputData =
-            document.createElement(
-                'input'
-            );
-
-        inputData.type =
-            'date';
-
-        inputData.value =
-            String(
-                dadosIniciais.data ??
-                dadosIniciais.date ??
-                ''
-            );
-
-        celulaData.appendChild(
-            inputData
+        const inputData = document.createElement('input');
+        inputData.type = 'date';
+        inputData.className = 'agenda-date-iso';
+        inputData.hidden = true;
+        inputData.value = String(
+            dadosIniciais.data ??
+            dadosIniciais.date ??
+            ''
         );
 
-        if (
-            ehTarefa
-        ) {
-            inputData.addEventListener(
-                'change',
-                function () {
-                    aplicarEstadoTarefa(
-                        linha
-                    );
+        const grupoData = document.createElement('div');
+        grupoData.className = 'agenda-date-fields';
 
-                    ordenarLinhasTarefas();
+        const criarParteData = (classe, placeholder, tamanho, rotulo) => {
+            const campo = document.createElement('input');
+            campo.type = 'text';
+            campo.className = `agenda-date-part ${classe}`;
+            campo.placeholder = placeholder;
+            campo.inputMode = 'numeric';
+            campo.maxLength = tamanho;
+            campo.autocomplete = 'off';
+            campo.setAttribute('aria-label', rotulo);
+            return campo;
+        };
 
-                    salvarDadosAgenda();
-                }
-            );
-        }
+        const campoDia = criarParteData('agenda-date-day', 'DD', 2, 'Dia');
+        const campoMes = criarParteData('agenda-date-month', 'MM', 2, 'Mês');
+        const campoAno = criarParteData('agenda-date-year', 'AAAA', 4, 'Ano');
 
-        // Ações
-        const celulaAcoes =
-            linha.insertCell(
-                3
-            );
+        const separador1 = document.createElement('span');
+        separador1.className = 'agenda-date-separator';
+        separador1.textContent = '/';
+        const separador2 = separador1.cloneNode(true);
 
-        const botaoExcluir =
-            document.createElement(
-                'button'
-            );
+        const erroData = document.createElement('small');
+        erroData.className = 'agenda-date-error';
+        erroData.setAttribute('aria-live', 'polite');
 
-        botaoExcluir.type =
-            'button';
+        grupoData.append(campoDia, separador1, campoMes, separador2, campoAno);
+        celulaData.append(grupoData, erroData, inputData);
 
-        botaoExcluir.textContent =
-            'Excluir';
+        const preencherPartesData = (iso) => {
+            const partes = String(iso || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+            campoDia.value = partes ? partes[3] : '';
+            campoMes.value = partes ? partes[2] : '';
+            campoAno.value = partes ? partes[1] : '';
+        };
 
-        botaoExcluir.className =
-            'btn-excluir';
+        const isoDaDataDigitada = () => {
+            const diaTxt = campoDia.value.trim();
+            const mesTxt = campoMes.value.trim();
+            const anoTxt = campoAno.value.trim();
 
-        botaoExcluir.addEventListener(
-            'click',
-            function () {
-                const texto =
-                    textoDaLinha(
-                        linha
-                    ) ||
-                    'Item sem título';
-
-                const tipo =
-                    ehTarefa
-                        ? 'tarefa'
-                        : 'nao-esquecer';
-
-                const titulo =
-                    ehTarefa
-                        ? 'Excluir Tarefa'
-                        : 'Excluir Lembrete';
-
-                const resumo =
-                    texto.length >
-                    50
-                        ? `${texto.substring(
-                            0,
-                            50
-                        )}...`
-                        : texto;
-
-                abrirModalExclusao(
-                    titulo,
-
-                    `Tem certeza que deseja excluir "${resumo}"?`,
-
-                    tipo,
-
-                    {
-                        linha:
-                            linha
-                    }
-                );
+            if (diaTxt.length !== 2 || mesTxt.length !== 2 || anoTxt.length !== 4) {
+                return null;
             }
-        );
 
-        celulaAcoes.appendChild(
-            botaoExcluir
-        );
+            const dia = Number(diaTxt);
+            const mes = Number(mesTxt);
+            const ano = Number(anoTxt);
+
+            if (ano < Number(dataHojeIso().slice(0, 4)) || ano > 2030) {
+                return null;
+            }
+
+            const data = new Date(ano, mes - 1, dia);
+            if (
+                data.getFullYear() !== ano ||
+                data.getMonth() !== mes - 1 ||
+                data.getDate() !== dia
+            ) {
+                return null;
+            }
+
+            return `${ano}-${String(mes).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+        };
+
+        const limparErroData = () => {
+            erroData.textContent = '';
+            grupoData.classList.remove('is-invalid');
+        };
+
+        const mostrarErroData = (mensagem) => {
+            erroData.textContent = mensagem;
+            grupoData.classList.add('is-invalid');
+        };
+
+        const validarDataDigitada = ({ salvar = false, mostrarIncompleta = false } = {}) => {
+            limparErroData();
+
+            const vazia = !campoDia.value && !campoMes.value && !campoAno.value;
+            if (vazia) {
+                inputData.value = '';
+                if (salvar) salvarDadosAgenda();
+                return true;
+            }
+
+            const completa =
+                campoDia.value.length === 2 &&
+                campoMes.value.length === 2 &&
+                campoAno.value.length === 4;
+
+            if (!completa) {
+                inputData.value = '';
+                if (mostrarIncompleta) {
+                    mostrarErroData('Complete a data.');
+                }
+                return false;
+            }
+
+            const iso = isoDaDataDigitada();
+            if (!iso) {
+                inputData.value = '';
+                if (Number(campoAno.value) > 2030) {
+                    mostrarErroData('Máximo: 2030.');
+                } else {
+                    mostrarErroData('Data inválida.');
+                }
+                return false;
+            }
+
+            if (iso < dataHojeIso()) {
+                inputData.value = '';
+                mostrarErroData('Escolha hoje ou uma data futura.');
+                return false;
+            }
+
+            inputData.value = iso;
+            campoDia.value = iso.slice(8, 10);
+            campoMes.value = iso.slice(5, 7);
+            campoAno.value = iso.slice(0, 4);
+
+            if (ehTarefa) {
+                aplicarEstadoTarefa(linha);
+                ordenarLinhasTarefas();
+            } else {
+                ordenarLinhasLembretes();
+            }
+
+            if (salvar) salvarDadosAgenda();
+            return true;
+        };
+
+        preencherPartesData(inputData.value);
+
+        [campoDia, campoMes, campoAno].forEach((campo) => {
+            campo.addEventListener('input', function () {
+                const limite = campo === campoAno ? 4 : 2;
+                campo.value = campo.value.replace(/\D/g, '').slice(0, limite);
+                inputData.value = '';
+                limparErroData();
+
+                if (campo === campoDia && campo.value.length === 2) {
+                    campoMes.focus();
+                    campoMes.select();
+                } else if (campo === campoMes && campo.value.length === 2) {
+                    campoAno.focus();
+                    campoAno.select();
+                }
+
+                if (
+                    campoDia.value.length === 2 &&
+                    campoMes.value.length === 2 &&
+                    campoAno.value.length === 4
+                ) {
+                    validarDataDigitada({ salvar: true });
+                }
+            });
+
+            campo.addEventListener('keydown', function (event) {
+                if (event.key === 'Backspace' && !campo.value) {
+                    if (campo === campoAno) campoMes.focus();
+                    if (campo === campoMes) campoDia.focus();
+                }
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    validarDataDigitada({ salvar: true, mostrarIncompleta: true });
+                }
+            });
+
+            campo.addEventListener('blur', function () {
+                setTimeout(() => {
+                    if (!grupoData.contains(document.activeElement)) {
+                        validarDataDigitada({ salvar: true, mostrarIncompleta: true });
+                    }
+                }, 0);
+            });
+        });
+
+        // Seleção para exclusão em lote. O botão de excluir fica no cabeçalho do painel.
+        const celulaAcoes = linha.insertCell(3);
+        celulaAcoes.className = 'agenda-item-selecao';
+
+        const checkboxSelecao = document.createElement('input');
+        checkboxSelecao.type = 'checkbox';
+        checkboxSelecao.className = 'agenda-selecao-checkbox';
+        checkboxSelecao.setAttribute('aria-label', ehTarefa ? 'Selecionar tarefa para excluir' : 'Selecionar lembrete para excluir');
+        celulaAcoes.appendChild(checkboxSelecao);
 
         if (
             ehTarefa
@@ -1240,6 +1347,7 @@ document.addEventListener('DOMContentLoaded', function () {
         atualizarIndices(
             listaNaoEsquecer
         );
+        atualizarContadoresAgenda();
     }
 
     function excluirTarefa(
@@ -2014,10 +2122,111 @@ document.addEventListener('DOMContentLoaded', function () {
                 );
 
                 break;
+
+            case 'horario-linha':
+
+                if (
+                    dadosExclusao.linha &&
+                    corpoTabelaHorario?.contains(dadosExclusao.linha)
+                ) {
+                    dadosExclusao.linha.remove();
+                    linhaHorarioSelecionada = null;
+
+                    if (btnExcluirLinhaHorario) {
+                        btnExcluirLinhaHorario.classList.add('horario-btn-desativado');
+                btnExcluirLinhaHorario.setAttribute('aria-disabled', 'true');
+                    }
+
+                    esconderMaterias();
+                    agendarSalvamentoHorario();
+                    renderizarHorarioVisual();
+                }
+
+                break;
         }
 
         fecharModalExclusao();
     }
+
+    // =================================================
+    // EXCLUSÃO EM LOTE — TAREFAS E LEMBRETES
+    // =================================================
+    const btnExcluirTarefas = document.getElementById('excluir-tarefas-toggle');
+    const btnExcluirLembretes = document.getElementById('excluir-lembretes-toggle');
+    const acoesExcluirTarefas = document.getElementById('acoes-excluir-tarefas');
+    const acoesExcluirLembretes = document.getElementById('acoes-excluir-lembretes');
+    const btnCancelarExcluirTarefas = document.getElementById('cancelar-excluir-tarefas');
+    const btnCancelarExcluirLembretes = document.getElementById('cancelar-excluir-lembretes');
+    const btnConfirmarExcluirTarefas = document.getElementById('confirmar-excluir-tarefas');
+    const btnConfirmarExcluirLembretes = document.getElementById('confirmar-excluir-lembretes');
+
+    function atualizarContadoresAgenda() {
+        const ct = document.getElementById('contador-tarefas');
+        const cl = document.getElementById('contador-lembretes');
+        if (ct && listaTarefas) ct.textContent = String(listaTarefas.rows.length);
+        if (cl && listaNaoEsquecer) cl.textContent = String(listaNaoEsquecer.rows.length);
+    }
+
+    function definirModoSelecao(lista, painel, acoes, ativo) {
+        if (!lista || !painel || !acoes) return;
+        painel.classList.toggle('modo-selecao', ativo);
+        acoes.hidden = !ativo;
+        lista.querySelectorAll('.agenda-selecao-checkbox').forEach((cb) => {
+            cb.checked = false;
+        });
+        atualizarVisibilidadeLista(lista === listaTarefas ? 'tarefas' : 'lembretes');
+    }
+
+    function excluirSelecionados(lista, painel, acoes) {
+        if (!lista) return;
+        const selecionados = Array.from(lista.querySelectorAll('tr')).filter((linha) =>
+            linha.querySelector('.agenda-selecao-checkbox')?.checked
+        );
+        if (!selecionados.length) {
+            alert('Selecione pelo menos um item para excluir.');
+            return;
+        }
+        selecionados.forEach((linha) => linha.remove());
+        atualizarIndices(lista);
+        atualizarContadoresAgenda();
+        definirModoSelecao(lista, painel, acoes, false);
+        salvarDadosAgenda();
+        atualizarListasAgenda();
+    }
+
+    const btnExpandirTarefas = document.getElementById('expandir-tarefas');
+    const btnExpandirLembretes = document.getElementById('expandir-lembretes');
+
+    btnExpandirTarefas?.addEventListener('click', () => {
+        estadoExpandido.tarefas = !estadoExpandido.tarefas;
+        atualizarVisibilidadeLista('tarefas');
+    });
+    btnExpandirLembretes?.addEventListener('click', () => {
+        estadoExpandido.lembretes = !estadoExpandido.lembretes;
+        atualizarVisibilidadeLista('lembretes');
+    });
+
+    btnExcluirTarefas?.addEventListener('click', () =>
+        definirModoSelecao(listaTarefas, document.getElementById('tarefas'), acoesExcluirTarefas, true)
+    );
+    btnExcluirLembretes?.addEventListener('click', () =>
+        definirModoSelecao(listaNaoEsquecer, document.getElementById('lembretes'), acoesExcluirLembretes, true)
+    );
+    btnCancelarExcluirTarefas?.addEventListener('click', () =>
+        definirModoSelecao(listaTarefas, document.getElementById('tarefas'), acoesExcluirTarefas, false)
+    );
+    btnCancelarExcluirLembretes?.addEventListener('click', () =>
+        definirModoSelecao(listaNaoEsquecer, document.getElementById('lembretes'), acoesExcluirLembretes, false)
+    );
+    btnConfirmarExcluirTarefas?.addEventListener('click', () =>
+        excluirSelecionados(listaTarefas, document.getElementById('tarefas'), acoesExcluirTarefas)
+    );
+    btnConfirmarExcluirLembretes?.addEventListener('click', () =>
+        excluirSelecionados(listaNaoEsquecer, document.getElementById('lembretes'), acoesExcluirLembretes)
+    );
+
+    // Estado inicial: ordenar e limitar a três itens.
+    atualizarListasAgenda();
 
     // =================================================
     // EVENTOS DA AGENDA
@@ -2038,6 +2247,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     );
 
                 salvarDadosAgenda();
+                atualizarContadoresAgenda();
+                atualizarListasAgenda();
+                atualizarListasAgenda();
 
                 linha
                     ?.querySelector(
@@ -2057,6 +2269,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     );
 
                 salvarDadosAgenda();
+                atualizarContadoresAgenda();
 
                 linha
                     ?.cells[1]
@@ -2491,6 +2704,194 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     tornarHorarioEditavel();
+
+    // =================================================
+    // VISUALIZAÇÃO MODERNA DO HORÁRIO
+    // =================================================
+
+    const horarioVisual = document.getElementById('horario-visual');
+    const horarioEditor = document.getElementById('horario-editor');
+    const btnEditarHorario = document.getElementById('btn-editar-horario');
+    const btnFecharEdicaoHorario = document.getElementById('btn-fechar-edicao-horario');
+    const btnMenuHorario = document.getElementById('btn-menu-horario');
+    const horarioMenuOpcoes = document.getElementById('horario-menu-opcoes');
+    const proximaTitulo = document.getElementById('horario-proxima-titulo');
+    const proximaMeta = document.getElementById('horario-proxima-meta');
+
+    const nomesDiasHorario = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta'];
+
+    function textoLimpoCelula(celula) {
+        return String(celula?.innerText || celula?.textContent || '')
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+
+    function obterFaixaLinha(linha) {
+        const inicio = linha?.querySelector('.input-horario-inicio')?.value || '';
+        const fim = linha?.querySelector('.input-horario-fim')?.value || '';
+        return { inicio, fim };
+    }
+
+    function minutosDeHora(hora) {
+        const m = String(hora || '').match(/^(\d{2}):(\d{2})$/);
+        return m ? Number(m[1]) * 60 + Number(m[2]) : null;
+    }
+
+    function corMateriaPorNome(nome) {
+        const texto = String(nome || '').toLowerCase();
+        let hash = 0;
+        for (let i = 0; i < texto.length; i++) hash = ((hash << 5) - hash) + texto.charCodeAt(i);
+        const tons = ['#38a5ff', '#8b5cf6', '#f59e0b', '#10b981', '#ec4899', '#06b6d4', '#ef4444'];
+        return tons[Math.abs(hash) % tons.length];
+    }
+
+    function coletarHorarioVisual() {
+        const dias = nomesDiasHorario.map(() => []);
+        if (!corpoTabelaHorario) return dias;
+
+        Array.from(corpoTabelaHorario.rows).forEach((linha) => {
+            const { inicio, fim } = obterFaixaLinha(linha);
+            if (!inicio && !fim) return;
+
+            const celulas = Array.from(linha.cells || []);
+            const intervalo = celulas.some(c => Number(c.colSpan || 1) > 1);
+
+            if (intervalo) {
+                const texto = textoLimpoCelula(celulas.find(c => Number(c.colSpan || 1) > 1)) || 'Intervalo';
+                dias.forEach((lista) => lista.push({ inicio, fim, nome: texto, intervalo: true }));
+                return;
+            }
+
+            for (let i = 1; i <= 5; i++) {
+                const nome = textoLimpoCelula(celulas[i]);
+                if (!nome) continue;
+                dias[i - 1].push({ inicio, fim, nome, intervalo: false });
+            }
+        });
+
+        dias.forEach(lista => lista.sort((a, b) => (minutosDeHora(a.inicio) ?? 9999) - (minutosDeHora(b.inicio) ?? 9999)));
+        return dias;
+    }
+
+    function atualizarProximaAula(dias) {
+        if (!proximaTitulo || !proximaMeta) return;
+
+        const agora = new Date();
+        const jsDia = agora.getDay();
+        const indiceHoje = jsDia >= 1 && jsDia <= 5 ? jsDia - 1 : -1;
+        const minutosAgora = agora.getHours() * 60 + agora.getMinutes();
+        let escolhida = null;
+        let deslocamento = 0;
+
+        for (let passo = 0; passo < 7 && !escolhida; passo++) {
+            const dataTeste = new Date(agora);
+            dataTeste.setDate(agora.getDate() + passo);
+            const d = dataTeste.getDay();
+            if (d < 1 || d > 5) continue;
+            const idx = d - 1;
+            const candidatas = dias[idx].filter(item => !item.intervalo && item.inicio);
+            const validas = passo === 0 && idx === indiceHoje
+                ? candidatas.filter(item => (minutosDeHora(item.inicio) ?? -1) >= minutosAgora)
+                : candidatas;
+            if (validas.length) {
+                escolhida = validas[0];
+                deslocamento = passo;
+            }
+        }
+
+        if (!escolhida) {
+            proximaTitulo.textContent = 'Nenhuma aula encontrada';
+            proximaMeta.textContent = 'Cadastre ou edite seu horário.';
+            return;
+        }
+
+        proximaTitulo.textContent = escolhida.nome;
+        const quando = deslocamento === 0 ? 'Hoje' : deslocamento === 1 ? 'Amanhã' : nomesDiasHorario[(agora.getDay() + deslocamento + 6) % 7] || 'Próximo dia';
+        proximaMeta.textContent = `${quando} • ${escolhida.inicio}${escolhida.fim ? `–${escolhida.fim}` : ''}`;
+    }
+
+    function renderizarHorarioVisual() {
+        if (!horarioVisual) return;
+        const dias = coletarHorarioVisual();
+        atualizarProximaAula(dias);
+        horarioVisual.innerHTML = '';
+
+        dias.forEach((itens, indice) => {
+            const coluna = document.createElement('section');
+            coluna.className = 'horario-dia-card';
+
+            const titulo = document.createElement('div');
+            titulo.className = 'horario-dia-titulo';
+            titulo.textContent = nomesDiasHorario[indice];
+            coluna.appendChild(titulo);
+
+            if (!itens.length) {
+                const vazio = document.createElement('div');
+                vazio.className = 'horario-dia-vazio';
+                vazio.textContent = 'Sem aulas';
+                coluna.appendChild(vazio);
+            } else {
+                itens.forEach((item) => {
+                    const card = document.createElement('div');
+                    card.className = item.intervalo ? 'horario-aula-card horario-aula-intervalo' : 'horario-aula-card';
+                    if (!item.intervalo) card.style.setProperty('--materia-cor', corMateriaPorNome(item.nome));
+
+                    const hora = document.createElement('span');
+                    hora.className = 'horario-aula-hora';
+                    hora.textContent = `${item.inicio}${item.fim ? `–${item.fim}` : ''}`;
+
+                    const nome = document.createElement('strong');
+                    nome.textContent = item.nome;
+
+                    card.append(hora, nome);
+                    coluna.appendChild(card);
+                });
+            }
+
+            horarioVisual.appendChild(coluna);
+        });
+    }
+
+    function abrirEdicaoHorario() {
+        if (horarioEditor) horarioEditor.hidden = false;
+        if (horarioVisual) horarioVisual.hidden = true;
+        btnEditarHorario?.classList.add('is-active');
+    }
+
+    function fecharEdicaoHorario() {
+        if (horarioEditor) horarioEditor.hidden = true;
+        if (horarioVisual) horarioVisual.hidden = false;
+        btnEditarHorario?.classList.remove('is-active');
+        renderizarHorarioVisual();
+        if (typeof salvarHorarioNoServidor === 'function') salvarHorarioNoServidor(false);
+    }
+
+    btnEditarHorario?.addEventListener('click', abrirEdicaoHorario);
+    btnFecharEdicaoHorario?.addEventListener('click', fecharEdicaoHorario);
+    btnMenuHorario?.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (horarioMenuOpcoes) horarioMenuOpcoes.hidden = !horarioMenuOpcoes.hidden;
+    });
+    document.addEventListener('click', function (e) {
+        if (horarioMenuOpcoes && !horarioMenuOpcoes.hidden && !horarioMenuOpcoes.contains(e.target) && e.target !== btnMenuHorario) {
+            horarioMenuOpcoes.hidden = true;
+        }
+    });
+
+    corpoTabelaHorario?.addEventListener('input', function () {
+        window.clearTimeout(window.__foagHorarioPreviewTimer);
+        window.__foagHorarioPreviewTimer = window.setTimeout(renderizarHorarioVisual, 120);
+    });
+
+    renderizarHorarioVisual();
+
+    if (corpoTabelaHorario && typeof MutationObserver !== 'undefined') {
+        const observadorHorario = new MutationObserver(function () {
+            window.clearTimeout(window.__foagHorarioMutationTimer);
+            window.__foagHorarioMutationTimer = window.setTimeout(renderizarHorarioVisual, 80);
+        });
+        observadorHorario.observe(corpoTabelaHorario, { childList: true, subtree: true, characterData: true });
+    }
 
     // =================================================
     // AUTOCOMPLETE DAS MATÉRIAS
@@ -3464,42 +3865,61 @@ document.addEventListener('DOMContentLoaded', function () {
                 ?.focus();
 
             agendarSalvamentoHorario();
+            renderizarHorarioVisual();
         };
 
-    window.removerLinha =
-        function () {
-            if (
-                !corpoTabelaHorario
-            ) {
-                return;
+    // Exclusão de uma linha específica do horário.
+    const btnExcluirLinhaHorario = document.getElementById('btn-excluir-linha-horario');
+    let linhaHorarioSelecionada = null;
+
+    function selecionarLinhaHorario(linha) {
+        if (!linha || !corpoTabelaHorario || !corpoTabelaHorario.contains(linha)) return;
+
+        if (linhaHorarioSelecionada && linhaHorarioSelecionada !== linha) {
+            linhaHorarioSelecionada.classList.remove('horario-linha-selecionada');
+        }
+
+        linhaHorarioSelecionada = linha;
+        linhaHorarioSelecionada.classList.add('horario-linha-selecionada');
+
+        if (btnExcluirLinhaHorario) {
+            btnExcluirLinhaHorario.classList.remove('horario-btn-desativado');
+            btnExcluirLinhaHorario.setAttribute('aria-disabled', 'false');
+        }
+    }
+
+    if (corpoTabelaHorario) {
+        corpoTabelaHorario.addEventListener('click', function (event) {
+            const linha = event.target.closest('tr');
+            if (linha) selecionarLinhaHorario(linha);
+        });
+    }
+
+    btnExcluirLinhaHorario?.addEventListener('click', function () {
+        const indisponivel = btnExcluirLinhaHorario.classList.contains('horario-btn-desativado');
+        if (indisponivel || !linhaHorarioSelecionada || !corpoTabelaHorario?.contains(linhaHorarioSelecionada)) {
+            return;
+        }
+
+        const ehIntervalo = Array.from(linhaHorarioSelecionada.cells || [])
+            .some((celula) => Number(celula.colSpan || 1) > 1);
+
+        const primeiraCelula = linhaHorarioSelecionada.cells?.[0];
+        const inicio = primeiraCelula?.querySelector('.input-horario-inicio')?.value || '';
+        const fim = primeiraCelula?.querySelector('.input-horario-fim')?.value || '';
+        const faixa = inicio && fim ? ` (${inicio} às ${fim})` : '';
+
+        abrirModalExclusao(
+            ehIntervalo ? 'Excluir intervalo?' : 'Excluir aula?',
+            ehIntervalo
+                ? `Tem certeza que deseja excluir este intervalo${faixa}? Essa ação não pode ser desfeita.`
+                : `Tem certeza que deseja excluir esta linha de aula${faixa}? Essa ação não pode ser desfeita.`,
+            'horario-linha',
+            {
+                linha: linhaHorarioSelecionada
             }
-
-            const quantidadeLinhas =
-                corpoTabelaHorario
-                    .rows
-                    .length;
-
-            if (
-                quantidadeLinhas ===
-                0
-            ) {
-                alert(
-                    'Não existem linhas para remover.'
-                );
-
-                return;
-            }
-
-            corpoTabelaHorario
-                .deleteRow(
-                    quantidadeLinhas -
-                        1
-                );
-
-            esconderMaterias();
-
-            agendarSalvamentoHorario();
-        };
+        );
+    });
 
     window.adicionarIntervalo =
         function () {
@@ -3529,6 +3949,7 @@ document.addEventListener('DOMContentLoaded', function () {
             celula.focus();
 
             agendarSalvamentoHorario();
+            renderizarHorarioVisual();
         };
 
     // =================================================
@@ -3875,7 +4296,7 @@ document.addEventListener('DOMContentLoaded', function () {
             'click',
             function () {
                 window.location.href =
-                    '../configuracoes/configuracoes.php';
+                    FOAG_CONFIG.pages.configuracoes;
             }
         );
 
@@ -3884,7 +4305,7 @@ document.addEventListener('DOMContentLoaded', function () {
             'click',
             function () {
                 window.location.href =
-                    '../perfil/perfil.php';
+                    FOAG_CONFIG.pages.perfil;
             }
         );
 
@@ -3919,7 +4340,7 @@ document.addEventListener('DOMContentLoaded', function () {
             'click',
             function () {
                 window.location.href =
-                    '../login/logout.php';
+                    FOAG_CONFIG.pages.logout;
             }
         );
 
@@ -4023,4 +4444,166 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log(
         'Tudo pronto: Agenda + Horário + Matérias ✅'
     );
+});
+// =====================================================
+// FOAG Agenda — painel do dia + ações rápidas
+// =====================================================
+document.addEventListener('DOMContentLoaded', function () {
+    const novoBtn = document.getElementById('agenda-novo-btn');
+    const novoMenu = document.getElementById('agenda-novo-menu');
+    const novaAnotacaoBtn = document.getElementById('btn-nova-anotacao');
+    const notaEditor = document.getElementById('nota-editor');
+    const hojeLista = document.getElementById('agenda-hoje-lista');
+    const hojeData = document.getElementById('agenda-hoje-data');
+    const resumoPendentes = document.getElementById('resumo-pendentes');
+    const resumoHoje = document.getElementById('resumo-hoje');
+    const resumoAtrasadas = document.getElementById('resumo-atrasadas');
+    const resumoNotas = document.getElementById('resumo-notas');
+
+    const hoje = new Date();
+    const isoHoje = [
+        hoje.getFullYear(),
+        String(hoje.getMonth() + 1).padStart(2, '0'),
+        String(hoje.getDate()).padStart(2, '0')
+    ].join('-');
+
+    if (hojeData) {
+        hojeData.textContent = hoje.toLocaleDateString('pt-BR', {
+            weekday: 'long',
+            day: '2-digit',
+            month: 'long'
+        });
+    }
+
+    function valorTextoDaLinha(linha) {
+        if (!linha) return '';
+        const textoTarefa = linha.querySelector('.tarefa-texto');
+        if (textoTarefa) return textoTarefa.textContent.trim();
+        return (linha.cells?.[1]?.textContent || '').trim();
+    }
+
+    function valorDataDaLinha(linha) {
+        return linha?.querySelector('input[type="date"]')?.value || '';
+    }
+
+    function tarefaConcluida(linha) {
+        return Boolean(linha?.querySelector('.tarefa-checkbox')?.checked);
+    }
+
+    function renderPainelHoje() {
+        const linhasTarefas = Array.from(document.querySelectorAll('#lista-tarefas tr'));
+        const linhasLembretes = Array.from(document.querySelectorAll('#lista-nao-esquecer tr'));
+
+        const pendentes = linhasTarefas.filter(l => !tarefaConcluida(l) && valorTextoDaLinha(l));
+        const atrasadas = pendentes.filter(l => {
+            const data = valorDataDaLinha(l);
+            return data && data < isoHoje;
+        });
+        const tarefasHoje = pendentes.filter(l => valorDataDaLinha(l) === isoHoje);
+        const lembretesHoje = linhasLembretes.filter(l => valorDataDaLinha(l) === isoHoje && valorTextoDaLinha(l));
+
+        if (resumoPendentes) resumoPendentes.textContent = pendentes.length;
+        if (resumoHoje) resumoHoje.textContent = tarefasHoje.length + lembretesHoje.length;
+        if (resumoAtrasadas) resumoAtrasadas.textContent = atrasadas.length;
+        if (resumoNotas) resumoNotas.textContent = document.querySelectorAll('#noteList .nota-item').length;
+
+        if (!hojeLista) return;
+        hojeLista.innerHTML = '';
+
+        const itens = [
+            ...atrasadas.map(l => ({
+                tipo: 'atrasada',
+                texto: valorTextoDaLinha(l),
+                meta: 'Tarefa atrasada',
+                icone: 'fa-triangle-exclamation'
+            })),
+            ...tarefasHoje.map(l => ({
+                tipo: 'tarefa',
+                texto: valorTextoDaLinha(l),
+                meta: 'Tarefa de hoje',
+                icone: 'fa-list-check'
+            })),
+            ...lembretesHoje.map(l => ({
+                tipo: 'lembrete',
+                texto: valorTextoDaLinha(l),
+                meta: 'Lembrete de hoje',
+                icone: 'fa-bell'
+            }))
+        ].slice(0, 6);
+
+        if (!itens.length) {
+            hojeLista.innerHTML = '<div class="agenda-vazio">Nada para hoje. Aproveite para adiantar alguma coisa ✨</div>';
+            return;
+        }
+
+        itens.forEach(item => {
+            const el = document.createElement('div');
+            el.className = 'agenda-hoje-item';
+            el.innerHTML = `
+                <span class="agenda-hoje-icon"><i class="fa-solid ${item.icone}"></i></span>
+                <div>
+                    <strong></strong>
+                    <small>${item.meta}</small>
+                </div>
+            `;
+            el.querySelector('strong').textContent = item.texto;
+            hojeLista.appendChild(el);
+        });
+    }
+
+    function abrirEditorNota() {
+        if (!notaEditor) return;
+        notaEditor.hidden = false;
+        document.getElementById('nota-texto')?.focus();
+    }
+
+    novoBtn?.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (novoMenu) novoMenu.hidden = !novoMenu.hidden;
+    });
+
+    document.addEventListener('click', function (e) {
+        if (novoMenu && !novoMenu.hidden && !novoMenu.contains(e.target) && e.target !== novoBtn) {
+            novoMenu.hidden = true;
+        }
+    });
+
+    novoMenu?.addEventListener('click', function (e) {
+        const botao = e.target.closest('[data-agenda-action]');
+        if (!botao) return;
+        const acao = botao.dataset.agendaAction;
+        novoMenu.hidden = true;
+
+        if (acao === 'tarefa') {
+            document.getElementById('tarefas')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            document.getElementById('add-tarefa')?.click();
+        } else if (acao === 'lembrete') {
+            document.getElementById('lembretes')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            document.getElementById('add-nao-esquecer')?.click();
+        } else if (acao === 'anotacao') {
+            document.getElementById('notas')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            abrirEditorNota();
+        }
+    });
+
+    novaAnotacaoBtn?.addEventListener('click', abrirEditorNota);
+
+    document.getElementById('noteList')?.addEventListener('click', function (e) {
+        if (e.target.closest('.btn-editar')) abrirEditorNota();
+    });
+
+    const observar = new MutationObserver(renderPainelHoje);
+    ['lista-tarefas', 'lista-nao-esquecer', 'noteList'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) observar.observe(el, { childList: true, subtree: true, characterData: true });
+    });
+
+    document.addEventListener('change', function (e) {
+        if (e.target.matches('#lista-tarefas input, #lista-nao-esquecer input')) renderPainelHoje();
+    });
+    document.addEventListener('input', function (e) {
+        if (e.target.closest('#lista-tarefas, #lista-nao-esquecer')) renderPainelHoje();
+    });
+
+    setTimeout(renderPainelHoje, 0);
 });

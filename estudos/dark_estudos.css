@@ -681,3 +681,173 @@ body.dark-mode .card-action-btn.delete:hover {
   color: #f87171;
   border-color: #f87171;
 }
+/* ===== Dashboard de estudos 2026 ===== */
+body.dark-mode .continue-card { background:linear-gradient(135deg,#172033 0%,#111b2d 100%); border-color:#334155; }
+body.dark-mode .continue-subject-row h2,
+body.dark-mode .goal-header strong,
+body.dark-mode .review-item-main strong,
+body.dark-mode .activity-item-main strong { color:#f1f5f9; }
+body.dark-mode .continue-subject-row p,
+body.dark-mode .goal-header span,
+body.dark-mode .goal-footer,
+body.dark-mode .review-item-main span,
+body.dark-mode .activity-item-main span { color:#94a3b8; }
+body.dark-mode .continue-icon,
+body.dark-mode .review-item-icon,
+body.dark-mode .activity-item-icon { background:#1e2b43; color:#60a5fa; }
+body.dark-mode .weekly-goal-card { border-color:#334155; }
+body.dark-mode .goal-edit-btn,
+body.dark-mode .review-button { background:#172033; color:#60a5fa; border-color:#334155; }
+body.dark-mode .goal-progress { background:#29364b; }
+body.dark-mode .subject-search,
+body.dark-mode .subject-sort { background:#172033; border-color:#334155; color:#cbd5e1; }
+body.dark-mode .subject-search input { color:#f1f5f9; }
+body.dark-mode .subject-study-btn,
+body.dark-mode .subject-flash-btn { background:#111b2d; border-color:#334155; color:#60a5fa; }
+body.dark-mode .subject-study-btn:hover,
+body.dark-mode .subject-flash-btn:hover { background:#1e2b43; }
+body.dark-mode .review-item,
+body.dark-mode .activity-item { border-color:#29364b; }
+body.dark-mode .soon-badge { background:#263247; color:#aab6c7; }
+body.dark-mode .subjects-no-results,
+body.dark-mode .list-empty { color:#94a3b8; }
+
+/* =====================================================
+   REFINO VISUAL — DARK MODE
+===================================================== */
+body.dark-mode main.conteudo {
+  background:
+    radial-gradient(circle at 92% 2%, rgba(56,165,255,.06), transparent 24%),
+    #0f172a;
+}
+
+body.dark-mode .continue-card {
+  background:
+    radial-gradient(circle at 85% 15%, rgba(56,165,255,.09), transparent 30%),
+    linear-gradient(135deg,#172033 0%,#121d30 62%,#10243a 100%);
+  border-color: rgba(96,165,250,.18);
+  box-shadow: 0 14px 34px rgba(0,0,0,.20);
+}
+
+body.dark-mode .overview-kicker {
+  background: rgba(56,165,255,.10);
+  color: #72c4ff;
+}
+
+body.dark-mode .continue-icon {
+  background: #1b2940;
+  border-color: rgba(96,165,250,.15);
+  box-shadow: none;
+}
+
+body.dark-mode .stat-card,
+body.dark-mode .content-section,
+body.dark-mode .subject-card {
+  background: #182438;
+  border-color: #29374b;
+  box-shadow: 0 8px 26px rgba(0,0,0,.16);
+}
+
+body.dark-mode .stat-card:hover,
+body.dark-mode .subject-card:hover {
+  border-color: #38506b;
+  box-shadow: 0 15px 32px rgba(0,0,0,.23);
+}
+
+body.dark-mode .stat-icon,
+body.dark-mode .methods-section .method-icon,
+body.dark-mode .review-item-icon,
+body.dark-mode .activity-item-icon {
+  background: #1c3049;
+  border-color: #29445f;
+}
+
+body.dark-mode .methods-section .method-card {
+  background: #152033;
+  border-color: #29374b;
+}
+
+body.dark-mode .methods-section .method-card:not(.coming-soon):hover {
+  background: #19283d;
+  border-color: rgba(96,165,250,.36);
+  box-shadow: 0 12px 26px rgba(0,0,0,.20);
+}
+
+body.dark-mode .method-card.coming-soon {
+  background: #131e2f;
+}
+
+body.dark-mode .soon-badge {
+  background: #202d40;
+  border-color: #334155;
+}
+
+body.dark-mode .subject-search,
+body.dark-mode .subject-sort,
+body.dark-mode .subjects-tools .btn.secondary-outline {
+  background: #152033 !important;
+  border-color: #334155 !important;
+}
+
+body.dark-mode .subject-last-study {
+  border-top-color: #29374b;
+}
+
+body.dark-mode .subject-study-btn,
+body.dark-mode .subject-flash-btn {
+  background: #142033;
+  border-color: #304056;
+  color: #7bc7ff;
+}
+
+body.dark-mode .subject-study-btn:hover,
+body.dark-mode .subject-flash-btn:hover {
+  background: #1b3048;
+  border-color: #3d6587;
+}
+
+body.dark-mode .review-item,
+body.dark-mode .activity-item {
+  border-top-color: #29374b;
+}
+
+body.dark-mode .modal-content {
+  border-color: #334155;
+  border-radius: 20px;
+  box-shadow: 0 28px 64px rgba(0,0,0,.48);
+}
+
+body.dark-mode .input,
+body.dark-mode .select {
+  background: #142033;
+  border-color: #334155;
+}
+
+/* =====================================================
+   CABEÇALHO E MENU ESCUROS — PADRÃO DO RANKING
+===================================================== */
+
+body.dark-mode header.cabecalho {
+    background: #0a1628 !important;
+    border-bottom: 1px solid #1e293b !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+}
+
+body.dark-mode nav.menu {
+    background: #0a1628 !important;
+    border-right: 1px solid #1e293b !important;
+}
+
+body.dark-mode nav.menu a {
+    color: #94a3b8 !important;
+}
+
+body.dark-mode nav.menu a:hover,
+body.dark-mode nav.menu a.active {
+    background: rgba(102, 154, 218, 0.12) !important;
+    color: #669ada !important;
+}
+
+body.dark-mode nav.menu a i {
+    color: inherit !important;
+}

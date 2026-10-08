@@ -1,18 +1,19 @@
 <?php
 // comunidade.php — Comunidade FOAG
 
-session_start();
+require_once __DIR__ . '/../core/usuario.php';
+require_once __DIR__ . '/../core/json.php';
 
-// ======================================
-// LOGIN
-// ======================================
+$contextoUsuario = foag_contexto_usuario(
+    '../login/index.php',
+    true,
+    false,
+    0755
+);
 
-if (empty($_SESSION['codigo_usuario'])) {
-    header("Location: ../login/index.php");
-    exit;
-}
-
-$codigoUsuario = (string) $_SESSION['codigo_usuario'];
+$codigoUsuario = $contextoUsuario['codigoUsuario'];
+$baseJsonDir = $contextoUsuario['baseJsonDir'];
+$pastaUsuario = $contextoUsuario['pastaUsuario'];
 $nomeUsuario =
     $_SESSION['user_nome']
     ?? $_SESSION['nome_usuario']
@@ -21,15 +22,291 @@ $nomeUsuario =
 
 $current = basename($_SERVER['PHP_SELF']);
 
+
 // ======================================
-// PASTAS
+// AVATARES DA COMUNIDADE
+// Foto + Moldura + Emoji
 // ======================================
 
-$baseJsonDir = __DIR__ . '/../json/usuarios';
-$pastaUsuario = $baseJsonDir . '/' . $codigoUsuario;
+$pastaFotosUrl = '../img/perfil/';
+$pastaFotosArquivo = __DIR__ . '/../img/perfil/';
+$fotoPadrao = 'foto_padrao.png';
 
-if (!is_dir($pastaUsuario)) {
-    mkdir($pastaUsuario, 0755, true);
+function lerJsonComunidade($arquivo)
+{
+    if (!file_exists($arquivo)) {
+        return [];
+    }
+
+    $conteudo = file_get_contents($arquivo);
+
+    if ($conteudo === false) {
+        return [];
+    }
+
+    $dados = json_decode($conteudo, true);
+
+    return is_array($dados) ? $dados : [];
+}
+
+function normalizarNomeComunidade($nome)
+{
+    $nome = trim((string) $nome);
+
+    if (function_exists('mb_strtolower')) {
+        return mb_strtolower($nome, 'UTF-8');
+    }
+
+    return strtolower($nome);
+}
+
+function normalizarAjusteMolduraComunidade($ajuste)
+{
+    $padrao = [
+        'moldura_escala' => 1.28,
+        'moldura_x' => 0,
+        'moldura_y' => 0,
+        'foto_escala' => 1.00,
+        'foto_x' => 0,
+        'foto_y' => 0
+    ];
+
+    if (!is_array($ajuste)) {
+        return $padrao;
+    }
+
+    foreach ($padrao as $chave => $valorPadrao) {
+        if (
+            array_key_exists($chave, $ajuste) &&
+            is_numeric($ajuste[$chave])
+        ) {
+            $padrao[$chave] = (float) $ajuste[$chave];
+        }
+    }
+
+    return $padrao;
+}
+
+// ======================================
+// CATÁLOGO DA LOJA
+// ======================================
+
+$arquivoProdutosLoja = __DIR__ . '/../json/loja/produtos.json';
+$dadosProdutosLoja = lerJsonComunidade($arquivoProdutosLoja);
+
+$itensCatalogoLoja =
+    isset($dadosProdutosLoja['itens']) &&
+    is_array($dadosProdutosLoja['itens'])
+        ? $dadosProdutosLoja['itens']
+        : [];
+
+// Molduras indexadas por ID
+$moldurasLojaPorId = [];
+
+// Emojis indexados por ID
+$emojisLojaPorId = [];
+
+foreach ($itensCatalogoLoja as $produtoLoja) {
+    if (!is_array($produtoLoja)) {
+        continue;
+    }
+
+    $categoriaProduto = (string)($produtoLoja['categoria'] ?? '');
+    $idProduto = trim((string)($produtoLoja['id'] ?? ''));
+    $imagemProduto = trim((string)($produtoLoja['imagem'] ?? ''));
+
+    if ($idProduto === '' || $imagemProduto === '') {
+        continue;
+    }
+
+    // ------------------------------
+    // MOLDURAS
+    // ------------------------------
+    if ($categoriaProduto === 'molduras') {
+        $moldurasLojaPorId[$idProduto] = [
+            'id' => $idProduto,
+            'nome' => (string)($produtoLoja['nome'] ?? 'Moldura'),
+            'imagem' => $imagemProduto,
+            'ajuste_perfil' => normalizarAjusteMolduraComunidade(
+                $produtoLoja['ajuste_perfil'] ?? []
+            )
+        ];
+        continue;
+    }
+
+    // ------------------------------
+    // EMOJIS
+    // ------------------------------
+    if ($categoriaProduto === 'emojis') {
+        $emojisLojaPorId[$idProduto] = [
+            'id' => $idProduto,
+            'nome' => (string)($produtoLoja['nome'] ?? 'Emoji'),
+            'imagem' => $imagemProduto
+        ];
+    }
+}
+
+// ======================================
+// VISUAL DOS USUÁRIOS
+// ======================================
+
+$usuariosVisuais = [];
+$usuariosPorNome = [];
+
+$pastasUsuariosVisual = glob(
+    $baseJsonDir . '/*',
+    GLOB_ONLYDIR
+);
+
+if ($pastasUsuariosVisual === false) {
+    $pastasUsuariosVisual = [];
+}
+
+foreach ($pastasUsuariosVisual as $pastaVisual) {
+    $codigoVisual = (string) basename($pastaVisual);
+
+    // ------------------------------
+    // PERFIL
+    // ------------------------------
+    $perfilVisual = lerJsonComunidade(
+        $pastaVisual . '/perfil.json'
+    );
+
+    $nomeVisual = trim((string)($perfilVisual['nome'] ?? ''));
+
+    if ($nomeVisual === '') {
+        $nomeVisual = 'Usuário FOAG';
+    }
+
+    // ------------------------------
+    // FOTO
+    // ------------------------------
+    $fotoVisual = $fotoPadrao;
+
+    if (!empty($perfilVisual['foto'])) {
+        $fotoArquivo = basename((string)$perfilVisual['foto']);
+
+        if (
+            $fotoArquivo !== '' &&
+            file_exists($pastaFotosArquivo . $fotoArquivo)
+        ) {
+            $fotoVisual = $fotoArquivo;
+        }
+    }
+
+    $caminhoFotoVisual =
+        $pastaFotosUrl .
+        rawurlencode($fotoVisual);
+
+    // ------------------------------
+    // LOJA (MOLDURA + EMOJI)
+    // ------------------------------
+    $lojaVisual = lerJsonComunidade(
+        $pastaVisual . '/loja.json'
+    );
+
+    $itensAtivosVisual =
+        isset($lojaVisual['itens_ativos']) &&
+        is_array($lojaVisual['itens_ativos'])
+            ? $lojaVisual['itens_ativos']
+            : [];
+
+    $itensCompradosVisual =
+        isset($lojaVisual['itens_comprados']) &&
+        is_array($lojaVisual['itens_comprados'])
+            ? $lojaVisual['itens_comprados']
+            : [];
+
+    // ------------------------------
+    // MOLDURA ATIVA
+    // ------------------------------
+    $molduraVisual = null;
+
+    $idMolduraVisual =
+        isset($itensAtivosVisual['moldura'])
+            ? trim((string)$itensAtivosVisual['moldura'])
+            : '';
+
+    if (
+        $idMolduraVisual !== '' &&
+        in_array($idMolduraVisual, $itensCompradosVisual, true) &&
+        isset($moldurasLojaPorId[$idMolduraVisual])
+    ) {
+        $molduraVisual = $moldurasLojaPorId[$idMolduraVisual];
+    }
+
+    // ------------------------------
+    // EMOJI ATIVO
+    // ------------------------------
+    $emojiVisual = null;
+
+    $idEmojiVisual =
+        isset($itensAtivosVisual['emoji'])
+            ? trim((string)$itensAtivosVisual['emoji'])
+            : '';
+
+    if (
+        $idEmojiVisual !== '' &&
+        in_array($idEmojiVisual, $itensCompradosVisual, true) &&
+        isset($emojisLojaPorId[$idEmojiVisual])
+    ) {
+        $emojiVisual = $emojisLojaPorId[$idEmojiVisual];
+    }
+
+    // ------------------------------
+// EMOJI ATIVO
+// ------------------------------
+$emojiVisual = null;
+
+$idEmojiVisual =
+    isset($itensAtivosVisual['emoji'])
+        ? trim((string)$itensAtivosVisual['emoji'])
+        : '';
+
+if (
+    $idEmojiVisual !== '' &&
+    in_array($idEmojiVisual, $itensCompradosVisual, true) &&
+    isset($emojisLojaPorId[$idEmojiVisual])
+) {
+    $emojiVisual = $emojisLojaPorId[$idEmojiVisual];
+}
+
+    // ------------------------------
+    // VISUAL FINAL
+    // ------------------------------
+    $visual = [
+        'codigo_usuario' => $codigoVisual,
+        'nome' => $nomeVisual,
+        'foto' => $caminhoFotoVisual,
+        'moldura' => $molduraVisual,
+        'emoji' => $emojiVisual
+    ];
+
+    $usuariosVisuais[$codigoVisual] = $visual;
+
+    $chaveNome = normalizarNomeComunidade($nomeVisual);
+
+    /*
+     * Compatibilidade com posts/respostas antigos que
+     * ainda não possuem usuario_id.
+     * Em caso de nomes repetidos, mantemos o primeiro.
+     */
+    if (
+        $chaveNome !== '' &&
+        !isset($usuariosPorNome[$chaveNome])
+    ) {
+        $usuariosPorNome[$chaveNome] = $codigoVisual;
+    }
+}
+
+/*
+ * Usa o nome real do perfil na Comunidade quando disponível.
+ */
+if (
+    isset($usuariosVisuais[$codigoUsuario]) &&
+    !empty($usuariosVisuais[$codigoUsuario]['nome'])
+) {
+    $nomeUsuario = $usuariosVisuais[$codigoUsuario]['nome'];
 }
 
 // ======================================
@@ -82,7 +359,6 @@ function limparPerguntaParaExibicao($pergunta, $palavrasProibidas)
         $palavrasProibidas
     );
 
-    // Não envia texto bruto/ofensivo para o navegador.
     unset($pergunta['texto_original']);
 
     if (!isset($pergunta['respostas']) || !is_array($pergunta['respostas'])) {
@@ -230,7 +506,7 @@ usort($todasPerguntas, function ($a, $b) {
 });
 
 // ======================================
-// MATÉRIAS — antes dos filtros
+// MATÉRIAS
 // ======================================
 
 $materias = ['Geral'];
@@ -283,12 +559,15 @@ if ($filtroBusca !== '') {
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <script src="../global/js/config.js?v=<?= time() ?>"></script>
+    <script src="../global/js/utils.js?v=<?= time() ?>"></script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Comunidade - FOAG</title>
 
-    <link rel="stylesheet" href="comunidade.css">
+    <link rel="stylesheet" href="comunidade.css?v=5">
     <link rel="stylesheet" href="../m.escuro/dark_basee.css">
     <link rel="stylesheet" href="dark_comu.css">
 
@@ -330,11 +609,9 @@ if ($filtroBusca !== '') {
             JSON_HEX_QUOT
         ); ?>;
 
-        window.CHAT_SAVE_URL = "salvar_chat.php";
-        window.INTERACAO_URL = "interacao.php";
-
-        // O arquivo enviado está no singular.
-        window.INTERACOES_SAVE_URL = "salvar_interacao.php";
+        window.CHAT_SAVE_URL = FOAG_CONFIG.endpoints.comunidadeChatSalvar;
+        window.INTERACAO_URL = FOAG_CONFIG.endpoints.comunidadeInteracao;
+        window.INTERACOES_SAVE_URL = FOAG_CONFIG.endpoints.comunidadeInteracoesSalvar;
 
         window.USUARIO_NOME = <?= json_encode(
             $nomeUsuario,
@@ -348,6 +625,26 @@ if ($filtroBusca !== '') {
         window.USUARIO_CODIGO = <?= json_encode(
             $codigoUsuario,
             JSON_UNESCAPED_UNICODE |
+            JSON_HEX_TAG |
+            JSON_HEX_AMP |
+            JSON_HEX_APOS |
+            JSON_HEX_QUOT
+        ); ?>;
+
+        window.USUARIOS_VISUAIS = <?= json_encode(
+            $usuariosVisuais,
+            JSON_UNESCAPED_UNICODE |
+            JSON_UNESCAPED_SLASHES |
+            JSON_HEX_TAG |
+            JSON_HEX_AMP |
+            JSON_HEX_APOS |
+            JSON_HEX_QUOT
+        ); ?>;
+
+        window.USUARIOS_POR_NOME = <?= json_encode(
+            $usuariosPorNome,
+            JSON_UNESCAPED_UNICODE |
+            JSON_UNESCAPED_SLASHES |
             JSON_HEX_TAG |
             JSON_HEX_AMP |
             JSON_HEX_APOS |
@@ -377,55 +674,22 @@ if ($filtroBusca !== '') {
             JSON_HEX_QUOT
         ); ?>;
     </script>
+    <link rel="stylesheet" href="../global/css/cursor.css">
+    <link rel="stylesheet" href="../global/css/base.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../global/css/components.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../global/css/forms.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../global/css/tables.css?v=<?= time() ?>">
+
+    <link rel="stylesheet" href="../global/css/layout.css?v=<?= time() ?>">
 </head>
 
 <body>
 
-<header class="cabecalho">
-    FOAG
-
-    <div class="header-icons">
-        <i id="icon-configuracoes" class="fa-solid fa-gear" title="Configurações"></i>
-        <i id="icon-perfil" class="fa-regular fa-user" title="Perfil"></i>
-        <i id="icon-sair" class="fa-solid fa-right-from-bracket" title="Sair"></i>
-    </div>
-</header>
+<?php include __DIR__ . '/../components/header.php'; ?>
 
 <div class="container">
 
-   <nav class="menu">
-    <a href="../inicioo/inicio.php" class="<?= $current === 'inicio.php' ? 'active' : '' ?>">
-        <i class="fa-solid fa-house"></i> Início
-    </a>
-
-    <a href="../estudos/estudos.php" class="<?= $current === 'estudos.php' ? 'active' : '' ?>">
-        <i class="fa-solid fa-graduation-cap"></i> Estudos
-    </a>
-
-    <a href="../bloco/agenda.php" class="<?= $current === 'agenda.php' ? 'active' : '' ?>">
-        <i class="fa-solid fa-book"></i> Agenda
-    </a>
-
-    <a href="../calend/calendario.php" class="<?= $current === 'calendario.php' ? 'active' : '' ?>">
-        <i class="fa-solid fa-calendar-days"></i> Calendário
-    </a>
-
-    <a href="../notas/notas.php" class="<?= $current === 'notas.php' ? 'active' : '' ?>">
-        <i class="fa-solid fa-check-double"></i> Boletim
-    </a>
-
-    <a href="../comunidade/comunidade.php" class="<?= $current === 'comunidade.php' ? 'active' : '' ?>">
-        <i class="fa-solid fa-comments"></i> Comunidade
-    </a>
-
-    <a href="../rank/rank.php" class="<?= $current === 'rank.php' ? 'active' : '' ?>">
-        <i class="fa-solid fa-trophy"></i> Ranking
-    </a>
-
-    <a href="../loja/loja.php" class="<?= $current === 'loja.php' ? 'active' : '' ?>">
-        <i class="fa-solid fa-store"></i> Loja
-    </a>
-    </nav>
+   <?php include __DIR__ . '/../components/menu.php'; ?>
 
     <div class="page-area">
         <main class="main-content" id="conteudo-principal" tabindex="-1">
@@ -616,21 +880,7 @@ if ($filtroBusca !== '') {
         </section>
         </main>
 
-        <footer class="footer">
-            <div class="footer-content">
-                <div class="footer-left">
-                    <span class="footer-brand">FOAG</span>
-
-                    <nav class="footer-links">
-                        <a href="../sobre/sobre.php">Sobre</a>
-                        <a href="../contato/contato.php">Contato</a>
-                        <a href="../privacidade/privacidade.php">Privacidade</a>
-                    </nav>
-                </div>
-
-                <span class="footer-copy">© <?= date('Y') ?> FOAG</span>
-            </div>
-        </footer>
+        <?php include __DIR__ . '/../components/footer.php'; ?>
     </div>
 </div>
 
@@ -690,10 +940,13 @@ if ($filtroBusca !== '') {
 </div>
 
 
-<script src="comunidade.js?v=2"></script>
+<script src="comunidade.js?v=5"></script>
 
 <script src="../configuracoes/aparencia.js?v=5"></script>
 <script src="../configuracoes/acessibilidade.js?v=25" defer></script>
 
+    <script src="../global/js/cursor.js?v=<?= time() ?>"></script>
+
 </body>
+
 </html>

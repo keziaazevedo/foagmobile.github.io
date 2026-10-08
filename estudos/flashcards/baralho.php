@@ -1,6 +1,7 @@
 <?php
 
-session_start();
+require_once __DIR__ . '/../../core/usuario.php';
+require_once __DIR__ . '/../../core/json.php';
 
 
 // ======================================
@@ -26,11 +27,6 @@ $codigoUsuario =
 // PASTA DO USUÁRIO
 // ======================================
 
-$baseJsonDir =
-    __DIR__ . '/../../json/usuarios';
-
-$pastaUsuario =
-    $baseJsonDir . '/' . $codigoUsuario;
 
 
 if (!is_dir($pastaUsuario)) {
@@ -257,17 +253,13 @@ $icone =
 $current = basename($_SERVER['PHP_SELF']);
 ?>
 <!DOCTYPE html>
-
 <html lang="pt-BR">
-
 <head>
+    <script src="../../global/js/config.js?v=<?= time() ?>"></script>
+    <script src="../../global/js/utils.js?v=<?= time() ?>"></script>
 
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
         <?= htmlspecialchars(
@@ -276,25 +268,17 @@ $current = basename($_SERVER['PHP_SELF']);
         ) ?> – FOAG
     </title>
 
+    <link rel="stylesheet" href="baralho.css">
+    <link rel="stylesheet" href="dark_flash.css">
+    <link rel="stylesheet" href="../../m.escuro/dark_basee.css">
+    <link rel="stylesheet" href="../../estrelas/modal_estrelas.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../../global/css/cursor.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    >
+    <script src="../../m.escuro/dark-mode.js"></script>
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
-        rel="stylesheet"
-    >
-<!-- Ordem correta para baralho.php -->
-<link rel="stylesheet" href="baralho.css">
-<link rel="stylesheet" href="dark_flash.css">  <!-- Adicione esta linha -->
-<link rel="stylesheet" href="../../m.escuro/dark_basee.css">
-<link rel="stylesheet" href="../../estrelas/modal_estrelas.css?v=<?= time() ?>">
-<script src="../../m.escuro/dark-mode.js"></script>
-
-
-    <script>
+<script>
 
         window.BARALHO_DATA =
             <?= json_encode(
@@ -324,7 +308,7 @@ $current = basename($_SERVER['PHP_SELF']);
 
 
         window.CARTAO_SAVE_URL =
-            'salvar_cartao.php';
+            FOAG_CONFIG.endpoints.flashcardsCartaoSalvar;
 
     </script>
 
@@ -429,38 +413,20 @@ $current = basename($_SERVER['PHP_SELF']);
     }
   }
 </style>
+    <link rel="stylesheet" href="../../global/css/base.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../../global/css/components.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../../global/css/forms.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../../global/css/tables.css?v=<?= time() ?>">
 
+
+    <link rel="stylesheet" href="../../global/css/layout.css?v=<?= time() ?>">
 </head>
 
 
 <body>
 
 
-<header class="cabecalho">
-
-    FOAG
-
-
-    <div class="header-icons">
-
-        <i
-            id="icon-configuracoes"
-            class="fa-solid fa-gear"
-        ></i>
-
-        <i
-            id="icon-perfil"
-            class="fa-regular fa-user"
-        ></i>
-
-        <i
-            id="icon-sair"
-            class="fa-solid fa-right-from-bracket"
-        ></i>
-
-    </div>
-
-</header>
+<?php include __DIR__ . '/../../components/header.php'; ?>
 
 
 <div class="container">
@@ -468,39 +434,7 @@ $current = basename($_SERVER['PHP_SELF']);
 
     <!-- MENU -->
 
-    <nav class="menu">
-        <a href="../../inicioo/inicio.php" class="<?= $current === 'inicio.php' ? 'active' : '' ?>">
-            <i class="fa-solid fa-house"></i> Início
-        </a>
-
-        <a href="../../estudos/estudos.php" class="active">
-            <i class="fa-solid fa-graduation-cap"></i> Estudos
-        </a>
-
-        <a href="../../bloco/agenda.php" class="<?= $current === 'agenda.php' ? 'active' : '' ?>">
-            <i class="fa-solid fa-book"></i> Agenda
-        </a>
-
-        <a href="../../calend/calendario.php" class="<?= $current === 'calendario.php' ? 'active' : '' ?>">
-            <i class="fa-solid fa-calendar-days"></i> Calendário
-        </a>
-
-        <a href="../../notas/notas.php" class="<?= $current === 'notas.php' ? 'active' : '' ?>">
-            <i class="fa-solid fa-check-double"></i> Boletim
-        </a>
-
-        <a href="../../comunidade/comunidade.php" class="<?= $current === 'comunidade.php' ? 'active' : '' ?>">
-            <i class="fa-solid fa-comments"></i> Comunidade
-        </a>
-
-        <a href="../../rank/rank.php" class="<?= $current === 'rank.php' ? 'active' : '' ?>">
-            <i class="fa-solid fa-trophy"></i> Ranking
-        </a>
-
-        <a href="../../loja/loja.php" class="<?= $current === 'loja.php' ? 'active' : '' ?>">
-            <i class="fa-solid fa-store"></i> Loja
-        </a>
-        </nav>
+    <?php include __DIR__ . '/../../components/menu.php'; ?>
 
     <div class="page-area">
 
@@ -722,19 +656,7 @@ $current = basename($_SERVER['PHP_SELF']);
 
 
     </main>
-    <footer class="footer">
-      <div class="footer-content">
-        <div class="footer-left">
-          <span class="footer-brand">FOAG</span>
-          <nav class="footer-links">
-            <a href="../../sobre/sobre.php">Sobre</a>
-            <a href="../../contato/contato.php">Contato</a>
-            <a href="../../privacidade/privacidade.php">Privacidade</a>
-          </nav>
-        </div>
-        <span class="footer-copy">© <?= date('Y') ?> FOAG</span>
-      </div>
-    </footer>
+    <?php include __DIR__ . '/../../components/footer.php'; ?>
 
     </div>
   </div>
@@ -927,15 +849,11 @@ $current = basename($_SERVER['PHP_SELF']);
     id="toast"
     class="toast"
 ></div>
-<script
-    src="../../estrelas/modal_estrelas.js?v=<?= time() ?>"
-></script>
+<script src="../../estrelas/modal_estrelas.js?v=<?= time() ?>"></script>
 
 
-<script
-    defer
-    src="baralho.js?v=<?= time() ?>"
-></script>
+<script src="../../global/js/cursor.js?v=<?= time() ?>"></script>
+<script defer src="baralho.js?v=<?= time() ?>"></script>
 
 <script src="../../configuracoes/aparencia.js?v=6"></script>
 <script src="../../configuracoes/acessibilidade.js?v=26" defer></script>

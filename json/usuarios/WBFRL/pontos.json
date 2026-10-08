@@ -1,5 +1,5 @@
 {
-    "estrelas": 100,
+    "estrelas": 7000,
     "historico": [
         {
             "id": "estrela_d63d0474bd6e",
@@ -108,6 +108,411 @@
             "data": "2026-09-03 08:55:49",
             "timestamp": 1788440149,
             "chave": "compra_loja_moldura_dragao"
+        },
+        {
+            "id": "estrela_1ef6338b3ce3",
+            "tipo": "sequencia_presenca",
+            "descricao": "10 dias seguidos de presença",
+            "estrelas": 12,
+            "data": "2026-10-03 12:41:27",
+            "timestamp": 1791045687,
+            "chave": "sequencia_presenca_2026-10"
+        },
+        {
+            "id": "estrela_d612eec7b462",
+            "tipo": "nota",
+            "descricao": "Nota 10,00 em Ed. fisica — 3º Bimestre",
+            "estrelas": 10,
+            "data": "2026-10-03 12:43:50",
+            "timestamp": 1791045830,
+            "chave": "nota_mat_d2031fa95c05_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_f834086e6bc4",
+            "tipo": "nota",
+            "descricao": "Nota 7,50 em biologia — 3º Bimestre",
+            "estrelas": 3,
+            "data": "2026-10-03 12:44:56",
+            "timestamp": 1791045896,
+            "chave": "nota_mat_d7201e4e39f9_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_861d3c679934",
+            "tipo": "nota",
+            "descricao": "Nota 9,14 em Inglês — 3º Bimestre",
+            "estrelas": 7,
+            "data": "2026-10-03 12:44:56",
+            "timestamp": 1791045896,
+            "chave": "nota_mat_a9102dddebde_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "gasto_6bb10a4b4042",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Nuvens",
+            "estrelas": -75,
+            "data": "2026-10-03 22:07:01",
+            "timestamp": 1791079621,
+            "chave": "compra_loja_moldura_nuvens"
+        },
+        {
+            "id": "gasto_444a6c0c9c57",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Gato Laranja",
+            "estrelas": -90,
+            "data": "2026-10-03 22:12:07",
+            "timestamp": 1791079927,
+            "chave": "compra_loja_moldura_gato_laranja"
+        },
+        {
+            "id": "gasto_b203a2325078",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Borboletas",
+            "estrelas": -85,
+            "data": "2026-10-03 22:12:09",
+            "timestamp": 1791079929,
+            "chave": "compra_loja_moldura_borboletas"
+        },
+        {
+            "id": "gasto_76cff5ef3611",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Estrelas",
+            "estrelas": -75,
+            "data": "2026-10-03 22:12:12",
+            "timestamp": 1791079932,
+            "chave": "compra_loja_moldura_estrelas"
+        },
+        {
+            "id": "gasto_3019d3277e67",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Sakura",
+            "estrelas": -75,
+            "data": "2026-10-03 22:12:19",
+            "timestamp": 1791079939,
+            "chave": "compra_loja_moldura_sakura"
+        },
+        {
+            "id": "gasto_8d769a7a2471",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Livros",
+            "estrelas": -80,
+            "data": "2026-10-03 22:12:23",
+            "timestamp": 1791079943,
+            "chave": "compra_loja_moldura_livros"
+        },
+        {
+            "id": "gasto_3476c7085713",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Fogo",
+            "estrelas": -100,
+            "data": "2026-10-03 22:12:32",
+            "timestamp": 1791079952,
+            "chave": "compra_loja_moldura_fogo"
+        },
+        {
+            "id": "gasto_7e0fafa50e30",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Gato Preto",
+            "estrelas": -98,
+            "data": "2026-10-03 22:12:35",
+            "timestamp": 1791079955,
+            "chave": "compra_loja_moldura_gato_preto"
+        },
+        {
+            "id": "gasto_a66a14507b5f",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Natureza",
+            "estrelas": -70,
+            "data": "2026-10-03 22:41:43",
+            "timestamp": 1791081703,
+            "chave": "compra_loja_moldura_natureza"
+        },
+        {
+            "id": "gasto_ca3b8f05b278",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Água",
+            "estrelas": -80,
+            "data": "2026-10-03 22:41:45",
+            "timestamp": 1791081705,
+            "chave": "compra_loja_moldura_agua"
+        },
+        {
+            "id": "gasto_21ce438acd7b",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Cachorrinho",
+            "estrelas": -90,
+            "data": "2026-10-03 22:41:48",
+            "timestamp": 1791081708,
+            "chave": "compra_loja_moldura_cachorro"
+        },
+        {
+            "id": "gasto_6724a9619025",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Neon",
+            "estrelas": -80,
+            "data": "2026-10-03 22:41:52",
+            "timestamp": 1791081712,
+            "chave": "compra_loja_moldura_neon"
+        },
+        {
+            "id": "gasto_99b0e54e9bb2",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Campeão",
+            "estrelas": -92,
+            "data": "2026-10-03 22:41:55",
+            "timestamp": 1791081715,
+            "chave": "compra_loja_moldura_campeao"
+        },
+        {
+            "id": "gasto_35427b7ac9c2",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Galáxia",
+            "estrelas": -90,
+            "data": "2026-10-03 22:41:58",
+            "timestamp": 1791081718,
+            "chave": "compra_loja_moldura_galaxia"
+        },
+        {
+            "id": "gasto_833158608eeb",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Querubim",
+            "estrelas": -95,
+            "data": "2026-10-03 22:42:03",
+            "timestamp": 1791081723,
+            "chave": "compra_loja_moldura_querubim"
+        },
+        {
+            "id": "gasto_dad22f6b3923",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Moldura Rei",
+            "estrelas": -100,
+            "data": "2026-10-03 22:42:06",
+            "timestamp": 1791081726,
+            "chave": "compra_loja_moldura_rei"
+        },
+        {
+            "id": "estrela_1b7ff5ca6985",
+            "tipo": "nota",
+            "descricao": "Nota 7,50 em geografia — 3º Bimestre",
+            "estrelas": 3,
+            "data": "2026-10-04 23:10:29",
+            "timestamp": 1791169829,
+            "chave": "nota_mat_23a836c9da28_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_efbebe2ee09e",
+            "tipo": "nota",
+            "descricao": "Nota 9,00 em Quimica — 3º Bimestre",
+            "estrelas": 7,
+            "data": "2026-10-04 23:10:29",
+            "timestamp": 1791169829,
+            "chave": "nota_mat_47a8b822652c_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_64ec681fce48",
+            "tipo": "evolucao_nota",
+            "descricao": "Evolução em Quimica: nota maior que na avaliação anterior",
+            "estrelas": 5,
+            "data": "2026-10-04 23:10:29",
+            "timestamp": 1791169829,
+            "chave": "evolucao_nota_mat_47a8b822652c_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_174863918b79",
+            "tipo": "nota",
+            "descricao": "Nota 8,00 em matematica — 1º Bimestre",
+            "estrelas": 5,
+            "data": "2026-10-04 23:45:17",
+            "timestamp": 1791171917,
+            "chave": "nota_MAT_ADEFFDD5_0758c00e6ea0_avaliacao_1"
+        },
+        {
+            "id": "estrela_bcd474a6f952",
+            "tipo": "nota",
+            "descricao": "Nota 10,00 em ADS — 1º Bimestre",
+            "estrelas": 10,
+            "data": "2026-10-04 23:45:58",
+            "timestamp": 1791171958,
+            "chave": "nota_MAT_40202A17_0758c00e6ea0_avaliacao_1"
+        },
+        {
+            "id": "estrela_d3f4ff38d1eb",
+            "tipo": "boletim_completo",
+            "descricao": "1º Bimestre com todas as notas preenchidas",
+            "estrelas": 10,
+            "data": "2026-10-04 23:45:58",
+            "timestamp": 1791171958,
+            "chave": "boletim_completo_0758c00e6ea0_avaliacao_1"
+        },
+        {
+            "id": "estrela_246ccf30cd82",
+            "tipo": "boletim_aprovado",
+            "descricao": "1º Bimestre aprovado em todas as matérias",
+            "estrelas": 15,
+            "data": "2026-10-04 23:45:58",
+            "timestamp": 1791171958,
+            "chave": "boletim_aprovado_0758c00e6ea0_avaliacao_1"
+        },
+        {
+            "id": "estrela_b2c350f005ca",
+            "tipo": "nota",
+            "descricao": "Nota 10,00 em ADS — 2º Bimestre",
+            "estrelas": 10,
+            "data": "2026-10-04 23:46:03",
+            "timestamp": 1791171963,
+            "chave": "nota_MAT_40202A17_0758c00e6ea0_avaliacao_2"
+        },
+        {
+            "id": "estrela_205c5982543d",
+            "tipo": "boletim_completo",
+            "descricao": "2º Bimestre com todas as notas preenchidas",
+            "estrelas": 10,
+            "data": "2026-10-04 23:46:03",
+            "timestamp": 1791171963,
+            "chave": "boletim_completo_0758c00e6ea0_avaliacao_2"
+        },
+        {
+            "id": "estrela_b111e4f4b5fb",
+            "tipo": "boletim_aprovado",
+            "descricao": "2º Bimestre aprovado em todas as matérias",
+            "estrelas": 15,
+            "data": "2026-10-04 23:46:03",
+            "timestamp": 1791171963,
+            "chave": "boletim_aprovado_0758c00e6ea0_avaliacao_2"
+        },
+        {
+            "id": "estrela_f744add2fbd6",
+            "tipo": "nota",
+            "descricao": "Nota 10,00 em ADS — 3º Bimestre",
+            "estrelas": 10,
+            "data": "2026-10-04 23:46:08",
+            "timestamp": 1791171968,
+            "chave": "nota_MAT_40202A17_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_4c24561df560",
+            "tipo": "nota",
+            "descricao": "Nota 8,00 em Português — 3º Bimestre",
+            "estrelas": 5,
+            "data": "2026-10-05 18:55:15",
+            "timestamp": 1791240915,
+            "chave": "nota_mat_5319622704c4_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_619c61c30b0f",
+            "tipo": "nota",
+            "descricao": "Nota 10,00 em Sociologia — 3º Bimestre",
+            "estrelas": 10,
+            "data": "2026-10-05 18:56:30",
+            "timestamp": 1791240990,
+            "chave": "nota_mat_10e8872c7f32_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_78fde628f275",
+            "tipo": "evolucao_nota",
+            "descricao": "Evolução em Sociologia: nota maior que na avaliação anterior",
+            "estrelas": 5,
+            "data": "2026-10-05 18:56:30",
+            "timestamp": 1791240990,
+            "chave": "evolucao_nota_mat_10e8872c7f32_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_18ffc4f7b0a4",
+            "tipo": "nota",
+            "descricao": "Nota 7,50 em Fisica — 3º Bimestre",
+            "estrelas": 3,
+            "data": "2026-10-05 18:56:38",
+            "timestamp": 1791240998,
+            "chave": "nota_mat_c17180db2e01_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_748c4b3c17bd",
+            "tipo": "nota",
+            "descricao": "Nota 10,00 em Historia — 3º Bimestre",
+            "estrelas": 10,
+            "data": "2026-10-05 18:57:46",
+            "timestamp": 1791241066,
+            "chave": "nota_mat_68f00281c995_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "estrela_7fdf23e8cef8",
+            "tipo": "evolucao_nota",
+            "descricao": "Evolução em Historia: nota maior que na avaliação anterior",
+            "estrelas": 5,
+            "data": "2026-10-05 18:57:46",
+            "timestamp": 1791241066,
+            "chave": "evolucao_nota_mat_68f00281c995_0758c00e6ea0_avaliacao_3"
+        },
+        {
+            "id": "gasto_4e6e2efd3730",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Cursor Sakura",
+            "estrelas": -500,
+            "data": "2026-10-05 19:28:22",
+            "timestamp": 1791242902,
+            "chave": "compra_loja_cursor_sakura"
+        },
+        {
+            "id": "gasto_4234c20e8056",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Cursor Dragão",
+            "estrelas": -500,
+            "data": "2026-10-05 20:14:52",
+            "timestamp": 1791245692,
+            "chave": "compra_loja_cursor_dragao"
+        },
+        {
+            "id": "gasto_cf1e9d36039c",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Cursor Galáxia",
+            "estrelas": -500,
+            "data": "2026-10-05 20:17:49",
+            "timestamp": 1791245869,
+            "chave": "compra_loja_cursor_galaxia"
+        },
+        {
+            "id": "gasto_f488e973ae16",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Cursor Gato Preto",
+            "estrelas": -500,
+            "data": "2026-10-05 20:17:50",
+            "timestamp": 1791245870,
+            "chave": "compra_loja_cursor_gato"
+        },
+        {
+            "id": "gasto_35758e979532",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Cursor Serafim",
+            "estrelas": -500,
+            "data": "2026-10-05 20:17:52",
+            "timestamp": 1791245872,
+            "chave": "compra_loja_cursor_serafim"
+        },
+        {
+            "id": "gasto_058c8544f1c5",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Cursor Natureza",
+            "estrelas": -500,
+            "data": "2026-10-05 20:17:54",
+            "timestamp": 1791245874,
+            "chave": "compra_loja_cursor_natureza"
+        },
+        {
+            "id": "gasto_eb421470d615",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Cursor Neon",
+            "estrelas": -500,
+            "data": "2026-10-05 20:17:55",
+            "timestamp": 1791245875,
+            "chave": "compra_loja_cursor_neon"
+        },
+        {
+            "id": "gasto_28f752cfada0",
+            "tipo": "compra_loja",
+            "descricao": "Compra na loja: Cursor Fogo",
+            "estrelas": -500,
+            "data": "2026-10-05 20:17:56",
+            "timestamp": 1791245876,
+            "chave": "compra_loja_cursor_fogo"
         }
     ],
     "controle": {
@@ -121,17 +526,38 @@
         "frequencia": {
             "meses_processados": [],
             "sequencia_presenca": {
-                "dias": 2,
-                "ultima_data": "2026-09-03",
+                "dias": 1,
+                "ultima_data": "2026-10-06",
                 "marcos_recebidos": {
-                    "2026-08": 5
+                    "2026-08": 5,
+                    "2026-10": 10
                 }
             }
         },
         "notas": {
             "recompensas": [
                 "nota_MAT_ADEFFDD5_0758c00e6ea0_avaliacao_3",
-                "evolucao_nota_MAT_ADEFFDD5_0758c00e6ea0_avaliacao_3"
+                "evolucao_nota_MAT_ADEFFDD5_0758c00e6ea0_avaliacao_3",
+                "nota_mat_d2031fa95c05_0758c00e6ea0_avaliacao_3",
+                "nota_mat_d7201e4e39f9_0758c00e6ea0_avaliacao_3",
+                "nota_mat_a9102dddebde_0758c00e6ea0_avaliacao_3",
+                "nota_mat_23a836c9da28_0758c00e6ea0_avaliacao_3",
+                "nota_mat_47a8b822652c_0758c00e6ea0_avaliacao_3",
+                "evolucao_nota_mat_47a8b822652c_0758c00e6ea0_avaliacao_3",
+                "nota_MAT_ADEFFDD5_0758c00e6ea0_avaliacao_1",
+                "nota_MAT_40202A17_0758c00e6ea0_avaliacao_1",
+                "boletim_completo_0758c00e6ea0_avaliacao_1",
+                "boletim_aprovado_0758c00e6ea0_avaliacao_1",
+                "nota_MAT_40202A17_0758c00e6ea0_avaliacao_2",
+                "boletim_completo_0758c00e6ea0_avaliacao_2",
+                "boletim_aprovado_0758c00e6ea0_avaliacao_2",
+                "nota_MAT_40202A17_0758c00e6ea0_avaliacao_3",
+                "nota_mat_5319622704c4_0758c00e6ea0_avaliacao_3",
+                "nota_mat_10e8872c7f32_0758c00e6ea0_avaliacao_3",
+                "evolucao_nota_mat_10e8872c7f32_0758c00e6ea0_avaliacao_3",
+                "nota_mat_c17180db2e01_0758c00e6ea0_avaliacao_3",
+                "nota_mat_68f00281c995_0758c00e6ea0_avaliacao_3",
+                "evolucao_nota_mat_68f00281c995_0758c00e6ea0_avaliacao_3"
             ]
         },
         "sequencia_estudo": {
@@ -149,7 +575,28 @@
             "cronometro_628b0acf-a85d-4af5-88c9-ad79bd6561ac",
             "flashcards_baralho_15_BAR_F299F4FB",
             "flashcards_baralho_31_BAR_F299F4FB",
-            "flashcards_revisao_2026-09-03_BAR_F299F4FB"
+            "flashcards_revisao_2026-09-03_BAR_F299F4FB",
+            "sequencia_presenca_2026-10",
+            "nota_mat_d2031fa95c05_0758c00e6ea0_avaliacao_3",
+            "nota_mat_d7201e4e39f9_0758c00e6ea0_avaliacao_3",
+            "nota_mat_a9102dddebde_0758c00e6ea0_avaliacao_3",
+            "nota_mat_23a836c9da28_0758c00e6ea0_avaliacao_3",
+            "nota_mat_47a8b822652c_0758c00e6ea0_avaliacao_3",
+            "evolucao_nota_mat_47a8b822652c_0758c00e6ea0_avaliacao_3",
+            "nota_MAT_ADEFFDD5_0758c00e6ea0_avaliacao_1",
+            "nota_MAT_40202A17_0758c00e6ea0_avaliacao_1",
+            "boletim_completo_0758c00e6ea0_avaliacao_1",
+            "boletim_aprovado_0758c00e6ea0_avaliacao_1",
+            "nota_MAT_40202A17_0758c00e6ea0_avaliacao_2",
+            "boletim_completo_0758c00e6ea0_avaliacao_2",
+            "boletim_aprovado_0758c00e6ea0_avaliacao_2",
+            "nota_MAT_40202A17_0758c00e6ea0_avaliacao_3",
+            "nota_mat_5319622704c4_0758c00e6ea0_avaliacao_3",
+            "nota_mat_10e8872c7f32_0758c00e6ea0_avaliacao_3",
+            "evolucao_nota_mat_10e8872c7f32_0758c00e6ea0_avaliacao_3",
+            "nota_mat_c17180db2e01_0758c00e6ea0_avaliacao_3",
+            "nota_mat_68f00281c995_0758c00e6ea0_avaliacao_3",
+            "evolucao_nota_mat_68f00281c995_0758c00e6ea0_avaliacao_3"
         ]
     }
 }

@@ -1,22 +1,17 @@
 <?php
-session_start();
+require_once __DIR__ . '/../core/usuario.php';
+require_once __DIR__ . '/../core/json.php';
 
-// ======================================
-// VERIFICAR LOGIN
-// ======================================
+$contextoUsuario = foag_contexto_usuario(
+    '../login/index.php',
+    false,
+    true
+);
 
-$codigoUsuario =
-    $_SESSION['codigo_usuario']
-    ?? $_SESSION['user_id']
-    ?? null;
+$codigoUsuario = $contextoUsuario['codigoUsuario'];
+$pastaUsuario = $contextoUsuario['pastaUsuario'];
 
-if (!$codigoUsuario) {
-    header('Location: ../login/index.php');
-    exit;
-}
-
-$current =
-    basename($_SERVER['PHP_SELF']);
+$current = basename($_SERVER['PHP_SELF']);
 
 $anoSelecionado =
     isset($_GET['ano'])
@@ -30,15 +25,6 @@ if (
     $anoSelecionado =
         (int)date('Y');
 }
-
-// ======================================
-// PASTA DO USUÁRIO
-// ======================================
-
-$pastaUsuario =
-    __DIR__ .
-    '/../json/usuarios/' .
-    $codigoUsuario;
 
 if (!is_dir($pastaUsuario)) {
     exit('Pasta do usuário não encontrada.');
@@ -466,6 +452,9 @@ function gerarCalendario(
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
+    <script src="../global/js/config.js?v=<?= time() ?>"></script>
+    <script src="../global/js/utils.js?v=<?= time() ?>"></script>
+
       <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calendário - FOAG</title>
@@ -489,10 +478,10 @@ function gerarCalendario(
 
     <script>
         window.CAL_AGENDA_DATA = <?= json_encode($agendaData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>;
-        window.CAL_AGENDA_SAVE_URL = "../bloco/salvar_agenda.php";
+        window.CAL_AGENDA_SAVE_URL = FOAG_CONFIG.endpoints.agendaSalvar;
         window.CAL_HORARIO_HTML = <?= json_encode($horarioData['html'] ?? '', JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>;
         window.CAL_CALEND_DATA = <?= json_encode($calendData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>;
-        window.CAL_CALEND_SAVE_URL = "salvar_calendario.php";
+        window.CAL_CALEND_SAVE_URL = FOAG_CONFIG.endpoints.calendarioSalvar;
         window.CAL_ANO = <?= (int)$anoSelecionado ?>;
     </script>
     <style>
@@ -630,7 +619,7 @@ function gerarCalendario(
             ); ?>;
 
         window.CAL_AGENDA_SAVE_URL =
-            "../bloco/salvar_agenda.php";
+            FOAG_CONFIG.endpoints.agendaSalvar;
 
        window.CAL_HORARIO_HTML =
         <?= json_encode(
@@ -647,11 +636,18 @@ function gerarCalendario(
             ); ?>;
 
         window.CAL_CALEND_SAVE_URL =
-            "salvar_calendario.php";
+            FOAG_CONFIG.endpoints.calendarioSalvar;
 
         window.CAL_ANO =
             <?= (int)$anoSelecionado ?>;
     </script>
+    <link rel="stylesheet" href="../global/css/cursor.css">
+    <link rel="stylesheet" href="../global/css/base.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../global/css/components.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../global/css/forms.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../global/css/tables.css?v=<?= time() ?>">
+
+    <link rel="stylesheet" href="../global/css/layout.css?v=<?= time() ?>">
 </head>
 
 <body>
@@ -666,35 +662,7 @@ function gerarCalendario(
          CABEÇALHO
     ======================================= -->
 
-    <header class="cabecalho">
-
-        FOAG
-
-        <div class="header-icons">
-
-            <a
-                href="../configuracoes/configuracoes.php"
-                class="link-configuracoes"
-                title="Configurações"
-            >
-                <i class="fa-solid fa-gear"></i>
-            </a>
-
-            <i
-                id="icon-perfil"
-                class="fa-regular fa-user"
-                title="Perfil"
-            ></i>
-
-            <i
-                id="icon-sair"
-                class="fa-solid fa-right-from-bracket"
-                title="Sair"
-            ></i>
-
-        </div>
-
-    </header>
+    <?php include __DIR__ . '/../components/header.php'; ?>
 
 
     <div class="container">
@@ -703,39 +671,7 @@ function gerarCalendario(
              MENU
         ======================================= -->
 
-        <nav class="menu">
-            <a href="../inicioo/inicio.php" class="<?= $current === 'inicio.php' ? 'active' : '' ?>">
-                <i class="fa-solid fa-house"></i> Início
-            </a>
-
-            <a href="../estudos/estudos.php" class="<?= $current === 'estudos.php' ? 'active' : '' ?>">
-                <i class="fa-solid fa-graduation-cap"></i> Estudos
-            </a>
-
-            <a href="../bloco/agenda.php" class="<?= $current === 'agenda.php' ? 'active' : '' ?>">
-                <i class="fa-solid fa-book"></i> Agenda
-            </a>
-
-            <a href="../calend/calendario.php" class="<?= $current === 'calendario.php' ? 'active' : '' ?>">
-                <i class="fa-solid fa-calendar-days"></i> Calendário
-            </a>
-
-            <a href="../notas/notas.php" class="<?= $current === 'notas.php' ? 'active' : '' ?>">
-                <i class="fa-solid fa-check-double"></i> Boletim
-            </a>
-
-            <a href="../comunidade/comunidade.php" class="<?= $current === 'comunidade.php' ? 'active' : '' ?>">
-                <i class="fa-solid fa-comments"></i> Comunidade
-            </a>
-
-            <a href="../rank/rank.php" class="<?= $current === 'rank.php' ? 'active' : '' ?>">
-                <i class="fa-solid fa-trophy"></i> Ranking
-            </a>
-
-            <a href="../loja/loja.php" class="<?= $current === 'loja.php' ? 'active' : '' ?>">
-                <i class="fa-solid fa-store"></i> Loja
-            </a>
-        </nav>
+        <?php include __DIR__ . '/../components/menu.php'; ?>
 
         <div class="page-area">
 
@@ -1259,25 +1195,7 @@ function gerarCalendario(
             </div>
         </div>
 
-            <footer class="footer">
-                <div class="footer-content">
-
-                    <div class="footer-left">
-                        <span class="footer-brand">FOAG</span>
-
-                        <nav class="footer-links">
-                            <a href="../sobre/sobre.php">Sobre</a>
-                            <a href="../contato/contato.php">Contato</a>
-                            <a href="../privacidade/privacidade.php">Privacidade</a>
-                        </nav>
-                    </div>
-
-                    <span class="footer-copy">
-                        © <?= date('Y') ?> FOAG
-                    </span>
-
-                </div>
-            </footer>
+            <?php include __DIR__ . '/../components/footer.php'; ?>
 
         </div>
     </div>
@@ -1407,5 +1325,8 @@ function gerarCalendario(
 
  <script src="../configuracoes/aparencia.js?v=5"></script>
 <script src="../configuracoes/acessibilidade.js?v=25" defer></script>
+    <script src="../global/js/cursor.js?v=<?= time() ?>"></script>
+
 </body>
+
 </html>

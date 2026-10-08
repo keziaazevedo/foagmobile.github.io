@@ -4,10 +4,11 @@
         "tema_roxo",
         "tema_verde",
         "emoji_feliz",
-        "emoji_freddy"
+        "emoji_freddy",
+        "tema_rosa"
     ],
     "itens_ativos": {
-        "tema": "tema_roxo",
+        "tema": "tema_rosa",
         "fundo": null,
         "moldura": "moldura_querubim",
         "cursor": null
